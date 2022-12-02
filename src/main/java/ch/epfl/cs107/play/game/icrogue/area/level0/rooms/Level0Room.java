@@ -23,8 +23,7 @@ public class Level0Room extends ICRogueRoom {
     }
     protected void createArea() {
         // Base
-        registerActor(new Background(this));
-        registerActor(new Foreground(this));
+        registerActor(new Background(this, behaviorName));
     }
 
 
