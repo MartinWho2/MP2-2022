@@ -2,7 +2,8 @@ package ch.epfl.cs107.play.game.icrogue.actor;
 
 import ch.epfl.cs107.play.game.actor.TextGraphics;
 import ch.epfl.cs107.play.game.areagame.Area;
-import ch.epfl.cs107.play.game.areagame.actor.MovableAreaEntity;
+import ch.epfl.cs107.play.game.areagame.actor.Interactable;
+import ch.epfl.cs107.play.game.areagame.actor.Interactor;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
@@ -12,29 +13,41 @@ import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class ICRoguePlayer extends MovableAreaEntity {
     private float hp;
     private static final float HP_MAX = 10;
-    private TextGraphics message;
-    private Sprite sprite;
     /// Animation duration in frame number
     private final static int MOVE_DURATION = 8;
+    private Sprite sprite;
+    private TextGraphics message;
+    private InteractionHandler handler;
+    private boolean wantsInteraction;
+    private boolean canShootFireBall = false;
+    private HashMap<Orientation,Sprite> orientationToSprite = new HashMap<>();
+    private ArrayList<Integer> keysCollected = new ArrayList<>();
+
+
     /**
      * Demo actor
      *
      */
-    public ICRoguePlayer(Area owner, Orientation orientation, DiscreteCoordinates coordinates, String spriteName) {
+    public ICRoguePlayer(Area owner, Orientation orientation, DiscreteCoordinates coordinates) {
         super(owner, orientation, coordinates);
         this.hp = HP_MAX;
+        wantsInteraction = false;
         message = new TextGraphics(Integer.toString((int)hp), 0.4f, Color.BLUE);
         message.setParent(this);
         message.setAnchor(new Vector(-0.3f, 0.1f));
         sprite = new Sprite(spriteName, 1.f, 1.f,this);
 
         resetMotion();
+        handler = new InteractionHandler();
+        sprite = orientationToSprite.get(orientation);
     }
 
     /**
@@ -59,6 +72,7 @@ public class ICRoguePlayer extends MovableAreaEntity {
     }
     /**
      * Orientate and Move this player in the given orientation if the given button is down
+     * Also changes the sprite depending on the orientation of the player
      * @param orientation (Orientation): given orientation, not null
      * @param b (Button): button corresponding to the given orientation, not null
      */
@@ -66,28 +80,10 @@ public class ICRoguePlayer extends MovableAreaEntity {
         if(b.isDown()) {
             if (!isDisplacementOccurs()) {
                 orientate(orientation);
+                sprite = orientationToSprite.get(orientation);
                 move(MOVE_DURATION);
             }
         }
-    }
-
-    /**
-     * Leave an area by unregister this player
-     */
-    public void leaveArea(){
-        getOwnerArea().unregisterActor(this);
-    }
-
-    /**
-     *
-     * @param area (Area): initial area, not null
-     * @param position (DiscreteCoordinates): initial position, not null
-     */
-    public void enterArea(Area area, DiscreteCoordinates position){
-        area.registerActor(this);
-        setOwnerArea(area);
-        setCurrentPosition(position.toVector());
-        resetMotion();
     }
 
     @Override
@@ -125,6 +121,24 @@ public class ICRoguePlayer extends MovableAreaEntity {
         return Collections.singletonList(getCurrentMainCellCoordinates());
     }
 
+    public List<DiscreteCoordinates> getFieldOfViewCells() {
+        return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
+    }
+
+
+    public boolean wantsCellInteraction() {
+        return true;
+    }
+
+
+    public boolean wantsViewInteraction() {
+        return wantsInteraction;
+    }
+
+    @Override
+    public void interactWith(Interactable other, boolean isCellInteraction) {
+        other.acceptInteraction(handler , isCellInteraction);
+    }
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
     }

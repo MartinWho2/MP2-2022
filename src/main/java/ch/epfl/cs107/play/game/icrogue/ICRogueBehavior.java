@@ -55,6 +55,7 @@ public class ICRogueBehavior extends AreaBehavior{
     public class ICRogueCell extends AreaBehavior.Cell {
         /// Type of the cell following the enum
         private final ICRogueBehavior.ICRogueCellType type;
+        private boolean isOccupied = false;
 
         /**
          * Default Tuto2Cell Constructor
@@ -69,6 +70,9 @@ public class ICRogueBehavior extends AreaBehavior{
 
         @Override
         protected boolean canLeave(Interactable entity) {
+            if (entity.takeCellSpace()){
+                isOccupied = false;
+            }
             return true;
         }
 

@@ -9,6 +9,8 @@ import ch.epfl.cs107.play.window.Window;
 
 public abstract class ICRogueRoom extends Area {
     private ICRogueBehavior behavior;
+    private String behaviorName;
+    protected final DiscreteCoordinates roomCoordinates;
 
     /**
      * Create the area by adding it all actors
@@ -18,6 +20,12 @@ public abstract class ICRogueRoom extends Area {
     protected abstract void createArea();
 
     /// EnigmeArea extends Area
+
+    public ICRogueRoom(String behaviorName, DiscreteCoordinates roomCoordinates){
+        super();
+        this.behaviorName = behaviorName;
+        this.roomCoordinates = roomCoordinates;
+    }
 
     @Override
     public final float getCameraScaleFactor() {
