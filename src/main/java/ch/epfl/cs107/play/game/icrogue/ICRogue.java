@@ -42,7 +42,6 @@ public class ICRogue extends AreaGame{
         DiscreteCoordinates coords = area.getPlayerSpawnPosition();
         player = new ICRoguePlayer(area, Orientation.DOWN, coords,"ghost.1");
         player.enterArea(area, coords);
-        player.centerCamera();
 
     }
     @Override
@@ -62,9 +61,7 @@ public class ICRogue extends AreaGame{
 
     protected void switchArea() {
         player.leaveArea();
-
         areaIndex = 0;
-
         ICRogueRoom currentArea = (ICRogueRoom) setCurrentArea(areas[areaIndex], false);
         player.enterArea(currentArea, currentArea.getPlayerSpawnPosition());
 

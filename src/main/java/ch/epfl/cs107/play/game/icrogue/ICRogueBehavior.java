@@ -8,12 +8,10 @@ import ch.epfl.cs107.play.window.Window;
 public class ICRogueBehavior extends AreaBehavior{
     public enum ICRogueCellType{
         //https://stackoverflow.com/questions/25761438/understanding-bufferedimage-getrgb-output-values
-        NULL(0, false),
-        WALL(-16777216, false),
-        IMPASSABLE(-8750470, false),
-        INTERACT(-256, true),
-        DOOR(-195580, true),
-        WALKABLE(-1, true),;
+        NONE(0, false),
+        GROUND(-16777216, true),
+        WALL(-14112955, false),
+        HOLE(-65536, true),;
 
         final int type;
         final boolean isWalkable;
@@ -24,13 +22,13 @@ public class ICRogueBehavior extends AreaBehavior{
         }
 
         public static ICRogueBehavior.ICRogueCellType toType(int type){
-            for(ICRogueBehavior.ICRogueCellType ict : ICRogueBehavior.ICRogueCellType.values()){
+            for(ICRogueCellType ict : ICRogueCellType.values()){
                 if(ict.type == type)
                     return ict;
             }
             // When you add a new color, you can print the int value here before assign it to a type
             System.out.println(type);
-            return NULL;
+            return NONE;
         }
     }
 

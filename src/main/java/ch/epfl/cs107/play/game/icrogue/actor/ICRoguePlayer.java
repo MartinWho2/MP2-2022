@@ -11,7 +11,7 @@ import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 
@@ -85,7 +85,6 @@ public class ICRoguePlayer extends MovableAreaEntity {
      */
     public void enterArea(Area area, DiscreteCoordinates position){
         area.registerActor(this);
-        area.setViewCandidate(this);
         setOwnerArea(area);
         setCurrentPosition(position.toVector());
         resetMotion();
