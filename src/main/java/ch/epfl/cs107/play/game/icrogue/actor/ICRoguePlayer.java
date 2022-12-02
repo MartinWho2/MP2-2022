@@ -7,18 +7,24 @@ import ch.epfl.cs107.play.game.areagame.actor.Interactor;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
+import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
+import ch.epfl.cs107.play.game.icrogue.actor.items.Key;
+import ch.epfl.cs107.play.game.icrogue.actor.items.Staff;
+import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBall;
+import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.math.RegionOfInterest;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class ICRoguePlayer extends MovableAreaEntity {
+
+public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private float hp;
     private static final float HP_MAX = 10;
     /// Animation duration in frame number
@@ -43,8 +49,14 @@ public class ICRoguePlayer extends MovableAreaEntity {
         message = new TextGraphics(Integer.toString((int)hp), 0.4f, Color.BLUE);
         message.setParent(this);
         message.setAnchor(new Vector(-0.3f, 0.1f));
-        sprite = new Sprite(spriteName, 1.f, 1.f,this);
-
+        orientationToSprite.put(Orientation.DOWN,new Sprite("zelda/player", .75f, 1.5f, this ,
+                new RegionOfInterest(0, 0, 16, 32) , new Vector (.15f, -.15f)));
+        orientationToSprite.put(Orientation.RIGHT,new Sprite("zelda/player", .75f, 1.5f, this ,
+                new RegionOfInterest(0, 32, 16, 32) , new Vector (.15f, -.15f)));
+        orientationToSprite.put(Orientation.UP,new Sprite("zelda/player", .75f, 1.5f, this ,
+                new RegionOfInterest(0, 64, 16, 32) , new Vector (.15f, -.15f)));
+        orientationToSprite.put(Orientation.LEFT,new Sprite("zelda/player", .75f, 1.5f, this ,
+                new RegionOfInterest(0, 96, 16, 32) , new Vector (.15f, -.15f)));
         resetMotion();
         handler = new InteractionHandler();
         sprite = orientationToSprite.get(orientation);
@@ -66,6 +78,15 @@ public class ICRoguePlayer extends MovableAreaEntity {
         moveIfPressed(Orientation.UP, keyboard.get(Keyboard.UP));
         moveIfPressed(Orientation.RIGHT, keyboard.get(Keyboard.RIGHT));
         moveIfPressed(Orientation.DOWN, keyboard.get(Keyboard.DOWN));
+
+        if (keyboard.get(Keyboard.X).isPressed()){
+            if (canShootFireBall) {
+                new FireBall(getOwnerArea(), getOrientation(), getCurrentMainCellCoordinates());
+            }
+        }
+        if (keyboard.get(Keyboard.W).isPressed()){
+            wantsInteraction = !wantsInteraction;
+        }
 
         super.update(deltaTime);
 
@@ -141,5 +162,24 @@ public class ICRoguePlayer extends MovableAreaEntity {
     }
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
+        ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
+    }
+
+    private class InteractionHandler implements ICRogueInteractionHandler {
+        @Override
+        public void interactWith(Staff staff, boolean isCellInteraction) {
+            staff.collect();
+            canShootFireBall = true;
+            }
+        @Override
+        public void interactWith(Cherry cherry, boolean isCellInteraction) {
+                cherry.collect();
+        }
+
+        @Override
+        public void interactWith(Key key, boolean isCellInteraction) {
+            keysCollected.add(key.getKEY_ID());
+            key.collect();
+        }
     }
 }

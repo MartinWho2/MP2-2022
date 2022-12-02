@@ -26,9 +26,9 @@ public interface Interactor {
     List<DiscreteCoordinates> getFieldOfViewCells();
 
 
-    /**@return (boolean): true if this require cell interaction */
+    /**@return (boolean): true if this requires cell interaction */
     boolean wantsCellInteraction();
-    /**@return (boolean): true if this require view interaction */
+    /**@return (boolean): true if this requires view interaction */
     boolean wantsViewInteraction();
 
     /**

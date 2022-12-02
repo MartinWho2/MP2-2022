@@ -26,4 +26,6 @@ public class Level0Room extends ICRogueRoom {
         registerActor(new Background(this));
         registerActor(new Foreground(this));
     }
+
+
 }
