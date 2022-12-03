@@ -91,7 +91,7 @@ public class Connector extends AreaEntity {
         return KEY_ID;
     }
 
-    public String getDestination() {
+    public String getDestinationRoom() {
         return destination;
     }
 

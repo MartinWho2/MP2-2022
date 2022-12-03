@@ -29,16 +29,11 @@ public class Level0Room extends ICRogueRoom {
     public Level0Room(DiscreteCoordinates roomCoordinates){
         super(Level0Connectors.W.getAllConnectorsPosition(),Level0Connectors.W.getAllConnectorsOrientation(),
                 behaviorName,roomCoordinates);
+
     }
     protected void createArea() {
         // Base
         registerActor(new Background(this, behaviorName));
-    }
-
-    @Override
-    public boolean begin(Window window, FileSystem fileSystem) {
-        System.out.println("je suis passe par la");
-        return super.begin(window, fileSystem);
     }
 
     public enum Level0Connectors implements ConnectorInRoom {

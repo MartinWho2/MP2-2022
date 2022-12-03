@@ -195,7 +195,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             keysCollected.add(key.getKEY_ID());
             key.collect();
         }
-
         @Override
         public void interactWith(Connector connector, boolean isCellInteraction) {
 
@@ -203,7 +202,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 ICRogueRoom area = (ICRogueRoom)getOwnerArea();
                 area.setConnectorOpened(connector);
             }else if (isCellInteraction && !isDisplacementOccurs()){
-                System.out.println("aled");
                 currentConnector = connector;
                 connector.setDestinationCoord(Connector.getSpawnPositionWithEnterCoordinates(getCurrentMainCellCoordinates()));
                 isChangingRoom = true;

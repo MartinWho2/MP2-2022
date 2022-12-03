@@ -43,8 +43,8 @@ public abstract class Level {
         firstRoomName = "icrogue/level0" + coordinates.x+""+coordinates.y;
     }
 
-    public void setCurrentRoom(ICRogue a, int x, int y) {
-        a.setCurrentAreaOfLevel(wholeMap[x][y]);
+    public void setCurrentRoom(ICRogue a, DiscreteCoordinates coords) {
+        a.setCurrentAreaOfLevel(wholeMap[coords.x][coords.y]);
     }
 
     public DiscreteCoordinates getSpawnCoordinates(DiscreteCoordinates coord, ConnectorInRoom connector) {
