@@ -205,9 +205,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             }else if (isCellInteraction && !isDisplacementOccurs()){
                 System.out.println("aled");
                 currentConnector = connector;
+                connector.setDestinationCoord(Connector.getSpawnPositionWithEnterCoordinates(getCurrentMainCellCoordinates()));
                 isChangingRoom = true;
-
-
             }
         }
     }

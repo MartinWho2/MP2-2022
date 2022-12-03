@@ -51,6 +51,29 @@ public class Connector extends AreaEntity {
 
     }
 
+    public void setDestinationCoord(DiscreteCoordinates coord) {
+        destinationCoord = coord;
+    }
+    public static DiscreteCoordinates getSpawnPositionWithEnterCoordinates(DiscreteCoordinates position){
+        if (position.x == 0){
+            return new DiscreteCoordinates(8,position.y);
+        }
+        if (position.x == 9){
+            return new DiscreteCoordinates(1, position.y);
+        }
+        if (position.y == 0){
+            return new DiscreteCoordinates(position.x,8);
+        }
+        if (position.y == 9){
+            return new DiscreteCoordinates(position.x,1);
+        }
+        return new DiscreteCoordinates(5,5);
+    }
+
+    public DiscreteCoordinates getDestinationCoord() {
+        return destinationCoord;
+    }
+
     public void setState(ConnectorType state) {
         this.state = state;
         sprite = typeToSprite.get(state);

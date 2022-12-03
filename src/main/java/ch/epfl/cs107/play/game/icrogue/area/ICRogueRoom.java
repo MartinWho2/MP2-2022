@@ -46,6 +46,7 @@ public abstract class ICRogueRoom extends Area {
     }
     public void setConnectorDestination(int connectorIndex, String destination){
         connectors.get(connectorIndex).setDestination(destination);
+
     }
 
     public void setConnectorClosed(int connectorIndex, Connector.ConnectorType wantedConnectorState){

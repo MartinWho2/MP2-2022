@@ -77,12 +77,17 @@ public class ICRogue extends AreaGame{
 
 
     public void switchRoom() {
-            String dest = player.getCurrentConnector().getDestination();
+            String dest = player.getCurrentConnector().getDestinationRoom();
+
             int x = Integer.parseInt("" + dest.charAt(dest.length()-2));
-            int y = Integer.parseInt("" + dest.charAt(dest.length()-1)) ;
+            int y = Integer.parseInt("" + dest.charAt(dest.length()-1));
+            DiscreteCoordinates newRoom = new DiscreteCoordinates(x,y);
+            DiscreteCoordinates spawnPos  =  player.getCurrentConnector().getDestinationCoord();
+
             player.leaveArea();
-            level0.setCurrentRoom(this, x, y);
-            player.enterArea(getCurrentArea(), new DiscreteCoordinates(3, 3));
+            level0.setCurrentRoom(this, newRoom);
+
+            player.enterArea(getCurrentArea(), spawnPos);
             player.setChangingRoom(false);
     }
 

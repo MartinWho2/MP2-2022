@@ -22,6 +22,7 @@ public abstract class Level {
     protected void setRoomConnectorDestination(DiscreteCoordinates coords, String destination,
                                             ConnectorInRoom connector){
         wholeMap[coords.x][coords.y].setConnectorDestination(connector.getIndex(),destination);
+
     }
     protected void setRoomConnector(DiscreteCoordinates coords, String destination,
                                  ConnectorInRoom connector){
@@ -45,6 +46,11 @@ public abstract class Level {
     public void setCurrentRoom(ICRogue a, int x, int y) {
         a.setCurrentAreaOfLevel(wholeMap[x][y]);
     }
+
+    public DiscreteCoordinates getSpawnCoordinates(DiscreteCoordinates coord, ConnectorInRoom connector) {
+        return wholeMap[coord.x][coord.y].getSpawnPosition(connector);
+    }
+
     public void registerAreas(ICRogue a) {
         for (ICRogueRoom[] rooms: wholeMap) {
             for (ICRogueRoom room : rooms) {
