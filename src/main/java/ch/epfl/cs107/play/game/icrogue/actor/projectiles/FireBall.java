@@ -32,9 +32,6 @@ public class FireBall extends Projectiles {
         move(super.MOVE_DURATION);
         super.update(deltaTime);
     }
-
-
-
     @Override
     public void draw(Canvas canvas) {
         sprite.draw(canvas);
@@ -44,7 +41,6 @@ public class FireBall extends Projectiles {
     public boolean isViewInteractable() {
         return true;
     }
-
 
     @Override
     public void consume() {
@@ -69,7 +65,6 @@ public class FireBall extends Projectiles {
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(ICRogueBehavior.ICRogueCell cell, boolean isCellInteraction) {
-            System.out.println("walll");
             if (cell.getType() == ICRogueBehavior.ICRogueCellType.WALL || cell.getType() == ICRogueBehavior.ICRogueCellType.HOLE) {
                 consume();
             }

@@ -17,15 +17,15 @@ public class Connector extends AreaEntity {
     public static int NO_KEY_ID = 0;
     private String destination;
     private DiscreteCoordinates destinationCoord;
-    private final int KEY_ID;
+    private int KEY_ID;
     private ConnectorType state = ConnectorType.INVISIBLE;
     private Sprite sprite;
-    private HashMap<ConnectorType, Sprite> typeToSprite;
+    private HashMap<ConnectorType, Sprite> typeToSprite = new HashMap<>();
 
 
     @Override
     public void draw(Canvas canvas) {
-        if (!state.isWalkable){
+        if (sprite != null){
             sprite.draw(canvas);
         }
     }
@@ -46,7 +46,22 @@ public class Connector extends AreaEntity {
                 (orientation.ordinal () +1) %2+1 , orientation . ordinal () %2+1 , this));
         typeToSprite.put(ConnectorType.LOCKED, new Sprite ("icrogue/lockedDoor_"+ orientation.ordinal (),
                     (orientation.ordinal () +1) %2+1 , orientation.ordinal () %2+1 , this));
+        typeToSprite.put(ConnectorType.OPEN,null);
         sprite = typeToSprite.get(state);
+
+    }
+
+    public void setState(ConnectorType state) {
+        this.state = state;
+        sprite = typeToSprite.get(state);
+    }
+
+    public ConnectorType getState() {
+        return state;
+    }
+
+    public void setKEY_ID(int key_id){
+        KEY_ID = key_id;
     }
 
     public  Connector(Area area, Orientation orientation, DiscreteCoordinates position) {
@@ -59,16 +74,16 @@ public class Connector extends AreaEntity {
         LOCKED(3, true),
         INVISIBLE(4, true);
         final int type;
-        final boolean isWalkable;
-        ConnectorType(int type, boolean isWalkable) {
+        final boolean takesSpace;
+        ConnectorType(int type, boolean takesSpace) {
             this.type = type;
-            this.isWalkable = isWalkable;
+            this.takesSpace = takesSpace;
         }
     }
 
     @Override
     public boolean takeCellSpace() {
-        return state.isWalkable;
+        return state.takesSpace;
     }
 
     @Override
