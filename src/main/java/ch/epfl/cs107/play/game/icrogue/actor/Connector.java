@@ -68,6 +68,10 @@ public class Connector extends AreaEntity {
         return KEY_ID;
     }
 
+    public String getDestination() {
+        return destination;
+    }
+
     public void setDestination(String destination) {
         this.destination = destination;
     }
@@ -96,7 +100,7 @@ public class Connector extends AreaEntity {
 
     @Override
     public boolean isCellInteractable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -106,7 +110,7 @@ public class Connector extends AreaEntity {
 
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
-        System.out.println("je suis sur la cell" + isCellInteraction);
+        // System.out.println("je suis sur la cell" + isCellInteraction);
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }
 }

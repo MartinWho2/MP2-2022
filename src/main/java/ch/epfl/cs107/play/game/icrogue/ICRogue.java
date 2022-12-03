@@ -36,6 +36,7 @@ public class ICRogue extends AreaGame{
         DiscreteCoordinates coords = currentArea.getPlayerSpawnPosition();
         player = new ICRoguePlayer(currentArea, Orientation.DOWN, coords);
         player.enterArea(currentArea,new DiscreteCoordinates(5,5));
+
     }
 
     @Override
@@ -60,7 +61,7 @@ public class ICRogue extends AreaGame{
             initLevel();
         }
         if (player.getIsChangingRoom()){
-
+            switchRoom();
         }
 
     }
@@ -72,6 +73,17 @@ public class ICRogue extends AreaGame{
     @Override
     public String getTitle() {
         return "ICRogue";
+    }
+
+
+    public void switchRoom() {
+            String dest = player.getCurrentConnector().getDestination();
+            int x = Integer.parseInt("" + dest.charAt(dest.length()-2));
+            int y = Integer.parseInt("" + dest.charAt(dest.length()-1)) ;
+            player.leaveArea();
+            level0.setCurrentRoom(this, x, y);
+            player.enterArea(getCurrentArea(), new DiscreteCoordinates(3, 3));
+            player.setChangingRoom(false);
     }
 
     protected void switchArea() {

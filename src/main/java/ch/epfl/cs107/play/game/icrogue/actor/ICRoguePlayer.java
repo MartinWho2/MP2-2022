@@ -38,6 +38,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private HashMap<Orientation,Sprite> orientationToSprite = new HashMap<>();
     private ArrayList<Integer> keysCollected = new ArrayList<>();
     private boolean isChangingRoom = false;
+    private Connector currentConnector;
 
 
     /**
@@ -72,6 +73,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     }
     public boolean getIsChangingRoom(){
         return isChangingRoom;
+    }
+
+    public void setChangingRoom(boolean state) {
+        isChangingRoom = state;
     }
 
     @Override
@@ -147,6 +152,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         return Collections.singletonList(getCurrentMainCellCoordinates());
     }
 
+    public Connector getCurrentConnector() {
+        return currentConnector;
+    }
+
     public List<DiscreteCoordinates> getFieldOfViewCells() {
         return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
     }
@@ -158,7 +167,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
 
     public boolean wantsViewInteraction() {
-        System.out.println(getCurrentMainCellCoordinates());
         return wantsInteraction;
     }
 
@@ -190,12 +198,16 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
         @Override
         public void interactWith(Connector connector, boolean isCellInteraction) {
+
             if (!isCellInteraction && keysCollected.contains(connector.getKEY_ID()) && connector.getState().equals(Connector.ConnectorType.LOCKED)){
                 ICRogueRoom area = (ICRogueRoom)getOwnerArea();
                 area.setConnectorOpened(connector);
             }else if (isCellInteraction && !isDisplacementOccurs()){
-
+                System.out.println("aled");
+                currentConnector = connector;
                 isChangingRoom = true;
+
+
             }
         }
     }

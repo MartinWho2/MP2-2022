@@ -18,7 +18,7 @@ public class Level0StaffRoom extends Level0ItemRoom{
 
     public boolean begin(Window window, FileSystem fileSystem) {
         if (super.begin(window, fileSystem)){
-            Staff staff = new Staff(this, Orientation.DOWN, new DiscreteCoordinates(5, 5));
+            Staff staff = new Staff(this, Orientation.DOWN, new DiscreteCoordinates(2, 3));
             items.add(staff);
             return true;
         }return false;

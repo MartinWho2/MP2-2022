@@ -52,6 +52,9 @@ public abstract class ICRogueRoom extends Area {
         connectors.get(connectorIndex).setState(wantedConnectorState);
     }
 
+    public void setConnectorOpen(int connectorIndex) {
+        connectors.get(connectorIndex).setState(Connector.ConnectorType.OPEN);
+    }
     public void setConnectorLocked(int connectorIndex, int key_id){
         connectors.get(connectorIndex).setKEY_ID(key_id);
     }
