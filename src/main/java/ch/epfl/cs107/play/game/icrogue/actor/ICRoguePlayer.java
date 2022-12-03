@@ -153,6 +153,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
 
     public boolean wantsViewInteraction() {
+        System.out.println(getCurrentMainCellCoordinates());
         return wantsInteraction;
     }
 

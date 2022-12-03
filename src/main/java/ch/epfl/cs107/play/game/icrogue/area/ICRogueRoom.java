@@ -21,6 +21,8 @@ public abstract class ICRogueRoom extends Area {
     private ArrayList<Connector> connectors = new ArrayList<>();
     private Keyboard keyboard;
 
+
+
     /**
      * Create the area by adding it all actors
      * called by begin method
@@ -50,7 +52,9 @@ public abstract class ICRogueRoom extends Area {
         keyboard = getKeyboard();
         if (keyboard.get(Keyboard.O).isPressed()){
             for (Connector connector: connectors) {
+                System.out.println(connector.getState());
                 connector.setState(Connector.ConnectorType.OPEN);
+
             }
         }else if (keyboard.get(Keyboard.L).isPressed()){
             connectors.get(0).setState(Connector.ConnectorType.LOCKED);

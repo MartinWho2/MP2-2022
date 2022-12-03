@@ -40,8 +40,8 @@ public class Connector extends AreaEntity {
     public Connector(Area area, Orientation orientation, DiscreteCoordinates position, int key_id) {
         super(area, orientation, position);
         this.KEY_ID = key_id;
-        typeToSprite.put(ConnectorType.INVISIBLE, new Sprite("icrogue/invisibleDoor_"+ orientation.ordinal (),
-                (orientation.ordinal () +1) %2+1 , orientation.ordinal()%2+1 , this));
+        typeToSprite.put(ConnectorType.INVISIBLE, new Sprite("icrogue/invisibleDoor_"+ orientation.ordinal(),
+                (orientation.ordinal() + 1) % 2+1 , orientation.ordinal()%2+1 , this));
         typeToSprite.put(ConnectorType.CLOSED, new Sprite ("icrogue/door_"+ orientation.ordinal () ,
                 (orientation.ordinal () +1) %2+1 , orientation . ordinal () %2+1 , this));
         typeToSprite.put(ConnectorType.LOCKED, new Sprite ("icrogue/lockedDoor_"+ orientation.ordinal (),
@@ -98,6 +98,7 @@ public class Connector extends AreaEntity {
 
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
+        System.out.println("je suis sur la cell" + isCellInteraction);
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }
 }

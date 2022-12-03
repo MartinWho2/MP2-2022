@@ -36,13 +36,13 @@ public class Level0Room extends ICRogueRoom {
     public enum Level0Connectors implements ConnectorInRoom {
         // ordre des attributs: position , destination , orientation
         W(new DiscreteCoordinates(0, 4),
-                new DiscreteCoordinates(8, 5), Orientation.LEFT),
+                new DiscreteCoordinates(8, 5), Orientation.RIGHT),
         S(new DiscreteCoordinates(4, 0),
-                new DiscreteCoordinates(5, 8), Orientation.DOWN),
+                new DiscreteCoordinates(5, 8), Orientation.UP),
         E(new DiscreteCoordinates(9, 4),
-                new DiscreteCoordinates(1, 5), Orientation.RIGHT),
+                new DiscreteCoordinates(1, 5), Orientation.LEFT),
         N(new DiscreteCoordinates(4, 9),
-                new DiscreteCoordinates(5, 1), Orientation.UP);
+                new DiscreteCoordinates(5, 1), Orientation.DOWN);
         private DiscreteCoordinates position;
         private DiscreteCoordinates destination;
         private Orientation orientation;

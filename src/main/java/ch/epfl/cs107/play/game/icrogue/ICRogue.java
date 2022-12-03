@@ -8,6 +8,10 @@ import ch.epfl.cs107.play.game.icrogue.actor.items.Staff;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Staff;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
+import ch.epfl.cs107.play.game.icrogue.area.Level;
+import ch.epfl.cs107.play.game.icrogue.area.level0.Level0;
+import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0ItemRoom;
+import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0KeyRoom;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0Room;
 import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
@@ -17,6 +21,7 @@ import ch.epfl.cs107.play.window.Window;
 public class ICRogue extends AreaGame{
     public final static float CAMERA_SCALE_FACTOR = 11.f;
 
+    Level level0;
     private ICRoguePlayer player;
     private ICRoguePlayer player2;
     private Level0Room currentArea;
@@ -29,11 +34,11 @@ public class ICRogue extends AreaGame{
      * Add all the areas
      */
 
+
+
     private void initLevel(){
-        currentArea = new Level0Room(new DiscreteCoordinates(0,0));
-        addArea(currentArea);
-        ICRogueRoom area = (ICRogueRoom)setCurrentArea(currentArea.getTitle(), true);
-        DiscreteCoordinates coords = area.getPlayerSpawnPosition();
+        level0 = new Level0(this);
+        DiscreteCoordinates coords = currentArea.getPlayerSpawnPosition();
         player = new ICRoguePlayer(currentArea, Orientation.DOWN, coords);
         player2= new ICRoguePlayer(currentArea, Orientation.DOWN, coords);
         player2.enterArea(area,new DiscreteCoordinates(2,2));
@@ -73,8 +78,8 @@ public class ICRogue extends AreaGame{
 
     protected void switchArea() {
         player.leaveArea();
-        areaIndex = 0;
-        ICRogueRoom currentArea = (ICRogueRoom) setCurrentArea(areas[areaIndex], false);
+        //areaIndex = 0;
+        // ICRogueRoom currentArea = (ICRogueRoom) setCurrentArea(areas[areaIndex], false);
         player.enterArea(currentArea, currentArea.getPlayerSpawnPosition());
 
         player.strengthen();
