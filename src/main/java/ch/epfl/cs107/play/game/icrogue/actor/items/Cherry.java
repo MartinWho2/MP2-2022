@@ -9,9 +9,8 @@ import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 public class Cherry extends Item{
-    Sprite sprite;
-    public Cherry(Area area, Orientation orientation, DiscreteCoordinates position, String spriteName, float size){
-        super(area, orientation, position, spriteName, size);
+    public Cherry(Area area, Orientation orientation, DiscreteCoordinates position){
+        super(area, orientation, position, "icrogue/cherry", 0.6f);
     }
 
     @Override

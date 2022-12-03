@@ -11,6 +11,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Key;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Staff;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBall;
+import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
@@ -36,6 +37,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private boolean canShootFireBall = false;
     private HashMap<Orientation,Sprite> orientationToSprite = new HashMap<>();
     private ArrayList<Integer> keysCollected = new ArrayList<>();
+    private boolean isChangingRoom = false;
 
 
     /**
@@ -67,6 +69,9 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
      */
     public void centerCamera() {
         getOwnerArea().setViewCandidate(this);
+    }
+    public boolean getIsChangingRoom(){
+        return isChangingRoom;
     }
 
     @Override
@@ -181,6 +186,17 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         public void interactWith(Key key, boolean isCellInteraction) {
             keysCollected.add(key.getKEY_ID());
             key.collect();
+        }
+
+        @Override
+        public void interactWith(Connector connector, boolean isCellInteraction) {
+            if (!isCellInteraction && keysCollected.contains(connector.getKEY_ID()) && connector.getState().equals(Connector.ConnectorType.LOCKED)){
+                ICRogueRoom area = (ICRogueRoom)getOwnerArea();
+                area.setConnectorOpened(connector);
+            }else if (isCellInteraction && !isDisplacementOccurs()){
+
+                isChangingRoom = true;
+            }
         }
     }
 }

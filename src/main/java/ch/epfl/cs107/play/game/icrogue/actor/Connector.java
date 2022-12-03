@@ -44,7 +44,7 @@ public class Connector extends AreaEntity {
                 (orientation.ordinal() + 1) % 2+1 , orientation.ordinal()%2+1 , this));
         typeToSprite.put(ConnectorType.CLOSED, new Sprite ("icrogue/door_"+ orientation.ordinal () ,
                 (orientation.ordinal () +1) %2+1 , orientation . ordinal () %2+1 , this));
-        typeToSprite.put(ConnectorType.LOCKED, new Sprite ("icrogue/lockedDoor_"+ orientation.ordinal (),
+        typeToSprite.put(ConnectorType.LOCKED, new Sprite("icrogue/lockedDoor_"+ orientation.ordinal (),
                     (orientation.ordinal () +1) %2+1 , orientation.ordinal () %2+1 , this));
         typeToSprite.put(ConnectorType.OPEN,null);
         sprite = typeToSprite.get(state);
@@ -62,6 +62,14 @@ public class Connector extends AreaEntity {
 
     public void setKEY_ID(int key_id){
         KEY_ID = key_id;
+    }
+
+    public int getKEY_ID() {
+        return KEY_ID;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     public  Connector(Area area, Orientation orientation, DiscreteCoordinates position) {
@@ -93,7 +101,7 @@ public class Connector extends AreaEntity {
 
     @Override
     public boolean isViewInteractable() {
-        return state.equals(ConnectorType.LOCKED);
+        return true;
     }
 
     @Override

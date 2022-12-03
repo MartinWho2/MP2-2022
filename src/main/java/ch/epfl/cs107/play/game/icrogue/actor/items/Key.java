@@ -8,8 +8,8 @@ import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 public class Key extends Item{
     private final int KEY_ID;
-    public Key(Area area, Orientation orientation, DiscreteCoordinates position, String spriteName, float size, int ID){
-        super(area, orientation, position, spriteName, size);
+    public Key(Area area, Orientation orientation, DiscreteCoordinates position, int ID){
+        super(area, orientation, position, "icrogue/key", 0.6f);
         KEY_ID = ID;
     }
     public int getKEY_ID() {

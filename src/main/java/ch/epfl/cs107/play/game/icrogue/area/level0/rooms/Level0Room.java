@@ -5,8 +5,10 @@ import ch.epfl.cs107.play.game.areagame.actor.Foreground;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.icrogue.area.ConnectorInRoom;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
+import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.signal.logic.Or;
+import ch.epfl.cs107.play.window.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +33,14 @@ public class Level0Room extends ICRogueRoom {
     protected void createArea() {
         // Base
         registerActor(new Background(this, behaviorName));
-
     }
+
+    @Override
+    public boolean begin(Window window, FileSystem fileSystem) {
+        System.out.println("je suis passe par la");
+        return super.begin(window, fileSystem);
+    }
+
     public enum Level0Connectors implements ConnectorInRoom {
         // ordre des attributs: position , destination , orientation
         W(new DiscreteCoordinates(0, 4),

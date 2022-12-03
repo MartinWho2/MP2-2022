@@ -5,7 +5,6 @@ import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.icrogue.ICRogue;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
-import ch.epfl.cs107.play.game.icrogue.actor.items.Key;
 import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Keyboard;
@@ -44,6 +43,20 @@ public abstract class ICRogueRoom extends Area {
     }
     public DiscreteCoordinates getRoomCoordinates(){
         return roomCoordinates;
+    }
+    public void setConnectorDestination(int connectorIndex, String destination){
+        connectors.get(connectorIndex).setDestination(destination);
+    }
+
+    public void setConnectorClosed(int connectorIndex, Connector.ConnectorType wantedConnectorState){
+        connectors.get(connectorIndex).setState(wantedConnectorState);
+    }
+
+    public void setConnectorLocked(int connectorIndex, int key_id){
+        connectors.get(connectorIndex).setKEY_ID(key_id);
+    }
+    public void setConnectorOpened(Connector connector){
+        connector.setState(Connector.ConnectorType.OPEN);
     }
 
     @Override

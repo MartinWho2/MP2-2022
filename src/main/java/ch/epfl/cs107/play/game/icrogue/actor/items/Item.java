@@ -38,9 +38,6 @@ abstract public class Item extends CollectableAreaEntity{
         return false;
     }
 
-
-
-
     @Override
     public void draw(Canvas canvas) {
         if (!isCollected()) {

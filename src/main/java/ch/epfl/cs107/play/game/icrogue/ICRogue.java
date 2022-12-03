@@ -23,13 +23,8 @@ public class ICRogue extends AreaGame{
 
     Level level0;
     private ICRoguePlayer player;
-    private ICRoguePlayer player2;
-    private Level0Room currentArea;
-    Staff baton;
-    Cherry cerise;
-    private final String[] areas = {"icrogue/level000","icrogue/level010"};
+    private ICRogueRoom currentArea;
 
-    private int areaIndex;
     /**
      * Add all the areas
      */
@@ -40,11 +35,7 @@ public class ICRogue extends AreaGame{
         level0 = new Level0(this);
         DiscreteCoordinates coords = currentArea.getPlayerSpawnPosition();
         player = new ICRoguePlayer(currentArea, Orientation.DOWN, coords);
-        player2= new ICRoguePlayer(currentArea, Orientation.DOWN, coords);
-        player2.enterArea(area,new DiscreteCoordinates(2,2));
-        player.enterArea(area, coords);
-        baton = new Staff(currentArea, Orientation.DOWN, new DiscreteCoordinates(4, 3),"zelda/staff_water.icon",.5f);
-        cerise = new Cherry(currentArea,Orientation.DOWN, new DiscreteCoordinates(6,3),"icrogue/cherry",0.6f);
+        player.enterArea(currentArea,new DiscreteCoordinates(5,5));
     }
 
     @Override
@@ -55,7 +46,11 @@ public class ICRogue extends AreaGame{
         }
         return false;
     }
-
+    public void setCurrentAreaOfLevel(ICRogueRoom currentArea){
+        this.currentArea = currentArea;
+        setCurrentArea(currentArea.getTitle(),true);
+        System.out.println(currentArea instanceof Level0KeyRoom);
+    }
 
     @Override
     public void update(float deltaTime) {
@@ -63,6 +58,9 @@ public class ICRogue extends AreaGame{
         Keyboard keyboard = currentArea.getKeyboard();
         if (keyboard.get(Keyboard.R).isPressed()){
             initLevel();
+        }
+        if (player.getIsChangingRoom()){
+
         }
 
     }

@@ -9,8 +9,8 @@ import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 public class Staff extends Item {
     private Sprite sprite;
-    public Staff(Area area, Orientation orientation, DiscreteCoordinates position, String spriteName, float size) {
-        super(area, orientation, position, spriteName, size);
+    public Staff(Area area, Orientation orientation, DiscreteCoordinates position) {
+        super(area, orientation, position, "zelda/staff_water.icon", .5f);
     }
 
     @Override

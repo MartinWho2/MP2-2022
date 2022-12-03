@@ -1,9 +1,11 @@
 package ch.epfl.cs107.play.game.icrogue;
 
 import ch.epfl.cs107.play.game.areagame.AreaBehavior;
+import ch.epfl.cs107.play.game.areagame.actor.AreaEntity;
 import ch.epfl.cs107.play.game.areagame.actor.Interactable;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
+import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Window;
 
 public class ICRogueBehavior extends AreaBehavior{
@@ -56,7 +58,7 @@ public class ICRogueBehavior extends AreaBehavior{
     public class ICRogueCell extends AreaBehavior.Cell {
         /// Type of the cell following the enum
         private final ICRogueBehavior.ICRogueCellType type;
-        private boolean isOccupied = false;
+        private Interactable entityOnTile;
 
         /**
          * Default Tuto2Cell Constructor
@@ -69,7 +71,6 @@ public class ICRogueBehavior extends AreaBehavior{
             this.type = type;
         }
 
-
         public ICRogueCellType getType() {
             return type;
         }
@@ -77,28 +78,23 @@ public class ICRogueBehavior extends AreaBehavior{
 
         @Override
         protected boolean canLeave(Interactable entity) {
-            if (entity.takeCellSpace()){
-                isOccupied = false;
-            }
+            entityOnTile = null;
             return true;
         }
 
         @Override
         protected boolean canEnter(Interactable entity) {
-            if (entity.takeCellSpace() && isOccupied) {
+            if (entity.takeCellSpace() && entityOnTile != null && entityOnTile.takeCellSpace()) {
                 return false;
             }
             else{
-                if (entity.takeCellSpace()) {
-                    isOccupied = true;
+                if (type.isWalkable) {
+                    entityOnTile = entity;
                 }
                 return type.isWalkable;
             }
 
         }
-
-
-
         @Override
         public boolean isCellInteractable() {
             return true;
