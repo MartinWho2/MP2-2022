@@ -5,21 +5,23 @@ import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.icrogue.ICRogue;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0Room;
+import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0ItemRoom;
 import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.signal.logic.Logic;
 import ch.epfl.cs107.play.window.Keyboard;
 import ch.epfl.cs107.play.window.Window;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ICRogueRoom extends Area {
+public abstract class ICRogueRoom extends Area implements Logic {
     private ICRogueBehavior behavior;
     private String behaviorName;
     private final DiscreteCoordinates roomCoordinates;
     private ArrayList<Connector> connectors = new ArrayList<>();
     private Keyboard keyboard;
+    protected boolean hasPlayerEntered = false;
 
 
 
@@ -31,6 +33,14 @@ public abstract class ICRogueRoom extends Area {
     protected abstract void createArea();
 
     /// EnigmeArea extends Area
+
+
+    public void playerEnters() {
+        this.hasPlayerEntered = true;
+        if (!(this instanceof Level0ItemRoom)){
+            openConnectorsClosed();
+        }
+    }
 
     public ICRogueRoom(List<DiscreteCoordinates > connectorsCoordinates ,
                        List<Orientation> orientations ,
@@ -56,14 +66,20 @@ public abstract class ICRogueRoom extends Area {
     public void setConnectorClosed(int connectorIndex, Connector.ConnectorType wantedConnectorState){
         connectors.get(connectorIndex).setState(wantedConnectorState);
     }
-
+    public void openConnectorsClosed(){
+        for (Connector connector : connectors){
+            if (connector.getState().equals(Connector.ConnectorType.CLOSED)){
+                setConnectorOpen(connector);
+            }
+        }
+    }
     public void setConnectorOpen(int connectorIndex) {
         connectors.get(connectorIndex).setState(Connector.ConnectorType.OPEN);
     }
     public void setConnectorLocked(int connectorIndex, int key_id){
         connectors.get(connectorIndex).setKEY_ID(key_id);
     }
-    public void setConnectorOpened(Connector connector){
+    public void setConnectorOpen(Connector connector){
         connector.setState(Connector.ConnectorType.OPEN);
     }
 

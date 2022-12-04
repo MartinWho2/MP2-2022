@@ -5,6 +5,7 @@ import ch.epfl.cs107.play.game.areagame.actor.Interactable;
 import ch.epfl.cs107.play.game.areagame.actor.Interactor;
 import ch.epfl.cs107.play.game.areagame.actor.MovableAreaEntity;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
+import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 import java.util.Collections;
@@ -39,6 +40,8 @@ public abstract class ICRogueActor extends MovableAreaEntity {
      */
     public void enterArea(Area area, DiscreteCoordinates position) {
         area.registerActor(this);
+        ICRogueRoom room = (ICRogueRoom) area;
+        room.playerEnters();
         setOwnerArea(area);
         setCurrentPosition(position.toVector());
         resetMotion();

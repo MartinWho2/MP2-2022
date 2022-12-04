@@ -12,6 +12,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.items.Key;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Staff;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBall;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
+import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0ItemRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
@@ -184,15 +185,21 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         public void interactWith(Staff staff, boolean isCellInteraction) {
             staff.collect();
             canShootFireBall = true;
+            ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+            area.openConnectorsClosed();
             }
         @Override
         public void interactWith(Cherry cherry, boolean isCellInteraction) {
-                cherry.collect();
+            cherry.collect();
+            ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+            area.openConnectorsClosed();
         }
 
         @Override
         public void interactWith(Key key, boolean isCellInteraction) {
             keysCollected.add(key.getKEY_ID());
+            ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+            area.openConnectorsClosed();
             key.collect();
         }
         @Override
@@ -200,7 +207,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
             if (!isCellInteraction && keysCollected.contains(connector.getKEY_ID()) && connector.getState().equals(Connector.ConnectorType.LOCKED)){
                 ICRogueRoom area = (ICRogueRoom)getOwnerArea();
-                area.setConnectorOpened(connector);
+                area.setConnectorOpen(connector);
             }else if (isCellInteraction && !isDisplacementOccurs()){
                 currentConnector = connector;
                 connector.setDestinationCoord(Connector.getSpawnPositionWithEnterCoordinates(getCurrentMainCellCoordinates()));

@@ -7,6 +7,7 @@ import ch.epfl.cs107.play.game.icrogue.area.ConnectorInRoom;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.signal.logic.Logic;
 import ch.epfl.cs107.play.signal.logic.Or;
 import ch.epfl.cs107.play.window.Window;
 
@@ -34,6 +35,21 @@ public class Level0Room extends ICRogueRoom {
     protected void createArea() {
         // Base
         registerActor(new Background(this, behaviorName));
+    }
+
+    @Override
+    public boolean isOn() {
+        return hasPlayerEntered;
+    }
+
+    @Override
+    public boolean isOff() {
+        return !hasPlayerEntered;
+    }
+
+    @Override
+    public float getIntensity() {
+        return hasPlayerEntered? 1.f : 0.f;
     }
 
     public enum Level0Connectors implements ConnectorInRoom {

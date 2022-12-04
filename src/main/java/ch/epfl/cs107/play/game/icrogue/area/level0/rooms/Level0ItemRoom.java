@@ -13,12 +13,11 @@ public abstract class Level0ItemRoom extends Level0Room {
 
     public Level0ItemRoom(DiscreteCoordinates roomCoordinates) {
         super(roomCoordinates);
-        items = new ArrayList<Item>();
+        items = new ArrayList<>();
     }
 
     @Override
-    public boolean begin(Window window, FileSystem fileSystem) {
-        System.out.println("I was there");
-        return super.begin(window, fileSystem);
+    public boolean isOff() {
+        return super.isOff();
     }
 }
