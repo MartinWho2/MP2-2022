@@ -208,13 +208,13 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             staff.collect();
             canShootFireBall = true;
             ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-            if (area.challengeCompleted()) area.openConnectorsClosed();
+            area.tryToFinishRoom();
             }
         @Override
         public void interactWith(Cherry cherry, boolean isCellInteraction) {
             cherry.collect();
             ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-            if (area.challengeCompleted()) area.openConnectorsClosed();
+            area.tryToFinishRoom();
         }
 
         @Override
@@ -222,7 +222,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             keysCollected.add(key.getKEY_ID());
             ICRogueRoom area = (ICRogueRoom) getOwnerArea();
             key.collect();
-            if (area.challengeCompleted()) area.openConnectorsClosed();
+            area.tryToFinishRoom();
         }
         @Override
         public void interactWith(Connector connector, boolean isCellInteraction) {

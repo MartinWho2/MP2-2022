@@ -5,7 +5,6 @@ import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.icrogue.ICRogue;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0ItemRoom;
 import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.signal.logic.Logic;
@@ -74,6 +73,12 @@ public abstract class ICRogueRoom extends Area implements Logic {
             if (connector.getState().equals(Connector.ConnectorType.CLOSED)){
                 setConnectorOpen(connector);
             }
+        }
+    }
+    public void tryToFinishRoom(){
+        if (challengeCompleted()){
+            openConnectorsClosed();
+            challengeSucceeded = true;
         }
     }
 
