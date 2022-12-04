@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Level0ItemRoom extends Level0Room {
-    List<Item> items;
+    protected List<Item> items;
 
     public Level0ItemRoom(DiscreteCoordinates roomCoordinates) {
         super(roomCoordinates);
@@ -17,7 +17,15 @@ public abstract class Level0ItemRoom extends Level0Room {
     }
 
     @Override
-    public boolean isOff() {
-        return super.isOff();
+    public boolean challengeCompleted() {
+        for (Item item : items) {
+            if (!item.isCollected()) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void playerEnters() {
+        this.hasPlayerEntered = true;
     }
 }

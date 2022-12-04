@@ -39,7 +39,7 @@ public class Level0Room extends ICRogueRoom {
 
     @Override
     public boolean isOn() {
-        return hasPlayerEntered;
+        return challengeSucceeded;
     }
 
     @Override

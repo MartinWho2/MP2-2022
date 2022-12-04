@@ -35,6 +35,10 @@ public abstract class ICRogueRoom extends Area implements Logic {
     /// EnigmeArea extends Area
 
 
+    public boolean getHasPlayerEntered() {
+        return hasPlayerEntered;
+    }
+
     public void playerEnters() {
         this.hasPlayerEntered = true;
         if (!(this instanceof Level0ItemRoom)){
@@ -72,6 +76,10 @@ public abstract class ICRogueRoom extends Area implements Logic {
                 setConnectorOpen(connector);
             }
         }
+    }
+
+    public boolean challengeCompleted() {
+        return true;
     }
     public void setConnectorOpen(int connectorIndex) {
         connectors.get(connectorIndex).setState(Connector.ConnectorType.OPEN);

@@ -12,7 +12,6 @@ import ch.epfl.cs107.play.game.icrogue.actor.items.Key;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Staff;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBall;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0ItemRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
@@ -48,7 +47,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
      */
     public ICRoguePlayer(Area owner, Orientation orientation, DiscreteCoordinates coordinates) {
         super(owner, orientation, coordinates);
-        this.hp = HP_MAX;
+        this.hp = 1;
         wantsInteraction = false;
         message = new TextGraphics(Integer.toString((int)hp), 0.4f, Color.BLUE);
         message.setParent(this);
@@ -95,9 +94,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 new FireBall(getOwnerArea(), getOrientation(), getCurrentMainCellCoordinates());
             }
         }
-        if (keyboard.get(Keyboard.W).isPressed()){
+        if (keyboard.get(Keyboard.W).isPressed() || keyboard.get(Keyboard.W).isReleased()){
             wantsInteraction = !wantsInteraction;
         }
+
 
         super.update(deltaTime);
 
@@ -110,7 +110,12 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
      */
     private void moveIfPressed(Orientation orientation, ch.epfl.cs107.play.window.Button b){
         if(b.isDown()) {
+
             if (!isDisplacementOccurs()) {
+                if (!orientation.equals(getOrientation())){
+                    triggerMove = 0;
+                }
+                triggerMove++;
                 orientate(orientation);
                 sprite = orientationToSprite.get(orientation);
                 move(MOVE_DURATION);
@@ -130,6 +135,11 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
     public void strengthen() {
         hp = HP_MAX;
+    }
+
+    public void kill() {
+        this.hp--;
+
     }
 
     ///Ghost implements Interactable
@@ -162,6 +172,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     }
 
 
+
     public boolean wantsCellInteraction() {
         return true;
     }
@@ -186,21 +197,21 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             staff.collect();
             canShootFireBall = true;
             ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-            area.openConnectorsClosed();
+            if (area.challengeCompleted()) area.openConnectorsClosed();
             }
         @Override
         public void interactWith(Cherry cherry, boolean isCellInteraction) {
             cherry.collect();
             ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-            area.openConnectorsClosed();
+            if (area.challengeCompleted()) area.openConnectorsClosed();
         }
 
         @Override
         public void interactWith(Key key, boolean isCellInteraction) {
             keysCollected.add(key.getKEY_ID());
             ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-            area.openConnectorsClosed();
             key.collect();
+            if (area.challengeCompleted()) area.openConnectorsClosed();
         }
         @Override
         public void interactWith(Connector connector, boolean isCellInteraction) {

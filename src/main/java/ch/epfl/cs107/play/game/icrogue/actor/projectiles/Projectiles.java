@@ -74,6 +74,13 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
         return true;
     }
 
+    @Override
+    public boolean isConsumed() {
+        return isConsumed;
+    }
+
+
+
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }

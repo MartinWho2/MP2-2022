@@ -66,4 +66,6 @@ public class Level0 extends Level {
         setFirstRoomName(new DiscreteCoordinates(1 ,0));
     }
 
+
+
 }

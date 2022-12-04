@@ -16,11 +16,13 @@ public class Level0StaffRoom extends Level0ItemRoom{
         super(roomCoordinates);
     }
 
-    public boolean begin(Window window, FileSystem fileSystem) {
-        if (super.begin(window, fileSystem)){
-            Staff staff = new Staff(this, Orientation.DOWN, new DiscreteCoordinates(2, 3));
-            items.add(staff);
-            return true;
-        }return false;
+    @Override
+    protected void createArea() {
+        super.createArea();
+        Staff staff = new Staff(this, Orientation.DOWN, new DiscreteCoordinates(2, 3));
+        items.add(staff);
+        Staff staff1 = new Staff(this, Orientation.DOWN, new DiscreteCoordinates(2, 4));
+        items.add(staff1);
     }
+
 }
