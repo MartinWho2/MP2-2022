@@ -3,19 +3,13 @@ package ch.epfl.cs107.play.game.icrogue;
 import ch.epfl.cs107.play.game.areagame.AreaGame;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
-import ch.epfl.cs107.play.game.icrogue.area.ConnectorInRoom;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.area.Level;
 import ch.epfl.cs107.play.game.icrogue.area.level0.Level0;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0KeyRoom;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0Room;
 import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Keyboard;
 import ch.epfl.cs107.play.window.Window;
-import ch.epfl.cs107.play.window.swing.SwingWindow;
-
-import java.awt.event.WindowEvent;
 
 public class ICRogue extends AreaGame{
     public final static float CAMERA_SCALE_FACTOR = 11.f;
@@ -59,11 +53,11 @@ public class ICRogue extends AreaGame{
             switchRoom();
         }
         if (player.isWeak()) {
-            System.out.println("Gameover");
+            System.out.println("Game over");
             initLevel();
         }
         if (level0.isOn()) {
-            System.out.println("Game");
+            System.out.println("Win");
             end();
         }
 
@@ -72,6 +66,7 @@ public class ICRogue extends AreaGame{
     @Override
     public void end() {
         getWindow().dispose();
+        System.exit(0);
     }
 
     @Override
@@ -94,7 +89,7 @@ public class ICRogue extends AreaGame{
             player.enterArea(getCurrentArea(), spawnPos);
             player.setChangingRoom(false);
     }
-
+    /*
     protected void switchArea() {
         player.leaveArea();
         //areaIndex = 0;
@@ -103,6 +98,7 @@ public class ICRogue extends AreaGame{
 
         player.strengthen();
     }
+    */
 
 }
 

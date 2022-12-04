@@ -1,22 +1,21 @@
 package ch.epfl.cs107.play.game.icrogue.area.level0;
 
 import ch.epfl.cs107.play.game.icrogue.ICRogue;
-import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.area.Level;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0KeyRoom;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0Room;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0StaffRoom;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0TurretRoom;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
-import ch.epfl.cs107.play.signal.logic.Logic;
 
 public class Level0 extends Level {
     private final int PART_1_KEY_ID = 1;
     private final int BOSS_KEY_ID = 2;
     public Level0(ICRogue game){
         super(new DiscreteCoordinates(2,2),new DiscreteCoordinates(4,2));
-        setFirstRoomName(new DiscreteCoordinates(0,0));
-        generateFixedMap(2);
+        setFirstRoomName(new DiscreteCoordinates(1,0));
+        //generateFixedMap(2);
+        generateFinalMap();
         registerAreas(game);
     }
     public void generateFixedMap(int methodToUse){
@@ -27,17 +26,20 @@ public class Level0 extends Level {
             generateMap2();
         }
     }
+    public void generateFinalMap(){
+        generateMap2();
+    }
 
 
     public void generateMap1(){
         DiscreteCoordinates room00 = new DiscreteCoordinates(0, 0);
         setRoom(room00, new Level0KeyRoom(room00, PART_1_KEY_ID));
-        setRoomConnector(room00, "icrogue/level010", Level0Room.Level0Connectors.E);
+        setRoomConnector(room00, "icrogue/level000", Level0Room.Level0Connectors.E);
         lockRoomConnector(room00, Level0Room.Level0Connectors.E,  PART_1_KEY_ID);
 
         DiscreteCoordinates room10 = new DiscreteCoordinates(1, 0);
         setRoom(room10, new Level0Room(room10));
-        setRoomConnector(room10, "icrogue/level000", Level0Room.Level0Connectors.W);
+        setRoomConnector(room10, "icrogue/level010", Level0Room.Level0Connectors.W);
     }
     public void generateMap2(){
         DiscreteCoordinates room00 = new DiscreteCoordinates(0, 0);
@@ -65,7 +67,6 @@ public class Level0 extends Level {
         setRoom (room11, new Level0Room(room11));
         setRoomConnector(room11, "icrogue/level010", Level0Room.Level0Connectors.N);
 
-        setFirstRoomName(new DiscreteCoordinates(1 ,0));
     }
 
 

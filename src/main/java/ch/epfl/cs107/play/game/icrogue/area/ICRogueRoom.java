@@ -16,10 +16,9 @@ import java.util.List;
 
 public abstract class ICRogueRoom extends Area implements Logic {
     private ICRogueBehavior behavior;
-    private String behaviorName;
+    private final String behaviorName;
     private final DiscreteCoordinates roomCoordinates;
-    private ArrayList<Connector> connectors = new ArrayList<>();
-    private Keyboard keyboard;
+    private final ArrayList<Connector> connectors = new ArrayList<>();
     protected boolean hasPlayerEntered = false;
     protected boolean challengeSucceeded = false;
 
@@ -98,10 +97,9 @@ public abstract class ICRogueRoom extends Area implements Logic {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        keyboard = getKeyboard();
+        Keyboard keyboard = getKeyboard();
         if (keyboard.get(Keyboard.O).isPressed()){
             for (Connector connector: connectors) {
-                System.out.println(connector.getState());
                 connector.setState(Connector.ConnectorType.OPEN);
 
             }

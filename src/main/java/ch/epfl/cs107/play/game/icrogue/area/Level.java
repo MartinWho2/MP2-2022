@@ -6,8 +6,6 @@ import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.signal.logic.Logic;
 
-import java.util.ArrayList;
-
 public abstract class Level implements Logic {
     protected ICRogueRoom[][] wholeMap;
     private final int WIDTH;
@@ -48,17 +46,17 @@ public abstract class Level implements Logic {
     public void setCurrentRoom(ICRogue a, DiscreteCoordinates coords) {
         a.setCurrentAreaOfLevel(wholeMap[coords.x][coords.y]);
     }
-
+    /*
     public DiscreteCoordinates getSpawnCoordinates(DiscreteCoordinates coord, ConnectorInRoom connector) {
         return wholeMap[coord.x][coord.y].getSpawnPosition(connector);
     }
+    */
 
     public void registerAreas(ICRogue a) {
         for (ICRogueRoom[] rooms: wholeMap) {
             for (ICRogueRoom room : rooms) {
                 if (room != null) {
                     a.addArea(room);
-                    System.out.println(firstRoomName+"    " + room.getTitle());
                     if (room.getTitle().equals(firstRoomName)){
                         a.setCurrentAreaOfLevel(room);
                     }
