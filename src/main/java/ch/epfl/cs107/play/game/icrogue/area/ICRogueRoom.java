@@ -22,6 +22,7 @@ public abstract class ICRogueRoom extends Area implements Logic {
     private ArrayList<Connector> connectors = new ArrayList<>();
     private Keyboard keyboard;
     protected boolean hasPlayerEntered = false;
+    protected boolean challengeSucceeded = false;
 
 
 
@@ -41,9 +42,7 @@ public abstract class ICRogueRoom extends Area implements Logic {
 
     public void playerEnters() {
         this.hasPlayerEntered = true;
-        if (!(this instanceof Level0ItemRoom)){
-            openConnectorsClosed();
-        }
+        openConnectorsClosed();
     }
 
     public ICRogueRoom(List<DiscreteCoordinates > connectorsCoordinates ,
@@ -122,7 +121,6 @@ public abstract class ICRogueRoom extends Area implements Logic {
 
     public abstract DiscreteCoordinates getPlayerSpawnPosition();
 
-    /// Demo2Area implements Playable
 
     @Override
     public boolean begin(Window window, FileSystem fileSystem) {

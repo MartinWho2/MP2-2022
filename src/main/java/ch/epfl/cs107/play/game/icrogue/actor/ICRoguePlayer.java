@@ -7,6 +7,7 @@ import ch.epfl.cs107.play.game.areagame.actor.Interactor;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Key;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Staff;
@@ -39,7 +40,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private ArrayList<Integer> keysCollected = new ArrayList<>();
     private boolean isChangingRoom = false;
     private Connector currentConnector;
-
+    private final static int TRIGGER_MOVE_MAX = 4;
+    private int triggerMove;
 
     /**
      * Demo actor
@@ -63,6 +65,13 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         resetMotion();
         handler = new InteractionHandler();
         sprite = orientationToSprite.get(orientation);
+    }
+
+    @Override
+    public void enterArea(Area area, DiscreteCoordinates position) {
+        super.enterArea(area, position);
+        ICRogueRoom room = (ICRogueRoom) getOwnerArea();
+        room.playerEnters();
     }
 
     /**
@@ -118,7 +127,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 triggerMove++;
                 orientate(orientation);
                 sprite = orientationToSprite.get(orientation);
-                move(MOVE_DURATION);
+                if (triggerMove >= TRIGGER_MOVE_MAX){
+                    move(MOVE_DURATION);
+
+                }
             }
         }
     }
@@ -223,6 +235,13 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 currentConnector = connector;
                 connector.setDestinationCoord(Connector.getSpawnPositionWithEnterCoordinates(getCurrentMainCellCoordinates()));
                 isChangingRoom = true;
+            }
+        }
+
+        @Override
+        public void interactWith(Turret turret, boolean isCellInteraction) {
+            if (isCellInteraction){
+                turret.die();
             }
         }
     }

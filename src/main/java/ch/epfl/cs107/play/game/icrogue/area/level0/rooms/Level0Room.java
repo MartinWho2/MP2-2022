@@ -44,12 +44,12 @@ public class Level0Room extends ICRogueRoom {
 
     @Override
     public boolean isOff() {
-        return !hasPlayerEntered;
+        return !challengeSucceeded;
     }
 
     @Override
     public float getIntensity() {
-        return hasPlayerEntered? 1.f : 0.f;
+        return challengeSucceeded? 1.f : 0.f;
     }
 
     public enum Level0Connectors implements ConnectorInRoom {

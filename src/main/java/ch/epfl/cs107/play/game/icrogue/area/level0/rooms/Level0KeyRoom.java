@@ -16,13 +16,9 @@ public class Level0KeyRoom extends Level0ItemRoom{
     }
 
     @Override
-    public boolean begin(Window window, FileSystem fileSystem) {
-        if (super.begin(window, fileSystem)){
-            Key key = new Key(this, Orientation.DOWN, new DiscreteCoordinates(2, 2), KEY_ID);
-            items.add(key);
-
-            return true;
-        }
-        return false;
+    protected void createArea() {
+        super.createArea();
+        Key key = new Key(this, Orientation.DOWN, new DiscreteCoordinates(2, 2), KEY_ID);
+        items.add(key);
     }
 }

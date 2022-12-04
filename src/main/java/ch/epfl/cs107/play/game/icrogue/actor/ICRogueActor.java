@@ -40,8 +40,6 @@ public abstract class ICRogueActor extends MovableAreaEntity {
      */
     public void enterArea(Area area, DiscreteCoordinates position) {
         area.registerActor(this);
-        ICRogueRoom room = (ICRogueRoom) area;
-        room.playerEnters();
         setOwnerArea(area);
         setCurrentPosition(position.toVector());
         resetMotion();

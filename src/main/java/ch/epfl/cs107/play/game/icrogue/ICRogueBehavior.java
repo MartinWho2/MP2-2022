@@ -8,6 +8,8 @@ import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Window;
 
+import java.util.ArrayList;
+
 public class ICRogueBehavior extends AreaBehavior{
     public enum ICRogueCellType{
         //https://stackoverflow.com/questions/25761438/understanding-bufferedimage-getrgb-output-values
@@ -58,7 +60,7 @@ public class ICRogueBehavior extends AreaBehavior{
     public class ICRogueCell extends AreaBehavior.Cell {
         /// Type of the cell following the enum
         private final ICRogueBehavior.ICRogueCellType type;
-        private Interactable entityOnTile;
+        private ArrayList<Interactable> entitiesOnTile;
 
         /**
          * Default Tuto2Cell Constructor
@@ -69,6 +71,7 @@ public class ICRogueBehavior extends AreaBehavior{
         public  ICRogueCell(int x, int y, ICRogueBehavior.ICRogueCellType type){
             super(x, y);
             this.type = type;
+            entitiesOnTile = new ArrayList<>();
         }
 
         public ICRogueCellType getType() {
@@ -78,7 +81,7 @@ public class ICRogueBehavior extends AreaBehavior{
 
         @Override
         protected boolean canLeave(Interactable entity) {
-            entityOnTile = null;
+            entitiesOnTile.remove(entity);
             return true;
         }
 
@@ -95,6 +98,7 @@ public class ICRogueBehavior extends AreaBehavior{
             }
             return type.isWalkable;
         }
+
         @Override
         public boolean isCellInteractable() {
             return true;

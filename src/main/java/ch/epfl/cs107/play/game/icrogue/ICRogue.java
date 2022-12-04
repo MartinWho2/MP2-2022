@@ -43,15 +43,14 @@ public class ICRogue extends AreaGame{
     }
     public void setCurrentAreaOfLevel(ICRogueRoom currentArea){
         this.currentArea = currentArea;
-        setCurrentArea(currentArea.getTitle(),true);
-        System.out.println(currentArea instanceof Level0KeyRoom);
+        setCurrentArea(currentArea.getTitle(),!currentArea.getHasPlayerEntered());
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
         Keyboard keyboard = currentArea.getKeyboard();
-        if (keyboard.get(Keyboard.R).isPressed()){
+        if (keyboard.get(Keyboard.R).isPressed() || player.isWeak()){
             initLevel();
         }
         if (player.getIsChangingRoom()){

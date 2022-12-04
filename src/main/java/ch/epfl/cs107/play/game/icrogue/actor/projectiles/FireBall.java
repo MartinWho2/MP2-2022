@@ -6,9 +6,8 @@ import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
-import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
-import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
-import ch.epfl.cs107.play.game.icrogue.actor.items.Staff;
+import ch.epfl.cs107.play.game.icrogue.actor.Connector;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
@@ -46,11 +45,6 @@ public class FireBall extends Projectiles {
         super.consume();
         getOwnerArea().unregisterActor(this);
     }
-
-    @Override
-    public boolean isConsumed() {
-        return false;
-    }
     @Override
     public void interactWith(Interactable other, boolean isCellInteraction) {
         other.acceptInteraction(handler , isCellInteraction);
@@ -65,10 +59,24 @@ public class FireBall extends Projectiles {
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(ICRogueBehavior.ICRogueCell cell, boolean isCellInteraction) {
-            if (cell.getType() == ICRogueBehavior.ICRogueCellType.WALL || cell.getType() == ICRogueBehavior.ICRogueCellType.HOLE) {
+            if (cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL) ||
+                    (cell.getType().equals(ICRogueBehavior.ICRogueCellType.HOLE) && isCellInteraction)) {
                 consume();
             }
 
+        }
+        public void interactWith(Connector connector, boolean isCellInteraction){
+            if (!connector.getState().equals(Connector.ConnectorType.OPEN)){
+                consume();
+            }
+        }
+
+        @Override
+        public void interactWith(Turret turret, boolean isCellInteraction) {
+            if (!isCellInteraction){
+                turret.die();
+                consume();
+            }
         }
     }
 
