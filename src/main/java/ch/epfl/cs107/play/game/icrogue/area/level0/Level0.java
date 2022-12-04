@@ -8,6 +8,7 @@ import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0Room;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0StaffRoom;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0TurretRoom;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.signal.logic.Logic;
 
 public class Level0 extends Level {
     private final int PART_1_KEY_ID = 1;

@@ -4,16 +4,18 @@ package ch.epfl.cs107.play.game.icrogue.area;
 import ch.epfl.cs107.play.game.icrogue.ICRogue;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.signal.logic.Logic;
 
 import java.util.ArrayList;
 
-public abstract class Level {
+public abstract class Level implements Logic {
     protected ICRogueRoom[][] wholeMap;
     private final int WIDTH;
     private final int HEIGHT;
     private DiscreteCoordinates spawnCoordinates;
     private DiscreteCoordinates bossCoordinates;
     private String firstRoomName;
+
 
     protected void setRoom(DiscreteCoordinates coordinates, ICRogueRoom room){
         wholeMap[coordinates.x][coordinates.y] = room;
@@ -71,8 +73,25 @@ public abstract class Level {
         wholeMap = new ICRogueRoom[WIDTH][HEIGHT];
         spawnCoordinates = coordinates;
         bossCoordinates = new DiscreteCoordinates(0,0);
-
     }
 
+
+    @Override
+    public boolean isOn() {
+        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return wholeMap[bossCoordinates.x][bossCoordinates.y].challengeSucceeded;
+        return false;
+    }
+
+    @Override
+    public boolean isOff() {
+        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return !wholeMap[bossCoordinates.x][bossCoordinates.y].challengeSucceeded;
+        return true;
+    }
+
+    @Override
+    public float getIntensity() {
+        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return wholeMap[bossCoordinates.x][bossCoordinates.y].challengeSucceeded? 1.f : 0.f;
+        return 0.f;
+    }
 
 }

@@ -13,10 +13,12 @@ import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Keyboard;
 import ch.epfl.cs107.play.window.Window;
+import ch.epfl.cs107.play.window.swing.SwingWindow;
+
+import java.awt.event.WindowEvent;
 
 public class ICRogue extends AreaGame{
     public final static float CAMERA_SCALE_FACTOR = 11.f;
-
     Level level0;
     private ICRoguePlayer player;
     private ICRogueRoom currentArea;
@@ -50,17 +52,28 @@ public class ICRogue extends AreaGame{
     public void update(float deltaTime) {
         super.update(deltaTime);
         Keyboard keyboard = currentArea.getKeyboard();
-        if (keyboard.get(Keyboard.R).isPressed() || player.isWeak()){
+        if (keyboard.get(Keyboard.R).isPressed()){
             initLevel();
         }
         if (player.getIsChangingRoom()){
             switchRoom();
+        }
+        if (player.isWeak()) {
+            System.out.println("next level");
+            initLevel();
+        }
+        if (level0.isOn()) {
+            System.out.println("next level");
+            System.out.println("WIN");
+            end();
         }
 
     }
 
     @Override
     public void end() {
+        initLevel();
+
     }
 
     @Override

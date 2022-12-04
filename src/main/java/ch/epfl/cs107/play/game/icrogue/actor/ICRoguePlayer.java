@@ -40,7 +40,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private ArrayList<Integer> keysCollected = new ArrayList<>();
     private boolean isChangingRoom = false;
     private Connector currentConnector;
-    private final static int TRIGGER_MOVE_MAX = 4;
+    private final static int TRIGGER_MOVE_MAX = 3;
     private int triggerMove;
 
     /**
@@ -151,7 +151,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
     public void kill() {
         this.hp--;
-
     }
 
     ///Ghost implements Interactable
@@ -242,6 +241,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         public void interactWith(Turret turret, boolean isCellInteraction) {
             if (isCellInteraction){
                 turret.die();
+                ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+                area.tryToFinishRoom();
             }
         }
     }
