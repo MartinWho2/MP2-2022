@@ -59,12 +59,11 @@ public class ICRogue extends AreaGame{
             switchRoom();
         }
         if (player.isWeak()) {
-            System.out.println("next level");
+            System.out.println("Gameover");
             initLevel();
         }
         if (level0.isOn()) {
-            System.out.println("next level");
-            System.out.println("WIN");
+            System.out.println("Game");
             end();
         }
 
@@ -72,8 +71,7 @@ public class ICRogue extends AreaGame{
 
     @Override
     public void end() {
-        initLevel();
-
+        getWindow().dispose();
     }
 
     @Override
