@@ -1,6 +1,7 @@
 package ch.epfl.cs107.play.game.icrogue.actor.projectiles;
 
 import ch.epfl.cs107.play.game.areagame.Area;
+import ch.epfl.cs107.play.game.areagame.actor.Animation;
 import ch.epfl.cs107.play.game.areagame.actor.Interactable;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
@@ -18,22 +19,32 @@ import ch.epfl.cs107.play.window.Canvas;
 public class FireBall extends Projectiles {
     private Sprite sprite;
     private InteractionHandler handler;
+    private Sprite[] sprites;
+    private Animation animation;
 
     public FireBall(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position, 1, 5);
-        sprite = new Sprite("zelda/fire", 1.f, 1.f, this, new RegionOfInterest(0, 0, 16,16), new Vector(0, 0));
+        sprites = new Sprite[7];
+        for (int i = 0; i < 7; i++) {
+            sprites[i] = new Sprite("zelda/fire", 1.f, 1.f, this,
+                    new RegionOfInterest(16*i, 0, 16,16), new Vector(0, 0));
+        }
+        //sprite = new Sprite("zelda/fire", 1.f, 1.f, this, new RegionOfInterest(0, 0, 16,16), new Vector(0, 0));
+        animation = new Animation(7, sprites);
+        animation.setSpeedFactor(3);
         area.registerActor(this);
         handler = new InteractionHandler();
     }
 
-    /*@Override
+    @Override
     public void update(float deltaTime) {
-        move(super.MOVE_DURATION);
         super.update(deltaTime);
-    }*/
+        animation.update(deltaTime);
+        System.out.println(getOwnerArea());
+    }
     @Override
     public void draw(Canvas canvas) {
-        sprite.draw(canvas);
+        animation.draw(canvas);
     }
 
     @Override
