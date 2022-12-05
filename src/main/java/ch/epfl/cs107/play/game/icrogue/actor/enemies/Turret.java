@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Turret extends Enemy {
     private final List<Orientation> orientations;
-    private final static float COOLDOWN = 2.f;
+    private final static float COOLDOWN = 4.f;
     private float time = 0.f;
 
     public Turret(Area area, List<Orientation> orientations, DiscreteCoordinates position){

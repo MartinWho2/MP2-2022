@@ -11,6 +11,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
+import ch.epfl.cs107.play.game.icrogue.visualEffects.MacronExplosion;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
 import ch.epfl.cs107.play.math.Vector;
@@ -40,7 +41,6 @@ public class FireBall extends Projectiles {
     public void update(float deltaTime) {
         super.update(deltaTime);
         animation.update(deltaTime);
-        System.out.println(getOwnerArea());
     }
     @Override
     public void draw(Canvas canvas) {
@@ -68,18 +68,24 @@ public class FireBall extends Projectiles {
 
     }
 
+    private void explode(DiscreteCoordinates coord){
+        new MacronExplosion(getOwnerArea(), getOrientation(), coord);
+    }
+
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(ICRogueBehavior.ICRogueCell cell, boolean isCellInteraction) {
             if (cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL) ||
                     (cell.getType().equals(ICRogueBehavior.ICRogueCellType.HOLE) && isCellInteraction)) {
                 consume();
+                explode(getCurrentMainCellCoordinates());
             }
 
         }
         public void interactWith(Connector connector, boolean isCellInteraction){
             if (!connector.getState().equals(Connector.ConnectorType.OPEN)){
                 consume();
+                explode(getCurrentMainCellCoordinates());
             }
         }
 
@@ -88,6 +94,7 @@ public class FireBall extends Projectiles {
             if (!isCellInteraction){
                 turret.die();
                 consume();
+                explode(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
                 ICRogueRoom area = (ICRogueRoom) getOwnerArea();
                 area.tryToFinishRoom();
             }
