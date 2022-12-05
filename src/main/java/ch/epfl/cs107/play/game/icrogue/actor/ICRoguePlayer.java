@@ -12,7 +12,6 @@ import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBall;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
-import ch.epfl.cs107.play.math.RegionOfInterest;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
@@ -36,8 +35,14 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private Connector currentConnector;
     private final static int TRIGGER_MOVE_MAX = 3;
     private int triggerMove;
-    private Sprite[][] sprites;
-    private Animation[] animations;
+    private Sprite[][] spritesMove;
+    private Sprite[][] spritesStaff;
+    private Animation[] currentAnimation;
+    private  Animation[] animationsMove;
+    private  Animation[] animationsStaff;
+    private boolean staffAnimationOn;
+    private float shootTimeDiff = 0;
+    private float RELOAD_COOLDOWN = 0.8f;
 
     /**
      * Demo actor
@@ -47,6 +52,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         super(owner, orientation, coordinates);
         this.hp = 1;
         wantsInteraction = false;
+
         message = new TextGraphics(Integer.toString((int)hp), 0.4f, Color.BLUE);
         message.setParent(this);
         message.setAnchor(new Vector(-0.3f, 0.1f));
@@ -62,15 +68,14 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 */
         resetMotion();
         handler = new InteractionHandler();
-        // sprite = orientationToSprite.get(orientation);
-        sprites = new Sprite[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                sprites[i][j] = new Sprite("zelda/player", .75f, 1.5f, this ,
-                        new RegionOfInterest(16*j, 32*((-i+2)%128 < 0 ? 3 : (-i+2)%128) , 16, 32) , new Vector (.15f, -.15f));
-            }
-        }
-        animations = Animation.createAnimations(4, sprites);
+        Orientation[] spriteOrientation = new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT};
+        spritesMove = Sprite.extractSprites("zelda/player", 4, .75f, 1.5f, this, 16, 32, new Vector(.15f, -.15f), spriteOrientation);
+        animationsMove = Animation.createAnimations(4, spritesMove);
+        Orientation[] spriteOrientation2 = new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT};
+        spritesStaff = Sprite.extractSprites("zelda/player.staff_water", 4, 1.5f, 1.5f, this, 32, 32, new Vector(-.25f, -.15f), spriteOrientation2);
+        animationsStaff = Animation.createAnimations(4, spritesStaff, false);
+        staffAnimationOn = false;
+        currentAnimation = animationsMove;
     }
 
     @Override
@@ -97,7 +102,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     @Override
     public void update(float deltaTime) {
         if (isDisplacementOccurs()) {
-            animations[getOrientation().ordinal()].update(deltaTime);
+            animationsMove[getOrientation().ordinal()].update(deltaTime);
         }
 
         Keyboard keyboard= getOwnerArea().getKeyboard();
@@ -107,15 +112,30 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         moveIfPressed(Orientation.RIGHT, keyboard.get(Keyboard.RIGHT));
         moveIfPressed(Orientation.DOWN, keyboard.get(Keyboard.DOWN));
 
+        Animation currentStaffAnimation = animationsStaff[getOrientation().ordinal()];
+        if (staffAnimationOn) {
+
+            currentStaffAnimation.update(deltaTime);
+        }
+        if (currentStaffAnimation.isCompleted()) {
+            staffAnimationOn = false;
+            currentAnimation = animationsMove;
+        }
+
+        shootTimeDiff = (shootTimeDiff < RELOAD_COOLDOWN) ? shootTimeDiff + deltaTime : shootTimeDiff;
         if (keyboard.get(Keyboard.X).isPressed()){
-            if (canShootFireBall) {
+
+            if (canShootFireBall && shootTimeDiff >= RELOAD_COOLDOWN) {
+                currentAnimation = animationsStaff;
+                currentStaffAnimation.reset();
+                shootTimeDiff = 0;
+                staffAnimationOn = true;
                 new FireBall(getOwnerArea(), getOrientation(), getCurrentMainCellCoordinates());
             }
         }
         if (keyboard.get(Keyboard.W).isPressed() || keyboard.get(Keyboard.W).isReleased()){
             wantsInteraction = !wantsInteraction;
         }
-
 
         super.update(deltaTime);
 
@@ -146,7 +166,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
     @Override
     public void draw(Canvas canvas) {
-        animations[getOrientation().ordinal()].draw(canvas);
+        currentAnimation[getOrientation().ordinal()].draw(canvas);
         message.draw(canvas);
     }
 

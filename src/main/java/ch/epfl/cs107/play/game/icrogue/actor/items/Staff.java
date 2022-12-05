@@ -8,6 +8,7 @@ import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
+import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
 public class Staff extends Item {
@@ -16,11 +17,7 @@ public class Staff extends Item {
 
     public Staff(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position, "zelda/staff_water.icon", .5f);
-        sprites = new Sprite[8];
-        for (int i = 0; i < 8; i++) {
-            sprites[i] = new Sprite("zelda/staff",0.5f,0.5f,this,
-                    new RegionOfInterest(32*i, 0, 32, 32));
-        }
+        sprites = Sprite.extractSprites("zelda/staff", 7, 1.f, 1.f, this, new Vector(0, 0), 32, 32);
         animation = new Animation(8, sprites, true);
         animation.setSpeedFactor(2);
     }

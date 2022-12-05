@@ -25,12 +25,7 @@ public class FireBall extends Projectiles {
 
     public FireBall(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position, 1, 5);
-        sprites = new Sprite[7];
-        for (int i = 0; i < 7; i++) {
-            sprites[i] = new Sprite("zelda/fire", 1.f, 1.f, this,
-                    new RegionOfInterest(16*i, 0, 16,16), new Vector(0, 0));
-        }
-        //sprite = new Sprite("zelda/fire", 1.f, 1.f, this, new RegionOfInterest(0, 0, 16,16), new Vector(0, 0));
+        sprites = Sprite.extractSprites("zelda/fire", 7, 1.f, 1.f, this, new Vector(0, 0), 16, 16);
         animation = new Animation(7, sprites);
         animation.setSpeedFactor(3);
         area.registerActor(this);

@@ -17,11 +17,12 @@ public class MacronExplosion extends ICRogueActor {
 
     public MacronExplosion(Area area, Orientation orientation, DiscreteCoordinates coordinates) {
         super(area, orientation, coordinates);
-        sprites = new Sprite[7];
+        /*sprites = new Sprite[7];
         for (int i = 0; i < 7; i++) {
             sprites[i] = new Sprite("zelda/explosion", 2.f, 2.f, this,
                     new RegionOfInterest(32*i, 0, 32,32), new Vector(-.5f, -.5f));
-        }
+        }*/
+        sprites = Sprite.extractSprites("zelda/explosion", 7, 2.f, 2.f, this, new Vector(-.5f, -.5f), 32, 32);
         animation = new Animation(7, sprites, false);
         animation.setSpeedFactor(4);
         enterArea(area, coordinates);
