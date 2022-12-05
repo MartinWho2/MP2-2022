@@ -2,10 +2,7 @@ package ch.epfl.cs107.play.game.icrogue.actor;
 
 import ch.epfl.cs107.play.game.actor.TextGraphics;
 import ch.epfl.cs107.play.game.areagame.Area;
-import ch.epfl.cs107.play.game.areagame.actor.Interactable;
-import ch.epfl.cs107.play.game.areagame.actor.Interactor;
-import ch.epfl.cs107.play.game.areagame.actor.Orientation;
-import ch.epfl.cs107.play.game.areagame.actor.Sprite;
+import ch.epfl.cs107.play.game.areagame.actor.*;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
@@ -20,10 +17,7 @@ import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 public class ICRoguePlayer extends ICRogueActor implements Interactor {
@@ -42,6 +36,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private Connector currentConnector;
     private final static int TRIGGER_MOVE_MAX = 3;
     private int triggerMove;
+    private Sprite[][] sprites;
+    private Animation[] animations;
 
     /**
      * Demo actor
@@ -54,6 +50,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         message = new TextGraphics(Integer.toString((int)hp), 0.4f, Color.BLUE);
         message.setParent(this);
         message.setAnchor(new Vector(-0.3f, 0.1f));
+        /*
         orientationToSprite.put(Orientation.DOWN,new Sprite("zelda/player", .75f, 1.5f, this ,
                 new RegionOfInterest(0, 0, 16, 32) , new Vector (.15f, -.15f)));
         orientationToSprite.put(Orientation.RIGHT,new Sprite("zelda/player", .75f, 1.5f, this ,
@@ -62,9 +59,18 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 new RegionOfInterest(0, 64, 16, 32) , new Vector (.15f, -.15f)));
         orientationToSprite.put(Orientation.LEFT,new Sprite("zelda/player", .75f, 1.5f, this ,
                 new RegionOfInterest(0, 96, 16, 32) , new Vector (.15f, -.15f)));
+                */
         resetMotion();
         handler = new InteractionHandler();
-        sprite = orientationToSprite.get(orientation);
+        // sprite = orientationToSprite.get(orientation);
+        sprites = new Sprite[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                sprites[i][j] = new Sprite("zelda/player", .75f, 1.5f, this ,
+                        new RegionOfInterest(16*j, 32*((-i+2)%128 < 0 ? 3 : (-i+2)%128) , 16, 32) , new Vector (.15f, -.15f));
+            }
+        }
+        animations = Animation.createAnimations(4, sprites);
     }
 
     @Override
@@ -90,6 +96,9 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
     @Override
     public void update(float deltaTime) {
+        if (isDisplacementOccurs()) {
+            animations[getOrientation().ordinal()].update(deltaTime);
+        }
 
         Keyboard keyboard= getOwnerArea().getKeyboard();
 
@@ -137,7 +146,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
     @Override
     public void draw(Canvas canvas) {
-        sprite.draw(canvas);
+        animations[getOrientation().ordinal()].draw(canvas);
         message.draw(canvas);
     }
 
