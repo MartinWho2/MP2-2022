@@ -37,6 +37,35 @@ public class Level0 extends Level {
             setRoomConnector(new DiscreteCoordinates(roomSetting.x, roomSetting.y), destination, findRelativeConnectorPos(room.getRoomCoordinates(), roomSetting));
         }
     }
+    protected void createRoomOfType(int nbOfRoomType, DiscreteCoordinates roomCoord){
+        switch (nbOfRoomType){
+            case 0 ->{
+                setRoom(roomCoord,new Level0TurretRoom(roomCoord));
+            }
+            case 1->{
+                setRoom(roomCoord, new Level0StaffRoom(roomCoord));
+            }
+            case 2->{
+                setRoom(roomCoord, new Level0KeyRoom(roomCoord,BOSS_KEY_ID));
+            }
+            case 3 ->{
+                setRoom(roomCoord, new Level0Room(roomCoord));
+                setFirstRoomName(roomCoord);
+                spawnCoordinates = roomCoord;
+            }
+            case 4->{
+                setRoom(roomCoord, new Level0Room(roomCoord));
+            }
+        }
+    }
+
+
+    protected void setUpBossConnector(List<DiscreteCoordinates> coords) {
+        for (DiscreteCoordinates coord : coords) {
+            wholeMap[coord.x][coord.y].setConnectorLocked(findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), coord).ordinal(), BOSS_KEY_ID);
+        }
+    }
+
     public void generateFixedMap(int methodToUse){
         if (methodToUse== 1){
             generateMap1();
