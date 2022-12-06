@@ -4,13 +4,13 @@ package ch.epfl.cs107.play.game.icrogue.area;
 import ch.epfl.cs107.play.game.icrogue.ICRogue;
 import ch.epfl.cs107.play.game.icrogue.RandomHelper;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
+import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0Room;
+import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0StaffRoom;
+import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0TurretRoom;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.signal.logic.Logic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public abstract class Level implements Logic {
@@ -20,6 +20,7 @@ public abstract class Level implements Logic {
     private DiscreteCoordinates spawnCoordinates;
     private DiscreteCoordinates bossCoordinates;
     private String firstRoomName;
+    private HashMap<Integer,ICRogueRoom> indexRoomToRoom;
 
 
     protected void setRoom(DiscreteCoordinates coordinates, ICRogueRoom room){
@@ -107,7 +108,8 @@ public abstract class Level implements Logic {
                 roomsToPlace--;
             }
             placedRooms.remove(0);
-            //map[currentRoom.x][currentRoom.y] = MapState.EXPLORED;  //TODO ça sert à quoi ça ?
+            map[currentRoom.x][currentRoom.y] = MapState.EXPLORED;  //TODO ça sert à quoi ça ?
+
         }
         List<DiscreteCoordinates> possibleRooms;
         do {
@@ -197,7 +199,35 @@ public abstract class Level implements Logic {
         //WIDTH = nbRooms;
         //HEIGHT = nbRooms;
         MapState[][] mapRooms = generateRandomRoomPlacement();
+        List<DiscreteCoordinates> roomsCoordinates  = getCoordinatesOfRooms(mapRooms);
+        List<Integer> indexesOfRoomsCoordinates = new ArrayList<>();
+        List<Integer> chosenRooms;
+
+
+        for (int i=0; i< roomsCoordinates.size();i++){
+            indexesOfRoomsCoordinates.add(i);
+        }
+        for (int i : roomsDistribution){
+            chosenRooms = RandomHelper.chooseKInList(i,indexesOfRoomsCoordinates);
+            for (Integer index: chosenRooms) {
+                ////////
+
+            }
+        }
     }
+
+    private List<DiscreteCoordinates> getCoordinatesOfRooms(MapState[][] mapRooms) {
+        List<DiscreteCoordinates> roomsCoordinate = new ArrayList<>();
+        for (int i = 0; i < mapRooms.length; i++) {
+            for (int j = 0; j < mapRooms[i].length; j++) {
+                if (mapRooms[i][j].equals(MapState.PLACED) || mapRooms[i][j].equals(MapState.EXPLORED)){
+                    roomsCoordinate.add(new DiscreteCoordinates(i,j));
+                }
+            }
+        }
+        return roomsCoordinate;
+    }
+
     @Override
     public boolean isOn() {
         if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return wholeMap[bossCoordinates.x][bossCoordinates.y].challengeSucceeded;

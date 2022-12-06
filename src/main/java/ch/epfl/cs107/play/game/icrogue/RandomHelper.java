@@ -1,5 +1,7 @@
 package ch.epfl.cs107.play.game.icrogue;
 
+import ch.epfl.cs107.play.math.DiscreteCoordinates;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
