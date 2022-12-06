@@ -1,6 +1,6 @@
 package ch.epfl.cs107.play.game.icrogue.area.level0;
 
-import ch.epfl.cs107.play.game.icrogue.ICRogue;
+import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.area.Level;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0KeyRoom;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0Room;
@@ -8,15 +8,34 @@ import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0StaffRoom;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0TurretRoom;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Level0 extends Level {
     private final int PART_1_KEY_ID = 1;
     private final int BOSS_KEY_ID = 2;
-    public Level0(ICRogue game){
+    public Level0(){
         super(new DiscreteCoordinates(2,2),new DiscreteCoordinates(4,2));
         setFirstRoomName(new DiscreteCoordinates(1,0));
         //generateFixedMap(2);
         generateFinalMap();
-        registerAreas(game);
+    }
+    public Level0(boolean randomMap){
+        super(randomMap,new DiscreteCoordinates(1,0),RoomType.NORMAL.getArrayOfRooms(), 4,2);
+    }
+    public Level0(int TO_TEST_AND_TO_REMOVE){
+        this(true);
+    }
+
+    protected void setUpLevelConnector(MapState[][] map, ICRogueRoom room){
+        List<DiscreteCoordinates> nearbyRooms = findNearbyRooms(map,new DiscreteCoordinates(room.getRoomCoordinates().x,room.getRoomCoordinates().y),MapState.CREATED);
+        for (DiscreteCoordinates roomSetting : nearbyRooms){
+            String destination = room.getTitle();
+
+            destination = destination.substring(0, destination.length()-2) + roomSetting.x + roomSetting.y;
+            System.out.println(destination);
+            setRoomConnector(new DiscreteCoordinates(roomSetting.x, roomSetting.y), destination, findRelativeConnectorPos(room.getRoomCoordinates(), roomSetting));
+        }
     }
     public void generateFixedMap(int methodToUse){
         if (methodToUse== 1){
@@ -26,6 +45,7 @@ public class Level0 extends Level {
             generateMap2();
         }
     }
+
     public void generateFinalMap(){
         generateMap2();
     }
@@ -68,7 +88,22 @@ public class Level0 extends Level {
         setRoomConnector(room11, "icrogue/level010", Level0Room.Level0Connectors.N);
 
     }
-
-
-
+    protected enum RoomType{
+        TURRET (3),
+        STAFF (1),
+        BOSS_KEY (1),
+        SPAWN (1),
+        NORMAL(1);
+        final int roomType;
+        RoomType(int value){
+            this.roomType = value;
+        }
+        public int[] getArrayOfRooms(){
+            List<Integer> array = new ArrayList<>();
+            for (RoomType roomType : RoomType.values()){
+                array.add(roomType.roomType);
+            }
+            return array.stream().mapToInt(i->i).toArray();
+        }
+    }
 }
