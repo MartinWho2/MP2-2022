@@ -52,6 +52,7 @@ public class Level0 extends Level {
                 setRoom(roomCoord, new Level0Room(roomCoord));
                 setFirstRoomName(roomCoord);
                 spawnCoordinates = roomCoord;
+                System.out.println("this is the Spawn "+spawnCoordinates);
             }
             case 4->{
                 setRoom(roomCoord, new Level0Room(roomCoord));

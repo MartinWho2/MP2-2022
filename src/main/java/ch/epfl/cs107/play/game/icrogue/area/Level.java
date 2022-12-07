@@ -4,10 +4,7 @@ package ch.epfl.cs107.play.game.icrogue.area;
 import ch.epfl.cs107.play.game.icrogue.ICRogue;
 import ch.epfl.cs107.play.game.icrogue.RandomHelper;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0KeyRoom;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0Room;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0StaffRoom;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0TurretRoom;
+import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.*;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.signal.logic.Logic;
 
@@ -22,7 +19,7 @@ public abstract class Level implements Logic {
     private int WIDTH;
     private int HEIGHT;
     protected DiscreteCoordinates spawnCoordinates;
-    private DiscreteCoordinates bossCoordinates;
+    protected DiscreteCoordinates bossCoordinates;
     private String firstRoomName;
     private HashMap<Integer,ICRogueRoom> indexRoomToRoom;
     private final int BOSS_KEY_ID = 5;
@@ -100,10 +97,10 @@ public abstract class Level implements Logic {
     }
     private void findPlaceForBoss(MapState[][] map ){
         List<DiscreteCoordinates> possibleRoomsForBoss = new ArrayList<>();
-        for (int i = 0; i < map.length; i++) {
-            for(int j=0; j< map[i].length;j++){
-                if (map[i][j].equals(MapState.PLACED)||map[i][j].equals(MapState.EXPLORED)){
-                    List<DiscreteCoordinates> nearbyRooms = findNearbyRooms(map,new DiscreteCoordinates(i,j),MapState.NULL);
+        for (int x = 0; x < map.length; x++) {
+            for(int y = 0; y < map[x].length; y++){
+                if (map[x][y].equals(MapState.PLACED)||map[x][y].equals(MapState.EXPLORED)){
+                    List<DiscreteCoordinates> nearbyRooms = findNearbyRooms(map,new DiscreteCoordinates(x, y),MapState.NULL);
                     if (nearbyRooms.size() > 0){
                         possibleRoomsForBoss.addAll(nearbyRooms);
                     }
@@ -158,7 +155,7 @@ public abstract class Level implements Logic {
         for ( int i = 0; i < map . length ; i ++) {
             System . out . print (i + " | ");
             for ( int j = 0; j < map [i]. length ; j ++) {
-                System . out . print ( map [i][j] + " ");
+                System . out . print ( map [j][i] + " ");
             }
             System . out . println ();
         }
@@ -203,7 +200,6 @@ public abstract class Level implements Logic {
         spawnCoordinates = coordinates;
         bossCoordinates = new DiscreteCoordinates(0,0);
         NB_ROOMS = 5;
-        //generateRandomRoomPlacement();
     }
     protected Level(boolean randomMap , DiscreteCoordinates startPosition ,
                     int[] roomsDistribution , int width , int height){
@@ -223,7 +219,7 @@ public abstract class Level implements Logic {
     protected void generateRandomMap(int[] roomsDistribution){
         WIDTH = NB_ROOMS;
         HEIGHT = NB_ROOMS;
-        wholeMap = new ICRogueRoom[WIDTH][WIDTH];
+        wholeMap = new ICRogueRoom[WIDTH][HEIGHT];
         List<Integer> indexesOfRoomsCoordinates = new ArrayList<>();
         List<Integer> chosenRooms;
         MapState[][] mapRooms = generateRandomRoomPlacement();
@@ -235,22 +231,22 @@ public abstract class Level implements Logic {
             int nbOfRoomOfType = roomsDistribution[indexOfRoom];
             System.out.println("there are "+nbOfRoomOfType+ " rooms of type "+indexOfRoom);
             chosenRooms = RandomHelper.chooseKInList(nbOfRoomOfType,indexesOfRoomsCoordinates);
-            System.out.println(NB_ROOMS);
-            System.out.println(IntStream.of(roomsDistribution).sum());
-            System.out.println("hello me brisn");
-            for (Integer chosenRoom : chosenRooms) {
-                System.out.println(chosenRoom);
-            }
             for (Integer chosenRoom : chosenRooms) {
                 DiscreteCoordinates roomCoord = roomsCoordinates.get(chosenRoom);
                 createRoomOfType(indexOfRoom, roomCoord);
-                System.out.println(indexesOfRoomsCoordinates.remove(chosenRoom));
-                System.out.println("length "+indexesOfRoomsCoordinates.size());
+                indexesOfRoomsCoordinates.remove(chosenRoom);
                 mapRooms[roomCoord.x][roomCoord.y] = MapState.CREATED;
             }
         }
+        generateBossRoom();
         generateConnectors(mapRooms);
     }
+
+    private void generateBossRoom() {
+        setRoom(bossCoordinates, new Level0BossRoom(bossCoordinates));
+        System.out.println("the boss is at "+bossCoordinates);
+    }
+
     protected void createRoomOfType(int nbOfRoomType, DiscreteCoordinates roomCoord){
         System.out.println("Should really never print.\n\n\nyou die");
     }
