@@ -69,14 +69,12 @@ public class Level0 extends Level {
 
     protected void setUpBossConnector(List<DiscreteCoordinates> coords) {
         for (DiscreteCoordinates coord : coords) {
-
             String destination = wholeMap[bossCoordinates.x][bossCoordinates.y].getTitle();
             Level0Room.Level0Connectors connector = findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates);
             setRoomConnector(new DiscreteCoordinates(coord.x, coord.y), destination, connector);
             System.out.println("boos connector : " + findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates));
             lockRoomConnector(coord, connector, BOSS_KEY_ID);
-            //wholeMap[coord.x][coord.y].setConnectorLocked(connector.ordinal(), BOSS_KEY_ID);
-            //System.out.println();
+            setRoomConnector(bossCoordinates, wholeMap[coord.x][coord.y].getTitle(), findRelativeConnectorPos(bossCoordinates, wholeMap[coord.x][coord.y].getRoomCoordinates()));
         }
     }
 
