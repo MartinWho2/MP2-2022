@@ -258,10 +258,10 @@ public abstract class Level implements Logic {
                 if (wholeMap[i][j] != null && map[i][j].equals(MapState.CREATED)) {
                     setUpLevelConnector(map, wholeMap[i][j]);
                 }
-               if (map[i][j].equals(MapState.BOSS_ROOM)) {
+                if (map[i][j].equals(MapState.BOSS_ROOM)) {
                    List<DiscreteCoordinates> nearbyBossRooms = findNearbyRooms(map,new DiscreteCoordinates(i,j),MapState.CREATED);
                    setUpBossConnector(nearbyBossRooms);
-               }
+                }
             }
         }
     }
@@ -275,6 +275,7 @@ public abstract class Level implements Logic {
     }
 
     public static Level0Room.Level0Connectors findRelativeConnectorPos(DiscreteCoordinates baseRoom, DiscreteCoordinates otherRoom) {
+        System.out.println(otherRoom.x + " " + otherRoom.y);
         if (baseRoom.x < otherRoom.x) {
             return Level0Room.Level0Connectors.E;
         } else if (baseRoom.x == otherRoom.x){

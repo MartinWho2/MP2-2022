@@ -1,5 +1,6 @@
 package ch.epfl.cs107.play.game.icrogue.area.level0;
 
+import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.area.Level;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0KeyRoom;
@@ -33,8 +34,13 @@ public class Level0 extends Level {
             String destination = room.getTitle();
 
             destination = destination.substring(0, destination.length()-2) + roomSetting.x + roomSetting.y;
-            System.out.println(destination);
-            setRoomConnector(new DiscreteCoordinates(roomSetting.x, roomSetting.y), destination, findRelativeConnectorPos(room.getRoomCoordinates(), roomSetting));
+
+            if (room.getRoomCoordinates().x == 4 && room.getRoomCoordinates().y == 4 ) {
+                System.out.println(destination);
+                System.out.println(findRelativeConnectorPos(room.getRoomCoordinates(), roomSetting));
+            }
+            // System.out.println(destination);
+            setRoomConnector(new DiscreteCoordinates(room.getRoomCoordinates().x, room.getRoomCoordinates().y), destination, findRelativeConnectorPos(room.getRoomCoordinates(), roomSetting));
         }
     }
     protected void createRoomOfType(int nbOfRoomType, DiscreteCoordinates roomCoord){
@@ -63,7 +69,14 @@ public class Level0 extends Level {
 
     protected void setUpBossConnector(List<DiscreteCoordinates> coords) {
         for (DiscreteCoordinates coord : coords) {
-            wholeMap[coord.x][coord.y].setConnectorLocked(findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), coord).ordinal(), BOSS_KEY_ID);
+
+            String destination = wholeMap[bossCoordinates.x][bossCoordinates.y].getTitle();
+            Level0Room.Level0Connectors connector = findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates);
+            setRoomConnector(new DiscreteCoordinates(coord.x, coord.y), destination, connector);
+            System.out.println("boos connector : " + findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates));
+            lockRoomConnector(coord, connector, BOSS_KEY_ID);
+            //wholeMap[coord.x][coord.y].setConnectorLocked(connector.ordinal(), BOSS_KEY_ID);
+            //System.out.println();
         }
     }
 
