@@ -46,6 +46,8 @@ public class Connector extends AreaEntity {
                 (orientation.ordinal () +1) %2+1 , orientation . ordinal () %2+1 , this));
         typeToSprite.put(ConnectorType.LOCKED, new Sprite("icrogue/lockedDoor_"+ orientation.ordinal (),
                     (orientation.ordinal () +1) %2+1 , orientation.ordinal () %2+1 , this));
+        typeToSprite.put(ConnectorType.CRACKED, new Sprite("other/forgeronDoor_"+orientation.ordinal(),
+                        (orientation.ordinal()+1)%2+1,orientation.ordinal()%2+1,this));
         typeToSprite.put(ConnectorType.OPEN,null);
         sprite = typeToSprite.get(state);
 
@@ -107,7 +109,8 @@ public class Connector extends AreaEntity {
         OPEN(1, false),
         CLOSED(2, true),
         LOCKED(3, true),
-        INVISIBLE(4, true);
+        INVISIBLE(4, true),
+        CRACKED(5,false);
         final int type;
         final boolean takesSpace;
         ConnectorType(int type, boolean takesSpace) {

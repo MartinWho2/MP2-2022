@@ -18,7 +18,6 @@ public class Level0KeyRoom extends Level0ItemRoom{
     @Override
     protected void createArea() {
         super.createArea();
-        Key key = new Key(this, Orientation.DOWN, new DiscreteCoordinates(2, 2), KEY_ID);
-        items.add(key);
+        items.add(new Key(this, Orientation.DOWN, new DiscreteCoordinates(2, 2), KEY_ID));
     }
 }

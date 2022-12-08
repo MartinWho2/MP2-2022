@@ -18,7 +18,6 @@ import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
 public class FireBall extends Projectiles {
-    private Sprite sprite;
     private InteractionHandler handler;
     private Sprite[] sprites;
     private Animation animation;

@@ -45,6 +45,7 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
     private void setDamage(int damage) {
         this.damage = damage;
     }
+
     public void consume() {
         isConsumed = true;
     }

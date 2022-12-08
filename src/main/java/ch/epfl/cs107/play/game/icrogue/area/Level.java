@@ -3,7 +3,6 @@ package ch.epfl.cs107.play.game.icrogue.area;
 
 import ch.epfl.cs107.play.game.icrogue.ICRogue;
 import ch.epfl.cs107.play.game.icrogue.RandomHelper;
-import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.*;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.signal.logic.Logic;
@@ -39,14 +38,13 @@ public abstract class Level implements Logic {
     protected void setRoomConnector(DiscreteCoordinates coords, String destination,
                                  ConnectorInRoom connector){
         wholeMap[coords.x][coords.y].setConnectorDestination(connector.getIndex(),destination);
-        wholeMap[coords.x][coords.y].setConnectorClosed(connector.getIndex(), Connector.ConnectorType.CLOSED);
+        wholeMap[coords.x][coords.y].setConnectorClosed(connector.getIndex());
     }
     protected void setRoomConnectorOpen(DiscreteCoordinates coords, String destination, ConnectorInRoom connector) {
         wholeMap[coords.x][coords.y].setConnectorDestination(connector.getIndex(),destination);
         wholeMap[coords.x][coords.y].setConnectorOpen(connector.getIndex());
     }
     protected void lockRoomConnector(DiscreteCoordinates coords, ConnectorInRoom connector, int keyId){
-        wholeMap[coords.x][coords.y].setConnectorClosed(connector.getIndex(), Connector.ConnectorType.LOCKED);
         wholeMap[coords.x][coords.y].setConnectorLocked(connector.getIndex(), keyId);
     }
     protected void setFirstRoomName(DiscreteCoordinates coordinates){
@@ -63,14 +61,14 @@ public abstract class Level implements Logic {
     */
     protected MapState[][] generateRandomRoomPlacement(){
         MapState[][] map = new MapState[WIDTH][HEIGHT];
-        int roomsToPlace = WIDTH;
+        int roomsToPlace = NB_ROOMS;
         ArrayList<DiscreteCoordinates> placedRooms = new ArrayList<>();
         for (MapState[] mapStates : map) {
             Arrays.fill(mapStates, MapState.NULL);
         }
         map[WIDTH/2][HEIGHT/2] = MapState.PLACED;
         placedRooms.add(new DiscreteCoordinates(WIDTH/2,HEIGHT/2));
-        DiscreteCoordinates currentRoom = new DiscreteCoordinates(0,0);
+        DiscreteCoordinates currentRoom;
         roomsToPlace--;
         while (roomsToPlace > 0) {
             currentRoom = placedRooms.get(0);

@@ -63,9 +63,11 @@ public abstract class ICRogueRoom extends Area implements Logic {
     public DiscreteCoordinates getSpawnPosition(ConnectorInRoom connector) {
         return connector.getDestination();
     }
-
-    public void setConnectorClosed(int connectorIndex, Connector.ConnectorType wantedConnectorState){
-        connectors.get(connectorIndex).setState(wantedConnectorState);
+    public void setConnectorsCracked(int connectorIndex){
+        connectors.get(connectorIndex).setState(Connector.ConnectorType.CRACKED);
+    }
+    public void setConnectorClosed(int connectorIndex){
+        connectors.get(connectorIndex).setState(Connector.ConnectorType.CLOSED);
     }
     public void openConnectorsClosed(){
         for (Connector connector : connectors){
@@ -88,6 +90,7 @@ public abstract class ICRogueRoom extends Area implements Logic {
         connectors.get(connectorIndex).setState(Connector.ConnectorType.OPEN);
     }
     public void setConnectorLocked(int connectorIndex, int key_id){
+        connectors.get(connectorIndex).setState(Connector.ConnectorType.LOCKED);
         connectors.get(connectorIndex).setKEY_ID(key_id);
     }
     public void setConnectorOpen(Connector connector){

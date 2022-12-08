@@ -4,10 +4,7 @@ import ch.epfl.cs107.play.game.icrogue.RandomHelper;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.area.Level;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0KeyRoom;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0Room;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0StaffRoom;
-import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.Level0TurretRoom;
+import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.*;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 import java.util.ArrayList;
@@ -46,24 +43,17 @@ public class Level0 extends Level {
     }
     protected void createRoomOfType(int nbOfRoomType, DiscreteCoordinates roomCoord){
         switch (nbOfRoomType){
-            case 0 ->{
-                setRoom(roomCoord,new Level0TurretRoom(roomCoord));
-            }
-            case 1->{
-                setRoom(roomCoord, new Level0StaffRoom(roomCoord));
-            }
-            case 2->{
-                setRoom(roomCoord, new Level0KeyRoom(roomCoord,BOSS_KEY_ID));
-            }
+            case 0 -> setRoom(roomCoord,new Level0TurretRoom(roomCoord));
+            case 1-> setRoom(roomCoord, new Level0StaffRoom(roomCoord));
+            case 2-> setRoom(roomCoord, new Level0KeyRoom(roomCoord,BOSS_KEY_ID));
             case 3 ->{
                 setRoom(roomCoord, new Level0Room(roomCoord));
                 setFirstRoomName(roomCoord);
                 spawnCoordinates = roomCoord;
                 System.out.println("this is the Spawn "+spawnCoordinates);
             }
-            case 4->{
-                setRoom(roomCoord, new Level0Room(roomCoord));
-            }
+            case 4-> setRoom(roomCoord, new Level0Room(roomCoord));
+            case 5 -> setRoom(roomCoord, new Level0BombRoom(roomCoord));
         }
     }
 
@@ -143,11 +133,12 @@ public class Level0 extends Level {
 
     }
     protected enum RoomType{
-        TURRET (3),
+        TURRET (0),
         STAFF (1),
         BOSS_KEY (1),
         SPAWN (1),
-        NORMAL(1);
+        NORMAL(1),
+        BOMB(1);
         final int roomType;
         RoomType(int value){
             this.roomType = value;

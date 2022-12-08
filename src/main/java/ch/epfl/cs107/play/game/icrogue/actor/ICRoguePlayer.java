@@ -211,10 +211,13 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     public List<DiscreteCoordinates> getCurrentCells() {
         return Collections.singletonList(getCurrentMainCellCoordinates());
     }
-
-    public Connector getCurrentConnector() {
-        return currentConnector;
+    public DiscreteCoordinates getNewSpawnPosition(){
+        return currentConnector.getDestinationCoord();
     }
+    public String getNewRoomName(){
+        return currentConnector.getDestinationRoom();
+    }
+
 
     public List<DiscreteCoordinates> getFieldOfViewCells() {
         return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
