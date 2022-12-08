@@ -1,5 +1,6 @@
 package ch.epfl.cs107.play.game.icrogue.area.level0;
 
+import ch.epfl.cs107.play.game.icrogue.RandomHelper;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.area.Level;
@@ -66,7 +67,7 @@ public class Level0 extends Level {
         }
     }
 
-
+    @Override
     protected void setUpBossConnector(List<DiscreteCoordinates> coords) {
         for (DiscreteCoordinates coord : coords) {
             String destination = wholeMap[bossCoordinates.x][bossCoordinates.y].getTitle();
@@ -76,6 +77,18 @@ public class Level0 extends Level {
             lockRoomConnector(coord, connector, BOSS_KEY_ID);
             setRoomConnector(bossCoordinates, wholeMap[coord.x][coord.y].getTitle(), findRelativeConnectorPos(bossCoordinates, wholeMap[coord.x][coord.y].getRoomCoordinates()));
         }
+    }
+
+    @Override
+    protected void setUpForgeronConnector(List<DiscreteCoordinates> coords) {
+        DiscreteCoordinates coord = coords.get(RandomHelper.roomGenerator.nextInt(0, coords.size()));
+        String destination = wholeMap[forgeronCoordinates.x][forgeronCoordinates.y].getTitle();
+        Level0Room.Level0Connectors connector = findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), forgeronCoordinates);
+        setRoomConnector(new DiscreteCoordinates(coord.x, coord.y), destination, connector);
+        System.out.println("connector forgeron " + coord);
+        wholeMap[coord.x][coord.y].setConnectorsCracked(connector.getIndex());
+        setRoomConnector(forgeronCoordinates, wholeMap[coord.x][coord.y].getTitle(), findRelativeConnectorPos(forgeronCoordinates, wholeMap[coord.x][coord.y].getRoomCoordinates()));
+
     }
 
     public void generateFixedMap(int methodToUse){

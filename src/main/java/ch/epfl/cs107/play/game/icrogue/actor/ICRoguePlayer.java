@@ -4,10 +4,9 @@ import ch.epfl.cs107.play.game.actor.TextGraphics;
 import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.*;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
+import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
-import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
-import ch.epfl.cs107.play.game.icrogue.actor.items.Key;
-import ch.epfl.cs107.play.game.icrogue.actor.items.Staff;
+import ch.epfl.cs107.play.game.icrogue.actor.items.*;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBall;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
@@ -29,6 +28,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private InteractionHandler handler;
     private boolean wantsInteraction;
     private boolean canShootFireBall = false;
+    private boolean hasBomb = false;
+    private boolean canPlaceBomb = false;
     private HashMap<Orientation,Sprite> orientationToSprite = new HashMap<>();
     private ArrayList<Integer> keysCollected = new ArrayList<>();
     private boolean isChangingRoom = false;
@@ -43,6 +44,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private boolean staffAnimationOn;
     private float shootTimeDiff = 0;
     private float RELOAD_COOLDOWN = 0.8f;
+    private ArrayList<Item> items;
 
     /**
      * Demo actor
@@ -76,6 +78,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         animationsStaff = Animation.createAnimations(4, spritesStaff, false);
         staffAnimationOn = false;
         currentAnimation = animationsMove;
+        items = new ArrayList<>();
     }
 
     @Override
@@ -133,9 +136,15 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 new FireBall(getOwnerArea(), getOrientation(), getCurrentMainCellCoordinates());
             }
         }
-        if (keyboard.get(Keyboard.W).isPressed() || keyboard.get(Keyboard.W).isReleased()){
+        if ((keyboard.get(Keyboard.C).isPressed() || keyboard.get(Keyboard.C).isReleased()) && hasBomb){
+            canPlaceBomb = !canPlaceBomb;
+        }
+        if (!hasBomb) canPlaceBomb = false;
+        if (keyboard.get(Keyboard.W).isPressed() || keyboard.get(Keyboard.W).isReleased() || canPlaceBomb ){
             wantsInteraction = !wantsInteraction;
         }
+
+
 
         super.update(deltaTime);
 
@@ -212,7 +221,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     }
 
 
-
     public boolean wantsCellInteraction() {
         return true;
     }
@@ -272,6 +280,46 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 turret.die();
                 ICRogueRoom area = (ICRogueRoom) getOwnerArea();
                 area.tryToFinishRoom();
+            }
+        }
+
+        @Override
+        public void interactWith(Bomb bomb, boolean isCellInteraction) {
+
+                if (!bomb.isPlaced()) {
+                    bomb.collect();
+                    hasBomb = true;
+                    items.add(bomb);
+                    ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+                    area.tryToFinishRoom();
+                }
+
+        }
+
+        @Override
+        public void interactWith(ICRogueBehavior.ICRogueCell cell, boolean isCellInteraction) {
+            if (!isCellInteraction && cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL)) System.out.println("view interact");
+            if (canPlaceBomb) {
+                if (items.size() > 0) {
+                    Bomb bomb = (Bomb) items.get(0);
+
+                    if (!isCellInteraction && cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL) || cell.getType().equals(ICRogueBehavior.ICRogueCellType.HOLE)) {
+                        bomb.placeBomb(getCurrentMainCellCoordinates(), getOwnerArea());
+                        bomb.setCollected(false);
+                        System.out.println("view interact 1");
+                        items.remove(bomb);
+                        canPlaceBomb = false;
+                    } else if (!isCellInteraction){
+                        bomb.placeBomb(getCurrentMainCellCoordinates().jump(getOrientation().toVector()), getOwnerArea());
+                        bomb.setCollected(false);
+                        System.out.println("view interact 2");
+                        items.remove(bomb);
+                        canPlaceBomb = false;
+                    }
+
+
+                }
+
             }
         }
     }

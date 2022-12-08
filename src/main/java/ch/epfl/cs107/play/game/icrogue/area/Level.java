@@ -20,6 +20,7 @@ public abstract class Level implements Logic {
     private int HEIGHT;
     protected DiscreteCoordinates spawnCoordinates;
     protected DiscreteCoordinates bossCoordinates;
+    protected DiscreteCoordinates forgeronCoordinates;
     private String firstRoomName;
     private HashMap<Integer,ICRogueRoom> indexRoomToRoom;
     private final int BOSS_KEY_ID = 5;
@@ -91,26 +92,37 @@ public abstract class Level implements Logic {
             List<Integer> newRooms = RandomHelper.chooseKInList(RandomHelper.roomGenerator.nextInt(1, maxRoomsToAdd+1), freeSlots);
             roomsToPlace = initNewRooms(map,currentRoom,newRooms, placedRooms, roomsToPlace);
         }
-        findPlaceForBoss(map);
+        List<DiscreteCoordinates> possibleRooms = findPlaceForSpecialRooms(map);
+        findPlaceForBoss(map, possibleRooms);
+        findPLaceForForgeron(map, possibleRooms);
         printMap(map);
         return map;
     }
-    private void findPlaceForBoss(MapState[][] map ){
-        List<DiscreteCoordinates> possibleRoomsForBoss = new ArrayList<>();
+    private void findPlaceForBoss(MapState[][] map, List<DiscreteCoordinates> possibleRooms){
+        int index = RandomHelper.roomGenerator.nextInt(0,possibleRooms.size());
+        map[possibleRooms.get(index).x][possibleRooms.get(index).y] = MapState.BOSS_ROOM;
+        bossCoordinates = possibleRooms.get(index);
+        possibleRooms.remove(bossCoordinates);
+    }
+    public List<DiscreteCoordinates> findPlaceForSpecialRooms(MapState[][] map) {
+        List<DiscreteCoordinates> possibleRooms = new ArrayList<>();
         for (int x = 0; x < map.length; x++) {
             for(int y = 0; y < map[x].length; y++){
                 if (map[x][y].equals(MapState.PLACED)||map[x][y].equals(MapState.EXPLORED)){
                     List<DiscreteCoordinates> nearbyRooms = findNearbyRooms(map,new DiscreteCoordinates(x, y),MapState.NULL);
                     if (nearbyRooms.size() > 0){
-                        possibleRoomsForBoss.addAll(nearbyRooms);
+                        possibleRooms.addAll(nearbyRooms);
                     }
                 }
             }
         }
-        int index = RandomHelper.roomGenerator.nextInt(0,possibleRoomsForBoss.size());
-        map[possibleRoomsForBoss.get(index).x][possibleRoomsForBoss.get(index).y] = MapState.BOSS_ROOM;
-        bossCoordinates = possibleRoomsForBoss.get(index);
-
+        return possibleRooms;
+    }
+    private void findPLaceForForgeron(MapState[][] map, List<DiscreteCoordinates> possibleRooms) {
+        int index = RandomHelper.roomGenerator.nextInt(0,possibleRooms.size());
+        map[possibleRooms.get(index).x][possibleRooms.get(index).y] = MapState.FORGERON_ROOM;
+        forgeronCoordinates = possibleRooms.get(index);
+        possibleRooms.remove(index);
     }
     private int initNewRooms(MapState[][] map, DiscreteCoordinates currentRoom,List<Integer> newRooms,
                               List<DiscreteCoordinates> placedRooms, int roomsToPlace){
@@ -239,12 +251,17 @@ public abstract class Level implements Logic {
             }
         }
         generateBossRoom();
+        generateForgeronRoom();
         generateConnectors(mapRooms);
     }
 
     private void generateBossRoom() {
         setRoom(bossCoordinates, new Level0BossRoom(bossCoordinates));
         System.out.println("the boss is at "+bossCoordinates);
+    }
+
+    private void generateForgeronRoom() {
+        setRoom(forgeronCoordinates, new Level0ForgeronRoom(forgeronCoordinates));
     }
 
     protected void createRoomOfType(int nbOfRoomType, DiscreteCoordinates roomCoord){
@@ -259,19 +276,28 @@ public abstract class Level implements Logic {
                     setUpLevelConnector(map, wholeMap[i][j]);
                 }
                 if (map[i][j].equals(MapState.BOSS_ROOM)) {
-                   List<DiscreteCoordinates> nearbyBossRooms = findNearbyRooms(map,new DiscreteCoordinates(i,j),MapState.CREATED);
-                   setUpBossConnector(nearbyBossRooms);
+                   List<DiscreteCoordinates> adjacentBossRooms = findNearbyRooms(map,new DiscreteCoordinates(i,j),MapState.CREATED);
+                   setUpBossConnector(adjacentBossRooms);
+                }
+                if (map[i][j].equals(MapState.FORGERON_ROOM)) {
+                    System.out.println("setting");
+                    List<DiscreteCoordinates> adjacentForgeronRooms = findNearbyRooms(map,new DiscreteCoordinates(i,j),MapState.CREATED);
+                    setUpForgeronConnector(adjacentForgeronRooms);
                 }
             }
         }
     }
 
     protected void setUpBossConnector(List<DiscreteCoordinates> coords) {
-        //TODO compléter dans les méthode dérivé
+        //TODO compléter dans les méthodes des sous-classes
     }
 
     protected void setUpLevelConnector(MapState[][] roomsPlacement, ICRogueRoom room) {
         //TODO C'est vide
+    }
+
+    protected void setUpForgeronConnector(List<DiscreteCoordinates> coords) {
+        //TODO compléter dans les méthodes des sous-classes
     }
 
     public static Level0Room.Level0Connectors findRelativeConnectorPos(DiscreteCoordinates baseRoom, DiscreteCoordinates otherRoom) {
@@ -279,7 +305,7 @@ public abstract class Level implements Logic {
         if (baseRoom.x < otherRoom.x) {
             return Level0Room.Level0Connectors.E;
         } else if (baseRoom.x == otherRoom.x){
-            if (baseRoom.y < otherRoom.y) {
+            if (baseRoom.y > otherRoom.y) { //start ing
                 return Level0Room.Level0Connectors.N;
             } else {
                 return Level0Room.Level0Connectors.S;
@@ -323,6 +349,7 @@ public abstract class Level implements Logic {
         PLACED , // The room has been placed but not yet explored by the room placement algorithm
         EXPLORED , // The room has been placed are explored by the algorithm
         BOSS_ROOM , // The room is a boss room
+        FORGERON_ROOM, //
         CREATED; // The room has been instantiated in the room map
         @Override
         public String toString() {

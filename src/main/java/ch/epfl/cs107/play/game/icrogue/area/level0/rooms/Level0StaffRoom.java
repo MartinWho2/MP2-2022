@@ -19,10 +19,7 @@ public class Level0StaffRoom extends Level0ItemRoom{
     @Override
     protected void createArea() {
         super.createArea();
-        Staff staff = new Staff(this, Orientation.DOWN, new DiscreteCoordinates(2, 3));
-        items.add(staff);
-        Staff staff1 = new Staff(this, Orientation.DOWN, new DiscreteCoordinates(2, 4));
-        items.add(staff1);
+        items.add(new Staff(this, Orientation.DOWN, new DiscreteCoordinates(5, 5)));
     }
 
 }
