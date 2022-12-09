@@ -21,9 +21,8 @@ public class Bomb extends Item implements Interactor {
     private boolean isPlaced = false;
     private boolean placing = false;
 
-    public Bomb(Area area, Orientation orientation, DiscreteCoordinates position, String spriteName, float size){
-        super(area, orientation, position, spriteName, size);
-        sprite = new Sprite(spriteName, size, size, this);
+    public Bomb(Area area, Orientation orientation, DiscreteCoordinates position){
+        super(area, orientation, position, "other/bomb", 0.6f);
         handler = new InteractionHandler();
     }
 
@@ -82,11 +81,16 @@ public class Bomb extends Item implements Interactor {
         public void interactWith(Connector connector, boolean isCellInteraction) {
             if (isPlaced) {
                 if (connector.getState().equals(Connector.ConnectorType.CRACKED)) {
-                    connector.setState(Connector.ConnectorType.OPEN);
+                     connector.setState(Connector.ConnectorType.OPEN);
                 }
-
             }
         }
 
+        @Override
+        public void interactWith(ICRoguePlayer player, boolean isCellInteraction) {
+            if (isPlaced && exploded) {
+                player.kill();
+            }
+        }
     }
 }

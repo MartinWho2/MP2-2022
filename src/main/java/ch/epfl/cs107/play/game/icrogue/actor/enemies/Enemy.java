@@ -4,6 +4,7 @@ import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRogueActor;
+import ch.epfl.cs107.play.game.icrogue.actor.items.Bomb;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
@@ -22,8 +23,13 @@ public abstract class Enemy extends ICRogueActor {
         return isAlive;
     }
     public void die(){
+        if (Math.random() > 0){
+            getOwnerArea().registerActor(new Bomb(getOwnerArea(),Orientation.DOWN,getCurrentMainCellCoordinates()));
+
+        }
         leaveArea();
         isAlive = false;
+
     }
     @Override
     public void draw(Canvas canvas) {

@@ -11,13 +11,11 @@ import java.util.Collections;
 import java.util.List;
 
 abstract public class Item extends CollectableAreaEntity{
-    private boolean isCollected;
     Sprite sprite;
     public Item(Area area, Orientation orientation, DiscreteCoordinates position, String spriteName, float size){
         super(area, orientation, position);
         sprite = new Sprite(spriteName,size,size,this);
         area.registerActor(this);
-        isCollected = false;
     }
 
 
@@ -26,9 +24,6 @@ abstract public class Item extends CollectableAreaEntity{
         return Collections.singletonList(getCurrentMainCellCoordinates());
     }
 
-    public void setCollected(boolean collected) {
-        isCollected = collected;
-    }
 
     @Override
     public boolean takeCellSpace() {

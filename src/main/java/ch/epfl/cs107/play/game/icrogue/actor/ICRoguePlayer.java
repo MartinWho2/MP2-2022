@@ -1,5 +1,6 @@
 package ch.epfl.cs107.play.game.icrogue.actor;
 
+import ch.epfl.cs107.play.game.actor.ImageGraphics;
 import ch.epfl.cs107.play.game.actor.TextGraphics;
 import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.*;
@@ -15,7 +16,10 @@ import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
 import java.awt.Color;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class ICRoguePlayer extends ICRogueActor implements Interactor {
@@ -44,7 +48,9 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private boolean staffAnimationOn;
     private float shootTimeDiff = 0;
     private float RELOAD_COOLDOWN = 0.8f;
-    private ArrayList<Item> items;
+    private ArrayList<Item> bombList;
+    private ImageGraphics bombAttached;
+    private TextGraphics nbrBombs;
 
     /**
      * Demo actor
@@ -78,7 +84,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         animationsStaff = Animation.createAnimations(4, spritesStaff, false);
         staffAnimationOn = false;
         currentAnimation = animationsMove;
-        items = new ArrayList<>();
+
     }
 
     @Override
@@ -133,7 +139,13 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 currentStaffAnimation.reset();
                 shootTimeDiff = 0;
                 staffAnimationOn = true;
-                new FireBall(getOwnerArea(), getOrientation(), getCurrentMainCellCoordinates());
+                DiscreteCoordinates fireBallSpawn;
+                if (isDisplacementOccurs()) {
+                    fireBallSpawn = getCurrentMainCellCoordinates().jump(getOrientation().toVector());
+                } else {
+                    fireBallSpawn = getCurrentMainCellCoordinates();
+                }
+                new FireBall(getOwnerArea(), getOrientation(), fireBallSpawn);
             }
         }
         if ((keyboard.get(Keyboard.C).isPressed() || keyboard.get(Keyboard.C).isReleased()) && hasBomb){
@@ -177,6 +189,11 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     public void draw(Canvas canvas) {
         currentAnimation[getOrientation().ordinal()].draw(canvas);
         message.draw(canvas);
+
+        if (bombList.size() > 0){
+            bombAttached.draw(canvas);
+            nbrBombs.draw(canvas);
+        }
     }
 
     public boolean isWeak() {
@@ -245,9 +262,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(Staff staff, boolean isCellInteraction) {
+            ICRogueRoom area = (ICRogueRoom) getOwnerArea();
             staff.collect();
             canShootFireBall = true;
-            ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+
             area.tryToFinishRoom();
             }
         @Override
@@ -285,6 +303,9 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 area.tryToFinishRoom();
             }
         }
+        private void updateBombText(){
+            nbrBombs.setText(Integer.toString(bombList.size()));
+        }
 
         @Override
         public void interactWith(Bomb bomb, boolean isCellInteraction) {
@@ -292,7 +313,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 if (!bomb.isPlaced()) {
                     bomb.collect();
                     hasBomb = true;
-                    items.add(bomb);
+                    bombList.add(bomb);
+                    updateBombText();
                     ICRogueRoom area = (ICRogueRoom) getOwnerArea();
                     area.tryToFinishRoom();
                 }
@@ -303,8 +325,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         public void interactWith(ICRogueBehavior.ICRogueCell cell, boolean isCellInteraction) {
             if (!isCellInteraction && cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL)) System.out.println("view interact");
             if (canPlaceBomb) {
-                if (items.size() > 0) {
-                    Bomb bomb = (Bomb) items.get(0);
+                if (bombList.size() > 0) {
+                    Bomb bomb = (Bomb) bombList.get(0);
 
                     if (!isCellInteraction && cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL) || cell.getType().equals(ICRogueBehavior.ICRogueCellType.HOLE)) {
                         bomb.placeBomb(getCurrentMainCellCoordinates(), getOwnerArea());
@@ -319,10 +341,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                         items.remove(bomb);
                         canPlaceBomb = false;
                     }
-
-
                 }
-
             }
         }
     }

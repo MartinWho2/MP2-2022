@@ -12,6 +12,6 @@ public class Level0BombRoom extends Level0ItemRoom {
     @Override
     protected void createArea() {
         super.createArea();
-        items.add(new Bomb(this, Orientation.DOWN, getRoomCoordinates(), "other/bomb", 0.6F));
+        items.add(new Bomb(this, Orientation.DOWN, getRoomCoordinates()));
     }
 }

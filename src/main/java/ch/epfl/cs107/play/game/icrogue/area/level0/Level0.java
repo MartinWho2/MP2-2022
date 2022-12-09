@@ -133,7 +133,7 @@ public class Level0 extends Level {
 
     }
     protected enum RoomType{
-        TURRET (0),
+        TURRET (2),
         STAFF (1),
         BOSS_KEY (1),
         SPAWN (1),
