@@ -39,17 +39,6 @@ abstract public class Item extends CollectableAreaEntity{
     public boolean isViewInteractable() {
         return false;
     }
-
-    @Override
-    public void collect() {
-        isCollected = true;
-    }
-
-    @Override
-    public boolean isCollected() {
-        return isCollected;
-    }
-
     @Override
     public void draw(Canvas canvas) {
         if (!isCollected()) {

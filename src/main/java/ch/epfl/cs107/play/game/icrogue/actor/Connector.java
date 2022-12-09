@@ -110,7 +110,7 @@ public class Connector extends AreaEntity {
         CLOSED(2, true),
         LOCKED(3, true),
         INVISIBLE(4, true),
-        CRACKED(5,false);
+        CRACKED(5,true);
         final int type;
         final boolean takesSpace;
         ConnectorType(int type, boolean takesSpace) {

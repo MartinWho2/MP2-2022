@@ -12,6 +12,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBall;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.math.RegionOfInterest;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
@@ -61,19 +62,17 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         this.hp = 1;
         wantsInteraction = false;
 
-        message = new TextGraphics(Integer.toString((int)hp), 0.4f, Color.BLUE);
+        message = new TextGraphics(Integer.toString((int) hp), 0.4f, Color.BLUE);
+        bombList = new ArrayList<>();
+        bombAttached = new ImageGraphics("images/sprites/other/bomb.png", 0.3f, 0.3f, new RegionOfInterest(0, 0, 16, 16));
+        bombAttached.setParent(this);
+        bombAttached.setAnchor(new Vector(0, 0));
+        nbrBombs = new TextGraphics(Integer.toString( bombList.size()), 0.4f, Color.BLUE);
+        nbrBombs.setParent(bombAttached);
+        nbrBombs.setAnchor(new Vector(0, 0));
+
         message.setParent(this);
         message.setAnchor(new Vector(-0.3f, 0.1f));
-        /*
-        orientationToSprite.put(Orientation.DOWN,new Sprite("zelda/player", .75f, 1.5f, this ,
-                new RegionOfInterest(0, 0, 16, 32) , new Vector (.15f, -.15f)));
-        orientationToSprite.put(Orientation.RIGHT,new Sprite("zelda/player", .75f, 1.5f, this ,
-                new RegionOfInterest(0, 32, 16, 32) , new Vector (.15f, -.15f)));
-        orientationToSprite.put(Orientation.UP,new Sprite("zelda/player", .75f, 1.5f, this ,
-                new RegionOfInterest(0, 64, 16, 32) , new Vector (.15f, -.15f)));
-        orientationToSprite.put(Orientation.LEFT,new Sprite("zelda/player", .75f, 1.5f, this ,
-                new RegionOfInterest(0, 96, 16, 32) , new Vector (.15f, -.15f)));
-                */
         resetMotion();
         handler = new InteractionHandler();
         Orientation[] spriteOrientation = new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT};
@@ -246,6 +245,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     }
 
 
+
     public boolean wantsViewInteraction() {
         return wantsInteraction;
     }
@@ -330,19 +330,18 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
                     if (!isCellInteraction && cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL) || cell.getType().equals(ICRogueBehavior.ICRogueCellType.HOLE)) {
                         bomb.placeBomb(getCurrentMainCellCoordinates(), getOwnerArea());
-                        bomb.setCollected(false);
-                        System.out.println("view interact 1");
-                        items.remove(bomb);
+                        bombList.remove(bomb);
+                        updateBombText();
                         canPlaceBomb = false;
                     } else if (!isCellInteraction){
                         bomb.placeBomb(getCurrentMainCellCoordinates().jump(getOrientation().toVector()), getOwnerArea());
-                        bomb.setCollected(false);
-                        System.out.println("view interact 2");
-                        items.remove(bomb);
+                        bombList.remove(bomb);
+                        updateBombText();
                         canPlaceBomb = false;
                     }
                 }
             }
         }
     }
+
 }

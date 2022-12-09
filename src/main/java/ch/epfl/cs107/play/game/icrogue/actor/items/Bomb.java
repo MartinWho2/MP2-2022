@@ -8,9 +8,13 @@ import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
+import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
+import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
+import ch.epfl.cs107.play.game.icrogue.visualEffects.MacronExplosion;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Vector;
+import ch.epfl.cs107.play.window.Canvas;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,10 +24,14 @@ public class Bomb extends Item implements Interactor {
     private InteractionHandler handler;
     private boolean isPlaced = false;
     private boolean placing = false;
+    private final static float COOLDOWN = 4.f;
+    private float time = 0.f;
+    private boolean exploded;
 
     public Bomb(Area area, Orientation orientation, DiscreteCoordinates position){
         super(area, orientation, position, "other/bomb", 0.6f);
         handler = new InteractionHandler();
+        exploded = false;
     }
 
     public boolean isPlaced() {
@@ -37,22 +45,51 @@ public class Bomb extends Item implements Interactor {
 
     @Override
     public List<DiscreteCoordinates> getFieldOfViewCells() {
-        if (!isPlaced) {
-            List<DiscreteCoordinates> cells = new ArrayList<>();
-            if (isCollected()) {
+        List<DiscreteCoordinates> cells = new ArrayList<>();
+        if (isCollected()) {
+            if (isPlaced && exploded) {
                 for (int i = -1; i < 2; i++) {
                     for (int j = -1; j < 2; j++) {
                         if ((Math.abs(i) + Math.abs(j)) == 1)
                             cells.add(getCurrentMainCellCoordinates().jump(i, j));
                     }
                 }
+            } else {
+                return Collections.singletonList(getCurrentMainCellCoordinates());
             }
-            return cells;
-        } else {
-            return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
         }
-
+        return cells;
     }
+
+    @Override
+    public void update(float deltaTime) {
+        System.out.println(getFieldOfViewCells().size());
+        super.update(deltaTime);
+        if (isPlaced) {
+            if (time < COOLDOWN) {
+                time += deltaTime;
+            } else {
+                explode();
+            }
+        }
+    }
+
+    public void explode() {
+        exploded = true;
+        List<DiscreteCoordinates> coords = getFieldOfViewCells();
+        for (DiscreteCoordinates coord : coords) {
+            new MacronExplosion(getOwnerArea(), getOrientation(), coord);
+        }
+        getOwnerArea().unregisterActor(this);
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        if (!isCollected() || isPlaced) {
+            sprite.draw(canvas);
+        }
+    }
+
 
     public void placeBomb(DiscreteCoordinates coordinates, Area area) {
         area.registerActor(this);
