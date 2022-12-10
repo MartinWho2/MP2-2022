@@ -15,4 +15,14 @@ public class Cherry extends Item{
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }
+
+    @Override
+    public void tryToUseItem() {
+
+    }
+
+    @Override
+    public void useItem(Area area, Orientation orientation, DiscreteCoordinates coords) {
+
+    }
 }

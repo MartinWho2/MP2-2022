@@ -4,6 +4,7 @@ import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.CollectableAreaEntity;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
+import ch.epfl.cs107.play.game.icrogue.handler.ItemUseListener;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Canvas;
 
@@ -24,6 +25,16 @@ abstract public class Item extends CollectableAreaEntity{
         return Collections.singletonList(getCurrentMainCellCoordinates());
     }
 
+
+    public void collect(ItemUseListener handler) {
+        super.collect();
+        itemUseListener = handler;
+    }
+    public abstract void tryToUseItem();
+    public abstract void useItem(Area area, Orientation orientation, DiscreteCoordinates coords);
+    public String getTitle(){
+        return "images/sprites/"+spriteName+".png";
+    }
 
     @Override
     public boolean takeCellSpace() {

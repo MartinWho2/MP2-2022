@@ -11,6 +11,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.items.*;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBall;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
+import ch.epfl.cs107.play.game.icrogue.handler.ItemUseListener;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
 import ch.epfl.cs107.play.math.Vector;
@@ -52,6 +53,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private ArrayList<Item> bombList;
     private ImageGraphics bombAttached;
     private TextGraphics nbrBombs;
+    private ItemHandler itemHandler;
+    private Inventory inventory;
 
     /**
      * Demo actor
@@ -83,7 +86,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         animationsStaff = Animation.createAnimations(4, spritesStaff, false);
         staffAnimationOn = false;
         currentAnimation = animationsMove;
-
+        itemHandler = new ItemHandler();
+        inventory = new Inventory();
     }
 
     @Override
@@ -91,6 +95,13 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         super.enterArea(area, position);
         ICRogueRoom room = (ICRogueRoom) getOwnerArea();
         room.playerEnters();
+        area.registerActor(inventory);
+    }
+
+    @Override
+    public void leaveArea() {
+        super.leaveArea();
+        getOwnerArea().unregisterActor(inventory);
     }
 
     /**
@@ -122,7 +133,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
         Animation currentStaffAnimation = animationsStaff[getOrientation().ordinal()];
         if (staffAnimationOn) {
-
             currentStaffAnimation.update(deltaTime);
         }
         if (currentStaffAnimation.isCompleted()) {
@@ -133,18 +143,12 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         shootTimeDiff = (shootTimeDiff < RELOAD_COOLDOWN) ? shootTimeDiff + deltaTime : shootTimeDiff;
         if (keyboard.get(Keyboard.X).isPressed()){
 
-            if (canShootFireBall && shootTimeDiff >= RELOAD_COOLDOWN) {
+            if (shootTimeDiff >= RELOAD_COOLDOWN) {
                 currentAnimation = animationsStaff;
                 currentStaffAnimation.reset();
                 shootTimeDiff = 0;
                 staffAnimationOn = true;
-                DiscreteCoordinates fireBallSpawn;
-                if (isDisplacementOccurs()) {
-                    fireBallSpawn = getCurrentMainCellCoordinates().jump(getOrientation().toVector());
-                } else {
-                    fireBallSpawn = getCurrentMainCellCoordinates();
-                }
-                new FireBall(getOwnerArea(), getOrientation(), fireBallSpawn);
+                inventory.useCurrentItem();
             }
         }
         if ((keyboard.get(Keyboard.C).isPressed() || keyboard.get(Keyboard.C).isReleased()) && hasBomb){
@@ -154,7 +158,9 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         if (keyboard.get(Keyboard.W).isPressed() || keyboard.get(Keyboard.W).isReleased() || canPlaceBomb ){
             wantsInteraction = !wantsInteraction;
         }
-
+        if ((keyboard.get(Keyboard.E).isPressed())) {
+            inventory.changeItem(Inventory.HorizontalDirection.RIGHT);
+        }
 
 
         super.update(deltaTime);
@@ -263,7 +269,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         @Override
         public void interactWith(Staff staff, boolean isCellInteraction) {
             ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-            staff.collect();
+            staff.collect(itemHandler);
+            inventory.addItem(staff);
             canShootFireBall = true;
 
             area.tryToFinishRoom();
@@ -309,16 +316,15 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
         @Override
         public void interactWith(Bomb bomb, boolean isCellInteraction) {
-
-                if (!bomb.isPlaced()) {
-                    bomb.collect();
-                    hasBomb = true;
-                    bombList.add(bomb);
-                    updateBombText();
-                    ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-                    area.tryToFinishRoom();
-                }
-
+            if (!bomb.isPlaced()) {
+                bomb.collect(itemHandler);
+                inventory.addItem(bomb);
+                hasBomb = true;
+                bombList.add(bomb);
+                updateBombText();
+                ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+                area.tryToFinishRoom();
+            }
         }
 
         @Override
@@ -344,4 +350,23 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         }
     }
 
+    private class ItemHandler implements ItemUseListener {
+        @Override
+        public void canUseItem(Bomb bomb) {
+            bomb.useItem(getOwnerArea(),getOrientation(),getCurrentMainCellCoordinates());
+            inventory.removeItem(bomb);
+        }
+
+        @Override
+        public void canUseItem(Staff staff) {
+            if (shootTimeDiff >= RELOAD_COOLDOWN) {
+                shootTimeDiff = 0;
+                Animation currentStaffAnimation = animationsStaff[getOrientation().ordinal()];
+                DiscreteCoordinates fireBallSpawn = isDisplacementOccurs() ?
+                        getCurrentMainCellCoordinates().jump(getOrientation().toVector()) :
+                        getCurrentMainCellCoordinates();
+                staff.useItem(getOwnerArea(), getOrientation(), fireBallSpawn);
+            }
+        }
+    }
 }

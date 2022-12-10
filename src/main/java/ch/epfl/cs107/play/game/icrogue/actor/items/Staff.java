@@ -21,11 +21,22 @@ public class Staff extends Item {
         sprites = Sprite.extractSprites("zelda/staff", 7, 1.f, 1.f, this, new Vector(0, 0), 32, 32);
         animation = new Animation(8, sprites, true);
         animation.setSpeedFactor(2);
+
     }
 
     @Override
     public void update(float deltaTime) {
         animation.update(deltaTime);
+    }
+
+
+    @Override
+    public void tryToUseItem() {
+        itemUseListener.canUseItem(this);
+    }
+
+    public void useItem(Area area, Orientation orientation, DiscreteCoordinates coords) {
+        new FireBall(area, orientation, coords);
     }
 
     @Override

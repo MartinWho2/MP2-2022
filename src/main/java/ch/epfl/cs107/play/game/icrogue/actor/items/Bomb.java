@@ -100,6 +100,16 @@ public class Bomb extends Item implements Interactor {
     }
 
     @Override
+    public void tryToUseItem() {
+        itemUseListener.canUseItem(this);
+    }
+
+    @Override
+    public void useItem(Area area, Orientation orientation, DiscreteCoordinates coords) {
+        placeBomb(coords, area);
+    }
+
+    @Override
     public boolean wantsCellInteraction() {
         return true;
     }
