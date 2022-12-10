@@ -12,10 +12,13 @@ import java.util.Collections;
 import java.util.List;
 
 abstract public class Item extends CollectableAreaEntity{
-    Sprite sprite;
+    protected Sprite sprite;
+    private String spriteName;
+    ItemUseListener itemUseListener;
     public Item(Area area, Orientation orientation, DiscreteCoordinates position, String spriteName, float size){
         super(area, orientation, position);
         sprite = new Sprite(spriteName,size,size,this);
+        this.spriteName = spriteName;
         area.registerActor(this);
     }
 

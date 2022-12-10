@@ -146,7 +146,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             if (shootTimeDiff >= RELOAD_COOLDOWN) {
                 currentAnimation = animationsStaff;
                 currentStaffAnimation.reset();
-                shootTimeDiff = 0;
+
                 staffAnimationOn = true;
                 inventory.useCurrentItem();
             }
@@ -162,7 +162,9 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             inventory.changeItem(Inventory.HorizontalDirection.RIGHT);
         }
 
-
+        if (keyboard.get(Keyboard.Q).isPressed()){
+            inventory.changeItem(Inventory.HorizontalDirection.LEFT);
+        }
         super.update(deltaTime);
 
     }
