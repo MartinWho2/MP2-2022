@@ -7,13 +7,9 @@ import java.util.List;
 
 public abstract class Action {
     private Animation[] animation;
-
+    private int Priority;
     public Action(){
 
     }
-    public enum ActionType{
-        WAIT,
-        WALK,
 
-    }
 }
