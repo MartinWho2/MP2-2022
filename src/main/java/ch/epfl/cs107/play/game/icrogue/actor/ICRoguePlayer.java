@@ -109,7 +109,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         if (isDisplacementOccurs()) {
             animationsMove[getOrientation().ordinal()].update(deltaTime);
         }
-        System.out.println(cellInFront);
 
         Keyboard keyboard= getOwnerArea().getKeyboard();
 
