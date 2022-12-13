@@ -75,6 +75,9 @@ public class Level0Room extends ICRogueRoom {
         public int getIndex() {
             return this.ordinal();
         }
+        public Orientation getOrientation() {
+            return orientation;
+        }
 
         @Override
         public DiscreteCoordinates getDestination() {
