@@ -1,7 +1,6 @@
 package ch.epfl.cs107.play.game.icrogue.area.level0;
 
 import ch.epfl.cs107.play.game.icrogue.RandomHelper;
-import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.area.Level;
 import ch.epfl.cs107.play.game.icrogue.area.level0.rooms.*;
@@ -60,14 +59,16 @@ public class Level0 extends Level {
 
     @Override
     protected void setUpBossConnector(List<DiscreteCoordinates> coords) {
-        for (DiscreteCoordinates coord : coords) {
-            String destination = wholeMap[bossCoordinates.x][bossCoordinates.y].getTitle();
-            Level0Room.Level0Connectors connector = findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates);
-            setRoomConnector(new DiscreteCoordinates(coord.x, coord.y), destination, connector);
-            System.out.println("boos connector : " + findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates));
-            lockRoomConnector(coord, connector, BOSS_KEY_ID);
-            setRoomConnector(bossCoordinates, wholeMap[coord.x][coord.y].getTitle(), findRelativeConnectorPos(bossCoordinates, wholeMap[coord.x][coord.y].getRoomCoordinates()));
-        }
+        int i = RandomHelper.roomGenerator.nextInt(0, coords.size());
+        DiscreteCoordinates coord = coords.get(i);
+        String destination = wholeMap[bossCoordinates.x][bossCoordinates.y].getTitle();
+        Level0Room.Level0Connectors connector = findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates);
+        setRoomConnector(new DiscreteCoordinates(coord.x, coord.y), destination, connector);
+        System.out.println("boos connector : " + findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates));
+        lockRoomConnector(coord, connector, BOSS_KEY_ID);
+        setRoomConnector(bossCoordinates, wholeMap[coord.x][coord.y].getTitle(), findRelativeConnectorPos(bossCoordinates, wholeMap[coord.x][coord.y].getRoomCoordinates()));
+        ((Level0BossRoom)wholeMap[bossCoordinates.x][bossCoordinates.y]).setRoomOrientation(connector.getOrientation());
+
     }
 
     @Override

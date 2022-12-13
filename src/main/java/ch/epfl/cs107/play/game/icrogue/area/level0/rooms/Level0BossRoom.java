@@ -6,8 +6,11 @@ import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 public class Level0BossRoom extends Level0ItemRoom{
-    public Level0BossRoom(DiscreteCoordinates roomCoords){
+    private DiscreteCoordinates bossSpawnCoordinates;
+    private Orientation roomOrientation;
+    public Level0BossRoom(DiscreteCoordinates roomCoords, DiscreteCoordinates bossSpawnCoordinates){
         super(roomCoords);
+        this.bossSpawnCoordinates = bossSpawnCoordinates;
     }
     public void setRoomOrientation(Orientation roomOrientation){
         this.roomOrientation = roomOrientation;
@@ -28,6 +31,7 @@ public class Level0BossRoom extends Level0ItemRoom{
 
     @Override
     protected void createArea() {
+        System.out.println("created boss room");
         super.createArea();
         Cherry cherry = new Cherry(this, Orientation.DOWN,new DiscreteCoordinates(5,5));
         items.add(cherry);

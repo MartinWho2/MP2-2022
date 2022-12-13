@@ -39,10 +39,14 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private ICRogueBehavior.ICRogueCellType cellInFront;
     private Sprite[][] spritesMove;
     private Sprite[][] spritesStaff;
+    private Sprite[][] spritesSword;
     private Animation[] currentAnimation;
     private  Animation[] animationsMove;
     private  Animation[] animationsStaff;
+    private  Animation[] animationsSword;
     private Animation currentStaffAnimation;
+    private Animation currentSwordAnimation;
+    private boolean swordAnimationOn;
     private boolean staffAnimationOn;
     private float shootTimeDiff = 0;
     private float RELOAD_COOLDOWN = 0.8f;
@@ -55,7 +59,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
      */
     public ICRoguePlayer(Area owner, Orientation orientation, DiscreteCoordinates coordinates) {
         super(owner, orientation, coordinates);
-        this.hp = 1;
+        this.hp = HP_MAX;
         wantsKeyInteraction = false;
 
         message = new TextGraphics(Integer.toString((int) hp), 0.4f, Color.BLUE);
@@ -70,7 +74,11 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         Orientation[] spriteOrientation2 = new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT};
         spritesStaff = Sprite.extractSprites("zelda/player.staff_water", 4, 1.5f, 1.5f, this, 32, 32, new Vector(-.25f, -.15f), spriteOrientation2);
         animationsStaff = Animation.createAnimations(4, spritesStaff, false);
+        Orientation[] spriteOrientation3 = new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT};
+        spritesSword = Sprite.extractSprites("zelda/player.sword", 4, 1.5f, 1.5f, this, 32, 32, new Vector(-.25f, -.15f), spriteOrientation3);
+        animationsSword = Animation.createAnimations(4, spritesSword, false);
         staffAnimationOn = false;
+        swordAnimationOn = false;
         currentAnimation = animationsMove;
         itemHandler = new ItemHandler();
         inventory = new Inventory();
@@ -82,6 +90,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         ICRogueRoom room = (ICRogueRoom) getOwnerArea();
         room.playerEnters();
         area.registerActor(inventory);
+    }
+
+    public void damage(int damages) {
+        this.hp = this.hp >= damages ? this.hp - damages : 0;
     }
 
     @Override
@@ -118,8 +130,16 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         moveIfPressed(Orientation.DOWN, keyboard.get(Keyboard.DOWN));
 
         Animation currentStaffAnimation = animationsStaff[getOrientation().ordinal()];
+        Animation currentSwordAnimation = animationsSword[getOrientation().ordinal()];
         if (staffAnimationOn) {
             currentStaffAnimation.update(deltaTime);
+        }
+        if (swordAnimationOn) {
+            currentAnimation[getOrientation().ordinal()].update(deltaTime);
+        }
+        if (currentSwordAnimation.isCompleted()){
+            swordAnimationOn = false;
+            currentAnimation = animationsMove;
         }
         if (currentStaffAnimation.isCompleted()) {
             staffAnimationOn = false;
@@ -182,7 +202,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     }
 
     public void kill() {
-        this.hp--;
+        this.hp = 0;
     }
 
     ///Ghost implements Interactable
