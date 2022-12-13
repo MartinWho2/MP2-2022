@@ -294,6 +294,13 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         }
 
         @Override
+        public void interactWith(Sword sword, boolean isCellInteraction) {
+            sword.collect(itemHandler);
+            inventory.addItem(sword);
+            ((ICRogueRoom)getOwnerArea()).tryToFinishRoom();
+        }
+
+        @Override
         public void interactWith(ICRogueBehavior.ICRogueCell cell, boolean isCellInteraction) {
             if (!isCellInteraction ){
                 cellInFront = cell.getType();
@@ -326,6 +333,18 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                         getCurrentMainCellCoordinates();
                 staff.useItem(getOwnerArea(), getOrientation(), fireBallSpawn);
             }
+        }
+
+        @Override
+        public void canUseItem(Sword sword) {
+            if (!staffAnimationOn & !swordAnimationOn){
+                currentAnimation = animationsSword;
+                currentSwordAnimation = currentAnimation[getOrientation().ordinal()];
+                currentSwordAnimation.reset();
+                swordAnimationOn = true;
+                sword.useItem(getOwnerArea(), getOrientation(), getCurrentMainCellCoordinates());
+            }
+
         }
     }
 }

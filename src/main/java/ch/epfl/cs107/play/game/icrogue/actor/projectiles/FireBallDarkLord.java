@@ -8,6 +8,7 @@ import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
+import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
@@ -17,16 +18,19 @@ import ch.epfl.cs107.play.math.RegionOfInterest;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
-public class FireBall extends Projectiles {
-    private InteractionHandler handler;
-    private Sprite[] sprites;
-    private Animation animation;
+public class FireBallDarkLord extends Projectiles {
+    private final InteractionHandler handler;
+    private final Animation[] animation;
 
-    public FireBall(Area area, Orientation orientation, DiscreteCoordinates position) {
-        super(area, orientation, position, 1, 5);
-        sprites = Sprite.extractSprites("zelda/fire", 7, 1.f, 1.f, this, new Vector(0, 0), 16, 16);
-        animation = new Animation(7, sprites);
-        animation.setSpeedFactor(3);
+    public FireBallDarkLord(Area area, Orientation orientation, DiscreteCoordinates position) {
+        super(area, orientation, position.jump(orientation.toVector()), 1, 10);
+        System.out.println("created fireball"+System.currentTimeMillis());
+        Orientation[] orientations = new Orientation[]{Orientation.UP,Orientation.LEFT,Orientation.DOWN,Orientation.RIGHT};
+        float offset = 0.25f;
+        Vector offsetVect = new Vector(Math.abs(orientation.toVector().x*offset), Math.abs(orientation.toVector().y* offset));
+        Sprite[][] sprites = Sprite.extractSprites("zelda/flameskull", 4, 1.5f, 1.5f, this,
+                32, 32, offsetVect, orientations);
+        animation = Animation.createAnimations(4, sprites);
         area.registerActor(this);
         handler = new InteractionHandler();
     }
@@ -34,11 +38,11 @@ public class FireBall extends Projectiles {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        animation.update(deltaTime);
+        animation[getOrientation().ordinal()].update(deltaTime);
     }
     @Override
     public void draw(Canvas canvas) {
-        animation.draw(canvas);
+        animation[getOrientation().ordinal()].draw(canvas);
     }
 
     @Override
@@ -57,9 +61,7 @@ public class FireBall extends Projectiles {
     }
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
-
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
-
     }
 
     private void explode(DiscreteCoordinates coord){
@@ -72,26 +74,20 @@ public class FireBall extends Projectiles {
             if (cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL) ||
                     (cell.getType().equals(ICRogueBehavior.ICRogueCellType.HOLE) && isCellInteraction)) {
                 consume();
-                explode(getCurrentMainCellCoordinates());
             }
 
         }
         public void interactWith(Connector connector, boolean isCellInteraction){
             if (!connector.getState().equals(Connector.ConnectorType.OPEN)){
                 consume();
-                explode(getCurrentMainCellCoordinates());
             }
         }
 
         @Override
-        public void interactWith(Turret turret, boolean isCellInteraction) {
-            if (!isCellInteraction){
-                turret.die();
-                consume();
-                explode(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
-                ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-                area.tryToFinishRoom();
-            }
+        public void interactWith(ICRoguePlayer player, boolean isCellInteraction) {
+            player.damage(1);
+            consume();
+            explode(getCurrentMainCellCoordinates());
         }
     }
 }

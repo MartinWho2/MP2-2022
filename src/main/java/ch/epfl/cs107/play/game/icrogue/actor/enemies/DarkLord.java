@@ -9,31 +9,70 @@ import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import java.util.HashMap;
 
 public class DarkLord extends Enemy{
-    private double randomMove;
-    private Sprite[][] animations;
-    private Orientation[] orientations;
-    private HashMap<Orientation,Sprite[]> orientationToSprite;
+    private  Animation[] animationsMove;
+    private Sprite[][] spritesMove;
+    private final Orientation roomOrientation;
+    private final static int COOLDOWN_SHOOT = 2;
+    private float lastShotTime;
     public DarkLord(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position, "zelda/darkLord", 1f);
-        orientations = new Orientation[]{Orientation.UP,Orientation.LEFT,Orientation.DOWN,Orientation.RIGHT};
-        animations = Sprite.extractSprites("zelda/darkLord",3,32,32,this,96,128,orientations);
-        for (int i = 0; i < orientations.length; i++) {
-            orientationToSprite.put(orientations[i],animations[i]);
-        }
+        roomOrientation = orientation;
+        System.out.println(orientation);
+
+        Orientation[] orientations = new Orientation[]{Orientation.UP, Orientation.LEFT, Orientation.DOWN, Orientation.RIGHT};
+        // animations = Sprite.extractSprites("zelda/darkLord",3,1.5f,1.5f,this,32,32,orientations);
+        spritesMove = Sprite.extractSprites("zelda/darkLord", 4, 1.5f, 1.5f, this,
+                32, 32, new Vector(.15f, 0.3f), orientations);
+        animationsMove = Animation.createAnimations(4, spritesMove);
+        lastShotTime = 0.f;
     }
 
     @Override
+    public boolean takeCellSpace() {
+        return true;
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        animationsMove[roomOrientation.ordinal()].draw(canvas);
+    }
+    private Orientation[] chooseNextMove(){
+        if (roomOrientation.equals(Orientation.DOWN) || roomOrientation.equals(Orientation.UP)){
+            return new Orientation[]{Orientation.LEFT,Orientation.RIGHT};
+        }
+        return new Orientation[]{Orientation.DOWN,Orientation.UP};
+    }
+    private void summonFlameSkull(){
+        Orientation[] flameSkullVectorsOrientation = chooseNextMove();
+        for (Orientation orientation: flameSkullVectorsOrientation) {
+            new FireBallDarkLord(getOwnerArea(),roomOrientation,getCurrentMainCellCoordinates().jump(orientation.toVector()));
+        }
+    }
+    private float getProbaOfMove(){
+        if (roomOrientation.equals(Orientation.UP) || roomOrientation.equals(Orientation.DOWN)){
+            return (float)(0.1 * (4.5-getCurrentMainCellCoordinates().x));
+        }
+        return (float)(0.1 * (4.5-getCurrentMainCellCoordinates().y));
+    }
+    @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        randomMove = Math.random();
-        if (randomMove<0.1){
-            orientate(Orientation.UP);
-            move(10);
+        lastShotTime += deltaTime;
+        if (lastShotTime > COOLDOWN_SHOOT){
+            summonFlameSkull();
+            lastShotTime = 0;
         }
-        else if (randomMove>0.9){
-            orientate(Orientation.DOWN);
-            move(5);
+        if (isDisplacementOccurs()) {
+            animationsMove[roomOrientation.ordinal()].update(deltaTime);
+        } else {
+            double randomMove = 0.5 + getProbaOfMove();
+            System.out.println(randomMove);
+            if (Math.random()>randomMove){
+                orientate(chooseNextMove()[0]);
+            }else{
+                orientate(chooseNextMove()[1]);
+            }
+            move(24);
         }
-
     }
 }

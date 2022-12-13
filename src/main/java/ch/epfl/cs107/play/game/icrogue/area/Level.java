@@ -267,18 +267,11 @@ public abstract class Level implements Logic {
         generateConnectors(mapRooms);
     }
 
-    private void generateBossRoom() {
-        setRoom(bossCoordinates, new Level0BossRoom(bossCoordinates));
-        System.out.println("the boss is at "+bossCoordinates);
-    }
+    abstract protected void generateBossRoom();
 
-    private void generateForgeronRoom() {
-        setRoom(forgeronCoordinates, new Level0ForgeronRoom(forgeronCoordinates));
-    }
+    abstract protected void generateForgeronRoom();
 
-    protected void createRoomOfType(int nbOfRoomType, DiscreteCoordinates roomCoord){
-        System.out.println("Should really never print.\n\n\nyou die");
-    }
+    abstract protected void createRoomOfType(int nbOfRoomType, DiscreteCoordinates roomCoord);
 
     private void generateConnectors(MapState[][] map){
         printMap(map);
@@ -300,17 +293,11 @@ public abstract class Level implements Logic {
         }
     }
 
-    protected void setUpBossConnector(List<DiscreteCoordinates> coords) {
-        //TODO compléter dans les méthodes des sous-classes
-    }
+    abstract protected void setUpBossConnector(List<DiscreteCoordinates> coords);
 
-    protected void setUpLevelConnector(MapState[][] roomsPlacement, ICRogueRoom room) {
-        //TODO C'est vide
-    }
+    abstract protected void setUpLevelConnector(MapState[][] roomsPlacement, ICRogueRoom room);
 
-    protected void setUpForgeronConnector(List<DiscreteCoordinates> coords) {
-        //TODO compléter dans les méthodes des sous-classes
-    }
+    abstract protected void setUpForgeronConnector(List<DiscreteCoordinates> coords);
 
     public static Level0Room.Level0Connectors findRelativeConnectorPos(DiscreteCoordinates baseRoom, DiscreteCoordinates otherRoom) {
         System.out.println(otherRoom.x + " " + otherRoom.y);

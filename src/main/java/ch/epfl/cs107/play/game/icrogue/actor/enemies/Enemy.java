@@ -12,7 +12,7 @@ import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 
 public abstract class Enemy extends ICRogueActor {
     private boolean isAlive;
-    private Sprite sprite;
+    protected Sprite sprite;
     public Enemy(Area area, Orientation orientation, DiscreteCoordinates position, String spriteName, float size){
         super(area, orientation,position);
         enterArea(area, position);

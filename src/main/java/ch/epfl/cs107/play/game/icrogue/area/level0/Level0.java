@@ -54,6 +54,7 @@ public class Level0 extends Level {
             }
             case 4-> setRoom(roomCoord, new Level0Room(roomCoord));
             case 5 -> setRoom(roomCoord, new Level0BombRoom(roomCoord));
+            case 6 -> setRoom(roomCoord, new Level0SwordRoom(roomCoord));
         }
     }
 
@@ -79,6 +80,22 @@ public class Level0 extends Level {
         wholeMap[coord.x][coord.y].setConnectorsCracked(connector.getIndex());
         setRoomConnector(forgeronCoordinates, wholeMap[coord.x][coord.y].getTitle(), findRelativeConnectorPos(forgeronCoordinates, wholeMap[coord.x][coord.y].getRoomCoordinates()));
 
+    }
+
+    @Override
+    protected void generateBossRoom() {
+        for (ICRogueRoom[] rooms: wholeMap) {
+            for (ICRogueRoom room : rooms){
+
+            }
+        }
+        setRoom(bossCoordinates, new Level0BossRoom(bossCoordinates,new DiscreteCoordinates(3, 5)));
+        System.out.println("the boss is at "+bossCoordinates);
+    }
+
+    @Override
+    protected void generateForgeronRoom() {
+        setRoom(forgeronCoordinates, new Level0ForgeronRoom(forgeronCoordinates));
     }
 
     public void generateFixedMap(int methodToUse){
@@ -138,7 +155,8 @@ public class Level0 extends Level {
         BOSS_KEY (1),
         SPAWN (1),
         NORMAL(1),
-        BOMB(1);
+        BOMB(1),
+        SWORD(1);
         final int roomType;
         RoomType(int value){
             this.roomType = value;
