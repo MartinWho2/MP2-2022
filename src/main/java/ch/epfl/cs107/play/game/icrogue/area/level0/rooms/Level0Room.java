@@ -83,14 +83,14 @@ public class Level0Room extends ICRogueRoom {
         public DiscreteCoordinates getDestination() {
             return this.destination;
         }
-        public List<Orientation> getAllConnectorsOrientation(){
+        public static List<Orientation> getAllConnectorsOrientation(){
             List<Orientation> connectorOrientations = new ArrayList<>();
             for (Level0Connectors connector: Level0Connectors.values()) {
                 connectorOrientations.add(connector.orientation);
             }
             return connectorOrientations;
         }
-        public List <DiscreteCoordinates > getAllConnectorsPosition(){
+        public static List <DiscreteCoordinates > getAllConnectorsPosition(){
             List<DiscreteCoordinates> coordinates = new ArrayList<>();
             for (Level0Connectors connector: Level0Connectors.values()) {
                 coordinates.add(connector.position);

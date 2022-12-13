@@ -63,7 +63,6 @@ public class Bomb extends Item implements Interactor {
 
     @Override
     public void update(float deltaTime) {
-        System.out.println(getFieldOfViewCells().size());
         super.update(deltaTime);
         if (isPlaced) {
             if (time < COOLDOWN) {
@@ -94,7 +93,6 @@ public class Bomb extends Item implements Interactor {
     public void placeBomb(DiscreteCoordinates coordinates, Area area) {
         area.registerActor(this);
         setOwnerArea(area);
-        System.out.println(getOwnerArea());
         setCurrentPosition(coordinates.toVector());
         isPlaced = true;
     }

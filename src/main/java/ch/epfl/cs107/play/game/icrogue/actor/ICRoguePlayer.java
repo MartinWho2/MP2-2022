@@ -68,15 +68,18 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         message.setAnchor(new Vector(-0.3f, 0.1f));
         resetMotion();
         handler = new InteractionHandler();
-        Orientation[] spriteOrientation = new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT};
-        spritesMove = Sprite.extractSprites("zelda/player", 4, .75f, 1.5f, this, 16, 32, new Vector(.15f, -.15f), spriteOrientation);
-        animationsMove = Animation.createAnimations(4, spritesMove);
-        Orientation[] spriteOrientation2 = new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT};
-        spritesStaff = Sprite.extractSprites("zelda/player.staff_water", 4, 1.5f, 1.5f, this, 32, 32, new Vector(-.25f, -.15f), spriteOrientation2);
-        animationsStaff = Animation.createAnimations(4, spritesStaff, false);
-        Orientation[] spriteOrientation3 = new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT};
-        spritesSword = Sprite.extractSprites("zelda/player.sword", 4, 1.5f, 1.5f, this, 32, 32, new Vector(-.25f, -.15f), spriteOrientation3);
-        animationsSword = Animation.createAnimations(4, spritesSword, false);
+        //Orientation[] spriteOrientation = new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT};
+        //spritesMove = Sprite.extractSprites("zelda/player", 4, .75f, 1.5f, this, 16, 32, new Vector(.15f, -.15f), spriteOrientation);
+        //animationsMove = Animation.createAnimations(4, spritesMove);
+        animationsMove = PlayerAnimations.MOVE.createAnimations(this);
+        //Orientation[] spriteOrientation2 = new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT};
+        //spritesStaff = Sprite.extractSprites("zelda/player.staff_water", 4, 1.5f, 1.5f, this, 32, 32, new Vector(-.25f, -.15f), spriteOrientation2);
+        //animationsStaff = Animation.createAnimations(4, spritesStaff, false);
+        animationsStaff = PlayerAnimations.SHOOT.createAnimations(this);
+        //Orientation[] spriteOrientation3 = new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT};
+        //spritesSword = Sprite.extractSprites("zelda/player.sword", 4, 1.5f, 1.5f, this, 32, 32, new Vector(-.25f, -.15f), spriteOrientation3);
+        //animationsSword = Animation.createAnimations(4, spritesSword, false);
+        animationsSword = PlayerAnimations.SWORD.createAnimations(this);
         staffAnimationOn = false;
         swordAnimationOn = false;
         currentAnimation = animationsMove;
@@ -255,6 +258,59 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
+    }
+    public enum Priority{
+        VERY_LOW(1),
+        LOW(2),
+        MEDIUM(3),
+        HIGH(4),
+        VERY_HIGH(5);
+        private final int priority;
+        Priority(int priority){
+            this.priority = priority;
+        }
+        public int getPriority() {
+            return priority;
+        }
+    }
+    public enum PlayerAnimations{
+        WAIT(Priority.VERY_LOW,"zelda/player",1,5,true,new Vector(.15f, -.15f),
+                new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT},new int[]{16,32}),
+        MOVE(Priority.MEDIUM,"zelda/player",4,4,true,new Vector(.15f, -.15f),
+                new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT},new int[]{16,32}),
+        SHOOT(Priority.HIGH,"zelda/player.staff_water",4,4,false,
+                new Vector(-.25f, -.15f),
+                new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT},new int[]{32,32}),
+        SWORD(Priority.HIGH,"zelda/player.sword",4,4,false,new Vector(-.25f, -.15f),
+                new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT},new int[]{32,32});
+        private Priority priority;
+        private String spriteName;
+        private int nbFrames;
+        private int frameDuration;
+        private boolean repeat;
+        private Vector offset;
+        private Orientation[] orientations;
+        private int[] imageSize;
+        Animation[] animations;
+        PlayerAnimations(Priority priority, String spriteName, int nbFrames, int frameDuration, boolean repeat,
+                         Vector offset, Orientation[] orientations,int[] imageSize){
+            this.priority = priority;
+            this.spriteName = spriteName;
+            this.nbFrames = nbFrames;
+            this.frameDuration = frameDuration;
+            this.repeat = repeat;
+            this.offset = offset;
+            this.orientations = orientations;
+            this.imageSize = imageSize;
+        }
+        public Animation[] createAnimations(ICRoguePlayer player){
+            int maxSize = Math.max(imageSize[0],imageSize[1]);
+            float[] newSize = new float[]{((float)imageSize[0]/maxSize)*1.5f,((float)imageSize[1]/maxSize)*1.5f};
+            Sprite[][] sprites = Sprite.extractSprites(spriteName,nbFrames,newSize[0],newSize[1],player,imageSize[0],
+                    imageSize[1], offset, orientations );
+            animations = Animation.createAnimations(frameDuration,sprites, repeat);
+            return animations;
+        }
     }
 
     private class InteractionHandler implements ICRogueInteractionHandler {
