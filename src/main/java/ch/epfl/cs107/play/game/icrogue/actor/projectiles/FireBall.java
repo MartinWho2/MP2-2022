@@ -8,6 +8,7 @@ import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
@@ -92,6 +93,11 @@ public class FireBall extends Projectiles {
                 ICRogueRoom area = (ICRogueRoom) getOwnerArea();
                 area.tryToFinishRoom();
             }
+        }
+
+        @Override
+        public void interactWith(Skeleton skeleton, boolean isCellInteraction) {
+            skeleton.die();
         }
     }
 }

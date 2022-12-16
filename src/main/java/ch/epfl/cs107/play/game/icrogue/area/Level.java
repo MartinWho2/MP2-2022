@@ -314,6 +314,8 @@ public abstract class Level implements Logic {
         }
     }
 
+
+
     private List<DiscreteCoordinates> getCoordinatesOfRooms(MapState[][] mapRooms) {
         List<DiscreteCoordinates> roomsCoordinate = new ArrayList<>();
         for (int i = 0; i < mapRooms.length; i++) {

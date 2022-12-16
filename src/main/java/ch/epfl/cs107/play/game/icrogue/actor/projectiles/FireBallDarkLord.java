@@ -9,6 +9,7 @@ import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
@@ -74,6 +75,9 @@ public class FireBallDarkLord extends Projectiles {
             if (cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL) ||
                     (cell.getType().equals(ICRogueBehavior.ICRogueCellType.HOLE) && isCellInteraction)) {
                 consume();
+                if (Math.random() < 0.33) {
+                    new Skeleton(getOwnerArea(), getOrientation(), getCurrentMainCellCoordinates());
+                }
             }
 
         }
