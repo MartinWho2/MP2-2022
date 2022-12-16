@@ -5,8 +5,14 @@ import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
+import ch.epfl.cs107.play.game.icrogue.handler.ItemUseListener;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sword extends Item{
     private boolean isBeingUsed;
@@ -20,7 +26,7 @@ public class Sword extends Item{
     }
     @Override
     public void tryToUseItem() {
-        itemUseListener.canUseItem(this);
+        getItemUseListener().canUseItem(this);
     }
 
     @Override
@@ -30,8 +36,9 @@ public class Sword extends Item{
 
     @Override
     public void useItem(Area area, Orientation orientation, DiscreteCoordinates coords) {
-        //area.registerActor(this);
-
+        area.registerActor(this);
+        setCurrentPosition(coords.toVector());
+        orientate(orientation);
     }
 
 }

@@ -3,6 +3,7 @@ package ch.epfl.cs107.play.game.icrogue.actor.enemies;
 import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
+import ch.epfl.cs107.play.game.icrogue.actor.items.Bomb;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.Arrow;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
@@ -21,6 +22,14 @@ public class Turret extends Enemy {
     @Override
     public boolean isViewInteractable() {
         return true;
+    }
+
+    @Override
+    public void die() {
+        super.die();
+        if (Math.random() > 0.5){
+            getOwnerArea().registerActor(new Bomb(getOwnerArea(),Orientation.DOWN,getCurrentMainCellCoordinates()));
+        }
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.List;
 abstract public class Item extends CollectableAreaEntity{
     protected Sprite sprite;
     private String spriteName;
-    ItemUseListener itemUseListener;
+    private ItemUseListener itemUseListener;
     public Item(Area area, Orientation orientation, DiscreteCoordinates position, String spriteName, float size){
         super(area, orientation, position);
         sprite = new Sprite(spriteName,size,size,this);
@@ -22,6 +22,9 @@ abstract public class Item extends CollectableAreaEntity{
         area.registerActor(this);
     }
 
+    public ItemUseListener getItemUseListener() {
+        return itemUseListener;
+    }
 
     @Override
     public List<DiscreteCoordinates> getCurrentCells() {

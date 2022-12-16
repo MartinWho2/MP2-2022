@@ -9,6 +9,8 @@ import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.game.icrogue.visualEffects.MacronExplosion;
@@ -99,7 +101,7 @@ public class Bomb extends Item implements Interactor {
 
     @Override
     public void tryToUseItem() {
-        itemUseListener.canUseItem(this);
+        getItemUseListener().canUseItem(this);
     }
 
     @Override
@@ -135,6 +137,19 @@ public class Bomb extends Item implements Interactor {
         public void interactWith(ICRoguePlayer player, boolean isCellInteraction) {
             if (isPlaced && exploded) {
                 player.kill();
+            }
+        }
+
+        @Override
+        public void interactWith(Turret turret, boolean isCellInteraction) {
+            if (isPlaced && exploded){
+                turret.die();
+            }
+        }
+        @Override
+        public void interactWith(Skeleton skeleton, boolean isCellInteraction) {
+            if (isPlaced && exploded) {
+                skeleton.die();
             }
         }
     }

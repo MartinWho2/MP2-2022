@@ -22,7 +22,7 @@ public class ICRogue extends AreaGame{
      */
 
     private void initLevel(){
-        level0 = new Level0(12);
+        level0 = new Level0(42);
         level0.registerAreas(this);
         DiscreteCoordinates coords = currentArea.getPlayerSpawnPosition();
         player = new ICRoguePlayer(currentArea, Orientation.DOWN, coords);

@@ -23,10 +23,6 @@ public abstract class Enemy extends ICRogueActor {
         return isAlive;
     }
     public void die(){
-        if (Math.random() > 0){
-            getOwnerArea().registerActor(new Bomb(getOwnerArea(),Orientation.DOWN,getCurrentMainCellCoordinates()));
-
-        }
         leaveArea();
         isAlive = false;
 

@@ -52,6 +52,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private float RELOAD_COOLDOWN = 0.8f;
     private ItemHandler itemHandler;
     private Inventory inventory;
+    private Orientation orientationAiming;
 
     /**
      * Demo actor

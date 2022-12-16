@@ -96,6 +96,8 @@ public class ICRogueBehavior extends AreaBehavior{
             return type.isWalkable;
         }
 
+
+
         @Override
         public boolean isCellInteractable() {
             return true;
