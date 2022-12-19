@@ -59,6 +59,7 @@ public class Sword extends Item implements Interactor {
         area.registerActor(this);
         setCurrentPosition(coords.toVector());
         orientate(orientation);
+        System.out.println(getFieldOfViewCells());
     }
 
     @Override
@@ -87,11 +88,13 @@ public class Sword extends Item implements Interactor {
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(Skeleton skeleton, boolean isCellInteraction) {
+            System.out.println("Un couteau bien placé en moind de 2 je déboule j't'enlève la vie");
             skeleton.die();
         }
 
         @Override
         public void interactWith(Turret turret, boolean isCellInteraction) {
+
             turret.die();
         }
     }

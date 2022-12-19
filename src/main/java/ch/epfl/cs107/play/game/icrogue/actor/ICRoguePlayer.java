@@ -122,6 +122,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
     @Override
     public void update(float deltaTime) {
+        message.setText(hp + "");
         if (isDisplacementOccurs()) {
             animationsMove[getOrientation().ordinal()].update(deltaTime);
         }
@@ -195,6 +196,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     public void draw(Canvas canvas) {
         currentAnimation[getOrientation().ordinal()].draw(canvas);
         message.draw(canvas);
+
     }
 
     public boolean isWeak() {

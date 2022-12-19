@@ -4,6 +4,7 @@ import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.Interactable;
 import ch.epfl.cs107.play.game.areagame.actor.Interactor;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
+import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
@@ -16,7 +17,7 @@ public class Skeleton extends Enemy implements Interactor {
     static float spirteSize = 0.6f;
     static float maxHealth = 5.f;
     static int damage = 1;
-    static int MOVEDURATION = 8;
+    static int MOVEDURATION = 10;
     private DiscreteCoordinates destination;
     private InteractionHandler handler;
     List<DiscreteCoordinates> fieldOfView = new ArrayList<>();
@@ -89,6 +90,11 @@ public class Skeleton extends Enemy implements Interactor {
     @Override
     public void interactWith(Interactable other, boolean isCellInteraction) {
         other.acceptInteraction(handler, isCellInteraction);
+    }
+
+    @Override
+    public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
+        ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }
 
     private class InteractionHandler implements ICRogueInteractionHandler {
