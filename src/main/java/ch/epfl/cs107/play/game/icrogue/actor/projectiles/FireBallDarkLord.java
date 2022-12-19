@@ -25,7 +25,6 @@ public class FireBallDarkLord extends Projectiles {
 
     public FireBallDarkLord(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position.jump(orientation.toVector()), 1, 10);
-        System.out.println("created fireball"+System.currentTimeMillis());
         Orientation[] orientations = new Orientation[]{Orientation.UP,Orientation.LEFT,Orientation.DOWN,Orientation.RIGHT};
         float offset = 0.25f;
         Vector offsetVect = new Vector(Math.abs(orientation.toVector().x*offset), Math.abs(orientation.toVector().y* offset));

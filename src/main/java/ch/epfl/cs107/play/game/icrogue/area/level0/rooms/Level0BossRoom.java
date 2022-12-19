@@ -33,7 +33,7 @@ public class Level0BossRoom extends Level0ItemRoom{
     protected void createArea() {
         System.out.println("created boss room");
         super.createArea();
-        Cherry cherry = new Cherry(this, Orientation.DOWN,new DiscreteCoordinates(5,5));
+        Cherry cherry = new Cherry(this, Orientation.DOWN,new DiscreteCoordinates(0,0));
         items.add(cherry);
         DarkLord boss = new DarkLord(this,roomOrientation, bossSpawnCoordinates);
     }

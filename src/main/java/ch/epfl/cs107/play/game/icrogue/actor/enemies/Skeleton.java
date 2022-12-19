@@ -1,9 +1,7 @@
 package ch.epfl.cs107.play.game.icrogue.actor.enemies;
 
 import ch.epfl.cs107.play.game.areagame.Area;
-import ch.epfl.cs107.play.game.areagame.actor.Interactable;
-import ch.epfl.cs107.play.game.areagame.actor.Interactor;
-import ch.epfl.cs107.play.game.areagame.actor.Orientation;
+import ch.epfl.cs107.play.game.areagame.actor.*;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
@@ -14,6 +12,7 @@ import java.util.List;
 
 public class Skeleton extends Enemy implements Interactor {
     static String spriteName = "other/skeleton";
+    Animation[] animations;
     static float spirteSize = 0.6f;
     static float maxHealth = 5.f;
     static int damage = 1;
@@ -32,6 +31,9 @@ public class Skeleton extends Enemy implements Interactor {
                 fieldOfView.add(new DiscreteCoordinates(i, j));
             }
         }
+        Orientation[] orientationSprite = new Orientation[]{Orientation.DOWN,Orientation.LEFT, Orientation.UP, Orientation.RIGHT};
+        Sprite[][] sprites = Sprite.extractSprites(spriteName,4,.8f,.8f,this,16,16,orientationSprite);
+        animations = Animation.createAnimations(4,sprites);
     }
 
     @Override

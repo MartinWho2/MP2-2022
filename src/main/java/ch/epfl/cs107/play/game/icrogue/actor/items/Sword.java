@@ -46,6 +46,7 @@ public class Sword extends Item implements Interactor {
     public void update(float deltaTime) {
         super.update(deltaTime);
         if (isCollected()) {
+
             timer += deltaTime;
             if (timer > ANIMATION_TIME){
                 getOwnerArea().unregisterActor(this);
@@ -57,9 +58,10 @@ public class Sword extends Item implements Interactor {
     @Override
     public void useItem(Area area, Orientation orientation, DiscreteCoordinates coords) {
         area.registerActor(this);
+        System.out.println("epeeeeeee");
         setCurrentPosition(coords.toVector());
         orientate(orientation);
-        System.out.println(getFieldOfViewCells());
+        System.out.println("bonjour je suis olivier de chez carglass  "+getFieldOfViewCells());
     }
 
     @Override
@@ -89,6 +91,7 @@ public class Sword extends Item implements Interactor {
         @Override
         public void interactWith(Skeleton skeleton, boolean isCellInteraction) {
             System.out.println("Un couteau bien placé en moind de 2 je déboule j't'enlève la vie");
+            System.out.println(getCurrentCells());
             skeleton.die();
         }
 
