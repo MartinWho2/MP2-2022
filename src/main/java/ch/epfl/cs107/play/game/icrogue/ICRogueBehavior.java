@@ -87,7 +87,6 @@ public class ICRogueBehavior extends AreaBehavior{
 
         @Override
         protected boolean canEnter(Interactable entity) {
-
             for (Interactable entityOnTile : entities) {
                 if (entity.takeCellSpace() && entityOnTile != null && entityOnTile.takeCellSpace()) {
                     return false;

@@ -28,7 +28,7 @@ public class Turret extends Enemy {
     public void die() {
         super.die();
         if (Math.random() > 0.5){
-            getOwnerArea().registerActor(new Bomb(getOwnerArea(),Orientation.DOWN,getCurrentMainCellCoordinates()));
+            new Bomb(getOwnerArea(),Orientation.DOWN,getCurrentMainCellCoordinates());
         }
     }
 

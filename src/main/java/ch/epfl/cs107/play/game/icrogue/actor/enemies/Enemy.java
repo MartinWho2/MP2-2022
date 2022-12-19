@@ -25,7 +25,6 @@ public abstract class Enemy extends ICRogueActor {
     public void die(){
         leaveArea();
         isAlive = false;
-
     }
     @Override
     public void draw(Canvas canvas) {
