@@ -97,7 +97,6 @@ public class Sword extends Item implements Interactor {
 
         @Override
         public void interactWith(Turret turret, boolean isCellInteraction) {
-
             turret.die();
         }
     }

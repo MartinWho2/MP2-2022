@@ -69,7 +69,6 @@ public class DarkLord extends Enemy{
             animationsMove[roomOrientation.ordinal()].update(deltaTime);
         } else {
             double randomMove = 0.5 + getProbaOfMove();
-            System.out.println(randomMove);
             if (Math.random()>randomMove){
                 orientate(chooseNextMove()[0]);
             }else{

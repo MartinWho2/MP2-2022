@@ -6,7 +6,9 @@ import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.window.Canvas;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,9 @@ public class Skeleton extends Enemy implements Interactor {
         if (destination != null && destination != getCurrentMainCellCoordinates() && !isDisplacementOccurs()) {
             computeMove();
         }
+        if (isDisplacementOccurs()) {
+            animations[getOrientation().ordinal()].update(deltaTime);
+        }
         super.update(deltaTime);
 
     }
@@ -67,6 +72,11 @@ public class Skeleton extends Enemy implements Interactor {
             }
             move(MOVEDURATION);
         }
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        animations[getOrientation().ordinal()].draw(canvas);
     }
 
     @Override

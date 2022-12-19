@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private float hp;
-    private static final float HP_MAX = 10;
+    private static final float HP_MAX = 1_000_000;
     /// Animation duration in frame number
     private final static int MOVE_DURATION = 8;
     private Sprite sprite;
