@@ -4,7 +4,9 @@ import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.Animation;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
+import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBallDarkLord;
+import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
@@ -17,6 +19,8 @@ public class DarkLord extends Enemy{
     private final Orientation roomOrientation;
     private final static int COOLDOWN_SHOOT = 2;
     private float lastShotTime;
+    private float hp;
+    static final float MAX_HP = 5;
     public DarkLord(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position, "zelda/darkLord", 1f);
         roomOrientation = orientation;
@@ -28,11 +32,26 @@ public class DarkLord extends Enemy{
                 32, 32, new Vector(.15f, 0.3f), orientations);
         animationsMove = Animation.createAnimations(4, spritesMove);
         lastShotTime = 0.f;
+        hp = MAX_HP;
     }
 
     @Override
     public boolean takeCellSpace() {
         return true;
+    }
+
+    public void damage(float damages) {
+        System.out.println("les hp sont " + hp);
+        if (hp - damages <= 0) {
+            die();
+        } else {
+            hp -= damages;
+        }
+    }
+
+    @Override
+    public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
+        ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }
 
     @Override

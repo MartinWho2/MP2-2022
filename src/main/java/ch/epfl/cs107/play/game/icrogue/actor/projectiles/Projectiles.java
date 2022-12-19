@@ -30,6 +30,7 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
         this.damage = damage;
         this.MOVE_DURATION = duration;
         isConsumed = false;
+        damage = DEFAULT_DAMAGE;
     }
     public Projectiles(Area area, Orientation orientation, DiscreteCoordinates position) {
         this(area, orientation, position, DEFAULT_DAMAGE, DEFAULT_MOVE_DURATION);
@@ -48,6 +49,10 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
 
     public void consume() {
         isConsumed = true;
+    }
+
+    public float getDamages() {
+        return damage;
     }
 
     @Override

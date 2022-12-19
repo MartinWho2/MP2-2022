@@ -96,7 +96,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         area.registerActor(inventory);
     }
 
-    public void damage(int damages) {
+    public void damage(float damages) {
         this.hp = this.hp >= damages ? this.hp - damages : 0;
     }
 
@@ -418,7 +418,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
         @Override
         public void canUseItem(Sword sword) {
-            if (!staffAnimationOn & !swordAnimationOn){
+            if (!staffAnimationOn && !swordAnimationOn){
                 currentAnimation = animationsSword;
                 currentSwordAnimation = currentAnimation[getOrientation().ordinal()];
                 currentSwordAnimation.reset();

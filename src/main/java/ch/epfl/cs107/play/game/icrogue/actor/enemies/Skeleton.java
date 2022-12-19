@@ -36,6 +36,7 @@ public class Skeleton extends Enemy implements Interactor {
         Orientation[] orientationSprite = new Orientation[]{Orientation.DOWN,Orientation.LEFT, Orientation.UP, Orientation.RIGHT};
         Sprite[][] sprites = Sprite.extractSprites(spriteName,4,.8f,.8f,this,16,16,orientationSprite);
         animations = Animation.createAnimations(4,sprites);
+
     }
 
     @Override
@@ -55,9 +56,7 @@ public class Skeleton extends Enemy implements Interactor {
         int dy = destination.y - currentPos.y;
         float probaOfX = (float)Math.abs(dx) / (float)(Math.abs(dy) + Math.abs(dx));
         double randomNumber = Math.random();
-        System.out.println(probaOfX + " is proba of x");
         if (randomNumber < probaOfX) {
-            System.out.println("I was here");
             if (dx > 0) {
                 orientate(Orientation.RIGHT);
             } else {

@@ -23,6 +23,7 @@ public abstract class Enemy extends ICRogueActor {
         return isAlive;
     }
     public void die(){
+        resetMotion();
         leaveArea();
         isAlive = false;
     }

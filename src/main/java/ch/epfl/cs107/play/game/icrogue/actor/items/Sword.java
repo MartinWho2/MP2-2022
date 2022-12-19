@@ -9,6 +9,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
+import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBallDarkLord;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.game.icrogue.handler.ItemUseListener;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
@@ -46,11 +47,10 @@ public class Sword extends Item implements Interactor {
     public void update(float deltaTime) {
         super.update(deltaTime);
         if (isCollected()) {
-
             timer += deltaTime;
             if (timer > ANIMATION_TIME){
                 getOwnerArea().unregisterActor(this);
-                timer = 0;
+            timer = 0;
             }
         }
     }
@@ -58,7 +58,8 @@ public class Sword extends Item implements Interactor {
     @Override
     public void useItem(Area area, Orientation orientation, DiscreteCoordinates coords) {
         area.registerActor(this);
-        System.out.println("epeeeeeee");
+        setOwnerArea(area);
+        System.out.println(getOwnerArea());
         setCurrentPosition(coords.toVector());
         orientate(orientation);
         System.out.println("bonjour je suis olivier de chez carglass  "+getFieldOfViewCells());
@@ -90,14 +91,21 @@ public class Sword extends Item implements Interactor {
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(Skeleton skeleton, boolean isCellInteraction) {
-            System.out.println("Un couteau bien placé en moind de 2 je déboule j't'enlève la vie");
-            System.out.println(getCurrentCells());
-            skeleton.die();
+            if (skeleton.getIsAlive()) {
+                skeleton.die();
+            }
         }
 
         @Override
         public void interactWith(Turret turret, boolean isCellInteraction) {
             turret.die();
+        }
+
+        @Override
+        public void interactWith(FireBallDarkLord fireBallDarkLord, boolean isCellInteraction) {
+            if (!isCellInteraction) {
+                fireBallDarkLord.repulse();
+            }
         }
     }
 }
