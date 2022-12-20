@@ -35,7 +35,6 @@ public class Level0ForgeronRoom extends Level0ItemRoom{
     public boolean begin(Window window, FileSystem fileSystem) {
         if (super.begin(window, fileSystem)) {
             forgeron = new Forgeron(this, Orientation.DOWN, new DiscreteCoordinates(5, 5));
-            new Cherry(this, Orientation.DOWN, new DiscreteCoordinates(2, 2));
             return true;
         }
         return false;

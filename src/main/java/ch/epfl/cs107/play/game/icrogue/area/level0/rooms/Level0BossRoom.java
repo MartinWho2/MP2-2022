@@ -44,7 +44,7 @@ public class Level0BossRoom extends Level0Room{
         }else if (roomOrientation.equals(Orientation.LEFT)){
             setSpawnCoordinates(new DiscreteCoordinates(8,5));
             for (int i = 1;i < 9; ++i) {
-                lavaBlocksCoords.add(new DiscreteCoordinates(i, 7));
+                lavaBlocksCoords.add(new DiscreteCoordinates(7, i));
             }
         }else {
             setSpawnCoordinates(new DiscreteCoordinates(1,5));

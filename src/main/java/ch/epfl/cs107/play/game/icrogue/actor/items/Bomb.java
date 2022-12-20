@@ -1,9 +1,7 @@
 package ch.epfl.cs107.play.game.icrogue.actor.items;
 
 import ch.epfl.cs107.play.game.areagame.Area;
-import ch.epfl.cs107.play.game.areagame.actor.Interactable;
-import ch.epfl.cs107.play.game.areagame.actor.Interactor;
-import ch.epfl.cs107.play.game.areagame.actor.Orientation;
+import ch.epfl.cs107.play.game.areagame.actor.*;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
@@ -21,10 +19,8 @@ import java.util.List;
 
 public class Bomb extends Item implements Interactor {
     private InteractionHandler handler;
+    private Animation animation;
     private boolean isPlaced = false;
-    private boolean placing = false;
-    private final static float COOLDOWN = 4.f;
-    private float time = 0.f;
     private boolean exploded;
 
     /**
@@ -34,8 +30,10 @@ public class Bomb extends Item implements Interactor {
      * @param position (DiscreteCoordinates): position of the entity on the map
      */
     public Bomb(Area area, Orientation orientation, DiscreteCoordinates position){
-        super(area, orientation, position, "other/bomb", 0.6f);
+        super(area, orientation, position, "other/bomb-icon", 0.6f);
         handler = new InteractionHandler();
+        Sprite[] sprites = Sprite.extractSprites("other/bomb",7,.6f,.6f,this,16,16);
+        animation = new Animation(6,sprites,false);
         exploded = false;
     }
 
@@ -67,9 +65,8 @@ public class Bomb extends Item implements Interactor {
         super.update(deltaTime);
         // Cooldown before the explosion of the bomb
         if (isPlaced) {
-            if (time < COOLDOWN) {
-                time += deltaTime;
-            } else {
+            animation.update(deltaTime);
+           if (animation.isCompleted()){
                 explode();
             }
         }
@@ -90,7 +87,7 @@ public class Bomb extends Item implements Interactor {
     @Override
     public void draw(Canvas canvas) {
         if (!isCollected() || isPlaced) {
-            sprite.draw(canvas);
+            animation.draw(canvas);
         }
     }
 

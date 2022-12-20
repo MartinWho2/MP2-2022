@@ -21,6 +21,9 @@ public class DarkLord extends Enemy{
     private float lastShotTime;
     private float hp;
     static final float MAX_HP = 7;
+    private boolean tookRecentlyDamage = false;
+    private float blinkTimer;
+    private final static float BLINK_TIME = 0.8f;
 
     /**
      * Init all usefull elements of the class
@@ -58,6 +61,7 @@ public class DarkLord extends Enemy{
             die();
 
         } else {
+            tookRecentlyDamage = true;
             hp -= damages;
         }
     }
@@ -74,7 +78,10 @@ public class DarkLord extends Enemy{
 
     @Override
     public void draw(Canvas canvas) {
-        animationsMove[roomOrientation.ordinal()].draw(canvas);
+        // Draws the dark lord
+        // If he was recently touched he will blink
+        if (!tookRecentlyDamage || ((blinkTimer*5)%2) >= 1)
+            animationsMove[roomOrientation.ordinal()].draw(canvas);
     }
 
     /**
@@ -88,6 +95,9 @@ public class DarkLord extends Enemy{
         return new Orientation[]{Orientation.DOWN,Orientation.UP};
     }
 
+    /**
+     * Creates a new FireBallDarkLord
+     */
     private void summonFlameSkull(){
         Orientation[] flameSkullVectorsOrientation = chooseNextMove();
         for (Orientation orientation: flameSkullVectorsOrientation) {
@@ -96,8 +106,8 @@ public class DarkLord extends Enemy{
     }
 
     /**
-     * Compute probability to choose his orientation of dispalcement, this function makes it more likely
-     * to the boss to go to the middle of the side where he stands
+     * Compute probability to choose his orientation of displacement, this function makes it more likely
+     * to the boss to go to the middle than to the side where he stands
      * @return (float): probability to move in a direction
      */
     private float getProbaOfMove(){
@@ -110,6 +120,14 @@ public class DarkLord extends Enemy{
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+        // Makes the dark lord blink if he was touched
+        if (tookRecentlyDamage){
+            blinkTimer += deltaTime;
+            if (blinkTimer > BLINK_TIME){
+                blinkTimer = 0;
+                tookRecentlyDamage = false;
+            }
+        }
         // Cooldown to avoid flameSkull spamming
         lastShotTime += deltaTime;
         if (lastShotTime > COOLDOWN_SHOOT){

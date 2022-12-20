@@ -7,11 +7,15 @@ import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRogueActor;
+import ch.epfl.cs107.play.game.icrogue.actor.items.Key;
+import ch.epfl.cs107.play.game.icrogue.actor.items.Sword;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
+import ch.epfl.cs107.play.game.icrogue.area.level0.Level0;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.io.XMLTexts;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
+import ch.epfl.cs107.play.math.TextAlign;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
@@ -26,7 +30,8 @@ public class Forgeron extends ICRogueActor {
     private boolean displayNextText;
     private String textKey;
     private int counter;
-    static final String[] dialogKey = new String[]{"text-forgeron-1", "text-forgeron-2", "text-forgeron-3", "text-forgeron-4"};
+    static final String[] dialogKey = new String[]{"text-forgeron-1", "text-forgeron-2", "text-forgeron-3", "text-forgeron-4",
+    "text-forgeron-5","text-forgeron-6"};
     private int dialogIndex;
     private boolean finishedDialog;
 
@@ -39,8 +44,10 @@ public class Forgeron extends ICRogueActor {
     public Forgeron(Area area, Orientation orientation, DiscreteCoordinates spawn) {
         super(area, orientation, spawn);
         dialogIndex = 0;
-        message = new TextGraphics(XMLTexts.getText(dialogKey[dialogIndex++]), 0.4f, Color.WHITE);
+        message = new TextGraphics(XMLTexts.getText(dialogKey[dialogIndex++]), 0.4f, Color.WHITE,Color.BLACK,0f,
+                false,false, new Vector(0,1), TextAlign.Horizontal.CENTER, TextAlign.Vertical.BOTTOM,1,1);
         message.setParent(this);
+
         message.setAnchor(new Vector(0, 1f));
         sprite = new Sprite("zelda/player", 1.f, 1.f, this, new RegionOfInterest(0, 0, 16, 32));
         enterArea(area, new DiscreteCoordinates(spawn.x, spawn.y));
@@ -63,16 +70,21 @@ public class Forgeron extends ICRogueActor {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+        // If the text needs to be changed
         if (displayNextText && !finishedDialog) {
             if (counter < XMLTexts.getText(dialogKey[dialogIndex]).length()) {
+                // Increase the message string length by one character
                 message.setText(XMLTexts.getText(dialogKey[dialogIndex]).substring(0,++counter));
             } else {
+                // Ends the display of the current message
                 displayNextText = false;
                 dialogIndex++;
                 counter = 0;
             }
             if (dialogIndex == dialogKey.length) {
+                // Makes a Boss key spawn
                 finishedDialog = true;
+                new Key(getOwnerArea(), Orientation.DOWN,getCurrentMainCellCoordinates().jump(0,-2), Level0.BOSS_KEY_ID);
                 ICRogueRoom area = (ICRogueRoom) getOwnerArea();
                 area.tryToFinishRoom();
             }

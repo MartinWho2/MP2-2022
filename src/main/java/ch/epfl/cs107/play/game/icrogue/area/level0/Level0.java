@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Level0 extends Level {
-    private final int PART_1_KEY_ID = 1;
-    private final int BOSS_KEY_ID = 2;
+    private final static int PART_1_KEY_ID = 1;
+    public final static int BOSS_KEY_ID = 2;
     public Level0(boolean randomMap){
         super(randomMap,new DiscreteCoordinates(1,0),RoomType.NORMAL.getArrayOfRooms(), 4,2);
     }
@@ -123,7 +123,7 @@ public class Level0 extends Level {
     }
 
     public void generateFinalMap(){
-        generateMap2();
+        generateMap1();
     }
 
     /**
@@ -132,12 +132,12 @@ public class Level0 extends Level {
     public void generateMap1(){
         DiscreteCoordinates room00 = new DiscreteCoordinates(0, 0);
         setRoom(room00, new Level0KeyRoom(room00, PART_1_KEY_ID));
-        setRoomConnector(room00, "icrogue/level000", Level0Room.Level0Connectors.E);
+        setRoomConnector(room00, "icrogue/level010", Level0Room.Level0Connectors.E);
         lockRoomConnector(room00, Level0Room.Level0Connectors.E,  PART_1_KEY_ID);
 
         DiscreteCoordinates room10 = new DiscreteCoordinates(1, 0);
         setRoom(room10, new Level0Room(room10));
-        setRoomConnector(room10, "icrogue/level010", Level0Room.Level0Connectors.W);
+        setRoomConnector(room10, "icrogue/level000", Level0Room.Level0Connectors.W);
     }
 
     /**
@@ -177,7 +177,7 @@ public class Level0 extends Level {
     protected enum RoomType{
         TURRET (2),
         STAFF (1),
-        BOSS_KEY (1),
+        BOSS_KEY (0),
         SPAWN (1),
         NORMAL(1),
         BOMB(1),

@@ -15,7 +15,7 @@ import ch.epfl.cs107.play.window.swing.SwingWindow;
  */
 public class Play {
 
-	private static final int WINDOW_SIZE = 800;
+	private static final int WINDOW_SIZE = 550;
 	/** One second in nanosecond */
     private static final float ONE_SEC = 1E9f;
 	public static final int WINDOW_HEIGHT = WINDOW_SIZE;

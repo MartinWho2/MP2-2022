@@ -528,7 +528,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
          */
         @Override
         public void interactWith(Sword sword, boolean isCellInteraction) {
-            if (!sword.isCollected()){
+            if (!sword.isCollected() && wantsInteractionInFront && !isCellInteraction){
                 sword.collect(itemHandler);
                 inventory.addItem(sword);
                 ((ICRogueRoom)getOwnerArea()).tryToFinishRoom();

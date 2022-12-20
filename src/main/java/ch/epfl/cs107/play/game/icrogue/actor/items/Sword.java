@@ -48,7 +48,17 @@ public class Sword extends Item implements Interactor {
     }
 
     @Override
+    public boolean takeCellSpace() {
+        return !isCollected();
+    }
+
+    @Override
     public boolean isViewInteractable() {
+        // If it is not collected, always true
+        if (!isCollected()){
+            return true;
+        }
+        // Otherwise returns if it is currently being used
         return isBeingUsed;
     }
 
