@@ -114,8 +114,8 @@ public class Sword extends Item implements Interactor {
         @Override
         public void interactWith(FireBallDarkLord fireBallDarkLord, boolean isCellInteraction) {
             // reorientate de fireball
-            if (!isCellInteraction) {
-                System.out.println("orientation : "+ getOrientation());
+            if (!isCellInteraction || getOrientation().opposite().equals(fireBallDarkLord.getOrientation())) {
+                System.out.println("orientation : " + getOrientation());
                 fireBallDarkLord.repulse(getOrientation());
             }
         }

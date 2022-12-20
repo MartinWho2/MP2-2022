@@ -11,6 +11,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.DarkLord;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
+import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.game.icrogue.visualEffects.Explosion;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
@@ -28,6 +29,11 @@ public class FireBallDarkLord extends Projectiles {
     private boolean shouldExplose;
     private boolean multipleExplosion;
     private boolean switchedDirection;
+    private boolean wantToSwitch;
+    private Orientation nextOrientation;
+    private boolean wantToExplod;
+    public static final float MAX_TIMER = 0.4f;
+    private float timer = 0;
 
     /**
      * Init useful attributes
@@ -48,6 +54,8 @@ public class FireBallDarkLord extends Projectiles {
         exploded = false;
         shouldExplose = false;
         switchedDirection = false;
+        wantToSwitch = false;
+        wantToExplod = false;
     }
 
     @Override
@@ -56,6 +64,28 @@ public class FireBallDarkLord extends Projectiles {
         animation[getOrientation().ordinal()].update(deltaTime);
         if (shouldExplose) {
             explode();
+        }
+
+        if (wantToExplod) {
+            timer += deltaTime;
+            if (timer >= MAX_TIMER && !switchedDirection) {
+                explode();
+                wantToExplod = false;
+                timer = 0;
+            }
+        }
+
+        if (wantToSwitch) {
+            if (isTargetReached()) {
+                resetMotion();
+                setCurrentPosition(getCurrentMainCellCoordinates().toVector());
+                System.out.println(nextOrientation);
+                multipleExplosion = true;
+                orientate(nextOrientation);
+                //animation[getOrientation().ordinal()].setAnchor(new Vector(0.69f, 0));
+                switchedDirection = true;
+                wantToSwitch = false;
+            }
         }
 
     }
@@ -99,6 +129,7 @@ public class FireBallDarkLord extends Projectiles {
             return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
         }
         return cells;
+
     }
 
     /**
@@ -120,13 +151,22 @@ public class FireBallDarkLord extends Projectiles {
      * @param newOrientation (Orientation): new orientation
      */
     public void repulse(Orientation newOrientation) {
+
         if (!switchedDirection) {
-            resetMotion();
-            setCurrentPosition(getCurrentMainCellCoordinates().toVector());
-            System.out.println( newOrientation);
-            multipleExplosion = true;
-            orientate(newOrientation);
-            animation[getOrientation().ordinal()].setAnchor(new Vector(0.69f, 0));
+            if (isTargetReached()) {
+                System.out.println("is target reached: " + isTargetReached());
+                System.out.println(isTargetReached());
+                resetMotion();
+                setCurrentPosition(getCurrentMainCellCoordinates().toVector());
+                System.out.println(newOrientation);
+                multipleExplosion = true;
+                orientate(newOrientation);
+
+                //animation[getOrientation().ordinal()].setAnchor(new Vector(0.69f, 0));
+                switchedDirection = true;
+            }
+            nextOrientation = newOrientation;
+            wantToSwitch = true;
             switchedDirection = true;
         }
     }
@@ -156,9 +196,10 @@ public class FireBallDarkLord extends Projectiles {
             // damage the player
             if (exploded) {
                 player.damage(getDamages());
-            } else if (isCellInteraction) {
-                player.damage(getDamages());
-                explode();
+            } else if (isCellInteraction && !switchedDirection) {
+                wantToExplod = true;
+    /*            player.damage(getDamages());
+                explode();*/
             }
         }
 
@@ -167,6 +208,7 @@ public class FireBallDarkLord extends Projectiles {
             // damage the darklord
             if (exploded) {
                 darkLord.damage(getDamages());
+                ((ICRogueRoom)getOwnerArea()).tryToFinishRoom();
             }
         }
     }

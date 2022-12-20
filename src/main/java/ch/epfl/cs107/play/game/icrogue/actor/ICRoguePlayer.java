@@ -276,7 +276,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         }
         // Display the right health bar
         if ((int)hp > 0) {
-            healthBarSprites[(int)hp - 1].draw(canvas);
+            healthBarSprites[((int)hp - 1)%5].draw(canvas);
         }
     }
 
