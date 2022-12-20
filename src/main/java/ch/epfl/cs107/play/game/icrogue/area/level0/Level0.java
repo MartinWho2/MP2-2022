@@ -59,6 +59,7 @@ public class Level0 extends Level {
             case 4-> setRoom(roomCoord, new Level0Room(roomCoord));
             case 5 -> setRoom(roomCoord, new Level0BombRoom(roomCoord));
             case 6 -> setRoom(roomCoord, new Level0SwordRoom(roomCoord));
+            case 7 -> setRoom(roomCoord, new Level0SkeletonRoom(roomCoord));
         }
     }
 
@@ -180,7 +181,8 @@ public class Level0 extends Level {
         SPAWN (1),
         NORMAL(1),
         BOMB(1),
-        SWORD(1);
+        SWORD(1),
+        SKELETON(1);
         final int roomType;
         RoomType(int value){
             this.roomType = value;
