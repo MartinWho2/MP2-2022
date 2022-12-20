@@ -41,7 +41,6 @@ public abstract class CollectableAreaEntity extends AreaEntity{
             isCollected = getOwnerArea().unregisterActor(this);
         }
     }
-
     public boolean isCollected(){
         return isCollected;
     }

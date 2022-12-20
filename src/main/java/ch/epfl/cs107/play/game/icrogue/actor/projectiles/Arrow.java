@@ -54,9 +54,7 @@ public class Arrow extends Projectiles{
 
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
-
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
-
     }
 
     @Override
@@ -64,13 +62,11 @@ public class Arrow extends Projectiles{
         other.acceptInteraction(handler , isCellInteraction);
     }
 
-
-
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(ICRoguePlayer player, boolean isCellInteraction) {
             consume();
-            player.kill();
+            player.damage(1);
             // more
         }
 

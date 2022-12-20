@@ -141,7 +141,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         Keyboard keyboard = getOwnerArea().getKeyboard();
         displacementManagement();
         // Compute aiming arrows direction
-        orientateAiming(keyboard);
+        orientateAiming();
 
 
         Animation currentStaffAnimation = animationsStaff[currentOrientation.ordinal()];
@@ -228,9 +228,9 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
     /**
      * This function compute in which direction the player is aiming with the arrow keys
-     * @param keyboard (Keyboard): not null
      */
-    private void orientateAiming(Keyboard keyboard){
+    private void orientateAiming(){
+        Keyboard keyboard = getOwnerArea().getKeyboard();
         if (keyboard.get(Keyboard.LEFT).isPressed()){
             useItemWithDirection(Orientation.LEFT);
         }else if (keyboard.get(Keyboard.RIGHT).isPressed()){
@@ -450,7 +450,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         @Override
         public void interactWith(Cherry cherry, boolean isCellInteraction) {
             if (isCellInteraction){
-                cherry.collect();
+                inventory.addItem(cherry);
+                cherry.collect(itemHandler);
                 ICRogueRoom area = (ICRogueRoom) getOwnerArea();
                 area.tryToFinishRoom();
             }
@@ -610,6 +611,15 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 swordAnimationOn = true;
                 sword.useItem(getOwnerArea(), currentOrientation, getCurrentMainCellCoordinates());
             }
+        }
+
+        @Override
+        public void canUseItem(Cherry cherry) {
+            if (hp < HP_MAX){
+                hp++;
+            }
+            inventory.removeItem(cherry);
+            orientateAiming();
         }
     }
 }

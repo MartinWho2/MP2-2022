@@ -20,7 +20,7 @@ public class DarkLord extends Enemy{
     private final int MOVEMENT_FRAMES = 24;
     private float lastShotTime;
     private float hp;
-    static final float MAX_HP = 1;
+    static final float MAX_HP = 7;
 
     /**
      * Init all usefull elements of the class
@@ -31,7 +31,6 @@ public class DarkLord extends Enemy{
     public DarkLord(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position, "zelda/darkLord", 1f);
         roomOrientation = orientation;
-        System.out.println(orientation);
 
         Orientation[] orientations = new Orientation[]{Orientation.UP, Orientation.LEFT, Orientation.DOWN, Orientation.RIGHT};
         // animations = Sprite.extractSprites("zelda/darkLord",3,1.5f,1.5f,this,32,32,orientations);

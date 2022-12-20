@@ -7,6 +7,7 @@ import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.DarkLord;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
@@ -161,6 +162,11 @@ public class Bomb extends Item implements Interactor {
             if (isPlaced && exploded) {
                 skeleton.die();
             }
+        }
+
+        @Override
+        public void interactWith(DarkLord darkLord, boolean isCellInteraction) {
+            darkLord.damage(1);
         }
     }
 }

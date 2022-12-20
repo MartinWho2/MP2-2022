@@ -69,7 +69,6 @@ public class ICRogue extends AreaGame{
 
             }
         });
-        System.out.println(!isPaused());
         Keyboard keyboard = currentArea.getKeyboard();
         // If R is pressed, restarts a new level
         if (keyboard.get(Keyboard.R).isPressed()){

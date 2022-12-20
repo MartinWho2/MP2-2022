@@ -36,7 +36,7 @@ public class Inventory extends Entity {
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             if (inventory[i] != null) {
                 itemImages[i] = new ImageGraphics(inventory[i].getTitle(), 0.4f, 0.4f,
-                        new RegionOfInterest(0, 0, 67, 20), true);
+                        new RegionOfInterest(0, 0, 10000, 10000), true);
                 itemImages[i].setParent(this);
                 itemImages[i].setAnchor(new Vector(inventorySizeTiles[0] / 4.45f * i + inventorySizeTiles[0] / 12,
                         0.17f));
@@ -105,7 +105,6 @@ public class Inventory extends Entity {
     public void changeItem(HorizontalDirection a){
         currentItem =  (currentItem + a.getType()) % INVENTORY_SIZE;
         currentItem += currentItem < 0 ? 4 : 0;
-        System.out.println(currentItem);
         // shift selector to right ot left
         selectorAnimations.setAnchor(new Vector(inventorySizeTiles[0]/4.45f *currentItem, 0));
     }

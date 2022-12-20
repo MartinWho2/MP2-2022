@@ -8,7 +8,6 @@ public class Level0SkeletonRoom extends Level0EnemyRoom{
 
     /**
      * Init useful attributes
-     *
      * @param roomCoordinates (DiscreteCoordinates): room coordinates on the roomMap
      */
     public Level0SkeletonRoom(DiscreteCoordinates roomCoordinates) {
@@ -18,6 +17,7 @@ public class Level0SkeletonRoom extends Level0EnemyRoom{
     @Override
     protected void createArea() {
         super.createArea();
+        // Add a skeleton
         new Skeleton(this, Orientation.DOWN, new DiscreteCoordinates(4, 5));
     }
 }
