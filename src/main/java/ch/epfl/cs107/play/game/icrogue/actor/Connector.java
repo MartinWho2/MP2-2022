@@ -22,6 +22,37 @@ public class Connector extends AreaEntity {
     private Sprite sprite;
     private HashMap<ConnectorType, Sprite> typeToSprite = new HashMap<>();
 
+    /**
+     * Setup all connector types and their corresponding type, and other useful attributes
+     * @param area (Area): Owner area of the connectors
+     * @param orientation (Orientation): Orientation of the connectors
+     * @param position (DiscreteCoordinates): Position of the connectors in the room
+     * @param key_id (int): key id
+     */
+    public Connector(Area area, Orientation orientation, DiscreteCoordinates position, int key_id) {
+        super(area, orientation, position);
+        this.KEY_ID = key_id;
+        typeToSprite.put(ConnectorType.INVISIBLE, new Sprite("icrogue/invisibleDoor_"+ orientation.ordinal(),
+                (orientation.ordinal() + 1) % 2+1 , orientation.ordinal()%2+1 , this));
+        typeToSprite.put(ConnectorType.CLOSED, new Sprite ("icrogue/door_"+ orientation.ordinal () ,
+                (orientation.ordinal () +1) %2+1 , orientation . ordinal () %2+1 , this));
+        typeToSprite.put(ConnectorType.LOCKED, new Sprite("icrogue/lockedDoor_"+ orientation.ordinal (),
+                (orientation.ordinal () +1) %2+1 , orientation.ordinal () %2+1 , this));
+        typeToSprite.put(ConnectorType.CRACKED, new Sprite("other/forgeronDoor_"+orientation.ordinal(),
+                (orientation.ordinal()+1)%2+1,orientation.ordinal()%2+1,this));
+        typeToSprite.put(ConnectorType.OPEN,null);
+        sprite = typeToSprite.get(state);
+    }
+
+    /**
+     *  Alternative constructor without KEY_ID
+     * @param area (Area): Owner area of the connectors
+     * @param orientation (Orientation): Orientation of the connectors
+     * @param position (DiscreteCoordinates): Position of the connectors in the room
+     */
+    public  Connector(Area area, Orientation orientation, DiscreteCoordinates position) {
+        this(area, orientation, position, NO_KEY_ID); // Set connector without key to unlock key
+    }
 
     @Override
     public void draw(Canvas canvas) {
@@ -136,7 +167,6 @@ public class Connector extends AreaEntity {
 
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
-        // System.out.println("je suis sur la cell" + isCellInteraction);
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }
 }

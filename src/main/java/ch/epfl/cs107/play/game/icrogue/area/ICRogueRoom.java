@@ -40,7 +40,8 @@ public abstract class ICRogueRoom extends Area implements Logic {
 
     public void playerEnters() {
         this.hasPlayerEntered = true;
-        openConnectorsClosed();
+        tryToFinishRoom();
+        //openConnectorsClosed();
     }
 
     public ICRogueRoom(List<DiscreteCoordinates > connectorsCoordinates ,

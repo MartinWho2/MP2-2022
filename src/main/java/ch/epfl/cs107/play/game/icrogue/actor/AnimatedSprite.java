@@ -1,6 +1,5 @@
 package ch.epfl.cs107.play.game.icrogue.actor;
 
-import ch.epfl.cs107.play.game.Updatable;
 import ch.epfl.cs107.play.game.actor.Graphics;
 import ch.epfl.cs107.play.game.areagame.actor.Animation;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;

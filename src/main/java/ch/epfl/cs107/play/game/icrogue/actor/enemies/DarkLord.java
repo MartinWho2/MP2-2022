@@ -6,6 +6,7 @@ import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBallDarkLord;
+import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Vector;
@@ -28,7 +29,7 @@ public class DarkLord extends Enemy{
 
         Orientation[] orientations = new Orientation[]{Orientation.UP, Orientation.LEFT, Orientation.DOWN, Orientation.RIGHT};
         // animations = Sprite.extractSprites("zelda/darkLord",3,1.5f,1.5f,this,32,32,orientations);
-        spritesMove = Sprite.extractSprites("zelda/darkLord", 4, 1.5f, 1.5f, this,
+        spritesMove = Sprite.extractSprites("zelda/darkLord", 3, 1.5f, 1.5f, this,
                 32, 32, new Vector(.15f, 0.3f), orientations);
         animationsMove = Animation.createAnimations(4, spritesMove);
         lastShotTime = 0.f;
@@ -43,7 +44,10 @@ public class DarkLord extends Enemy{
     public void damage(float damages) {
         System.out.println("les hp sont " + hp);
         if (hp - damages <= 0) {
+            // If the boss is dead, the challenge is succeeded
+            ((ICRogueRoom)(getOwnerArea())).tryToFinishRoom();
             die();
+
         } else {
             hp -= damages;
         }

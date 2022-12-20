@@ -4,18 +4,14 @@ import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.Interactable;
 import ch.epfl.cs107.play.game.areagame.actor.Interactor;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
-import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
-import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
-import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
-import ch.epfl.cs107.play.game.icrogue.visualEffects.MacronExplosion;
+import ch.epfl.cs107.play.game.icrogue.visualEffects.Explosion;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
-import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
 import java.util.ArrayList;
@@ -79,7 +75,7 @@ public class Bomb extends Item implements Interactor {
         exploded = true;
         List<DiscreteCoordinates> coords = getFieldOfViewCells();
         for (DiscreteCoordinates coord : coords) {
-            new MacronExplosion(getOwnerArea(), getOrientation(), coord);
+            new Explosion(getOwnerArea(), getOrientation(), coord);
         }
         getOwnerArea().unregisterActor(this);
     }

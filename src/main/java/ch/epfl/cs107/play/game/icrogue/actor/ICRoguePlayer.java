@@ -1,6 +1,5 @@
 package ch.epfl.cs107.play.game.icrogue.actor;
 
-import ch.epfl.cs107.play.game.actor.TextGraphics;
 import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.*;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
@@ -14,7 +13,7 @@ import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
-import java.awt.Color;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,7 +28,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private Sprite sprite;
     private TextGraphics message;
     private InteractionHandler handler;
-    private boolean wantsKeyInteraction;
+    private boolean wantsInteractionInFront;
     private HashMap<Orientation,Sprite> orientationToSprite = new HashMap<>();
     private ArrayList<Integer> keysCollected = new ArrayList<>();
     private boolean isChangingRoom = false;
@@ -41,18 +40,23 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private Sprite[][] spritesStaff;
     private Sprite[][] spritesSword;
     private Animation[] currentAnimation;
-    private  Animation[] animationsMove;
-    private  Animation[] animationsStaff;
-    private  Animation[] animationsSword;
+    private final Animation[] animationsMove;
+    private final Animation[] animationsStaff;
+    private final Animation[] animationsSword;
     private Animation currentStaffAnimation;
     private Animation currentSwordAnimation;
     private boolean swordAnimationOn;
     private boolean staffAnimationOn;
     private float shootTimeDiff = 0;
-    private float RELOAD_COOLDOWN = 0.8f;
-    private ItemHandler itemHandler;
-    private Inventory inventory;
+    private final static float RELOAD_COOLDOWN = 0.8f;
+    private final ItemHandler itemHandler;
+    private final Inventory inventory;
+    private boolean isInvicible;
+    private final static float INVINCIBILITY_TIME = 1f;
+    private float immunityTimer;
     private Orientation orientationAiming;
+    private Orientation currentOrientation;
+    private boolean isAiming;
 
     /**
      * Demo actor
@@ -61,12 +65,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     public ICRoguePlayer(Area owner, Orientation orientation, DiscreteCoordinates coordinates) {
         super(owner, orientation, coordinates);
         this.hp = HP_MAX;
-        wantsKeyInteraction = false;
+        wantsInteractionInFront = false;
 
-        message = new TextGraphics(Integer.toString((int) hp), 0.4f, Color.BLUE);
-
-        message.setParent(this);
-        message.setAnchor(new Vector(-0.3f, 0.1f));
         resetMotion();
         handler = new InteractionHandler();
         //Orientation[] spriteOrientation = new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT};
@@ -97,7 +97,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     }
 
     public void damage(float damages) {
-        this.hp = this.hp >= damages ? this.hp - damages : 0;
+        if (!isInvicible){
+            this.hp = this.hp >= damages ? this.hp - damages : 0;
+            isInvicible = true;
+        }
     }
 
     @Override
@@ -122,41 +125,50 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
     @Override
     public void update(float deltaTime) {
-        message.setText(hp + "");
+        currentOrientation = getOrientation();
+        // Set the orientation of the animation if the player aim with the aiming arrows
+        if (orientationAiming != null){
+            currentOrientation = orientationAiming;
+        }
+        // Update moving animation if there is displacement
         if (isDisplacementOccurs()) {
             animationsMove[getOrientation().ordinal()].update(deltaTime);
         }
 
-        Keyboard keyboard= getOwnerArea().getKeyboard();
+        // Manage all displacement
+        Keyboard keyboard = getOwnerArea().getKeyboard();
+        displacementManagement();
+        // Compute aiming arrows direction
+        orientateAiming(keyboard);
 
-        moveIfPressed(Orientation.LEFT, keyboard.get(Keyboard.LEFT));
-        moveIfPressed(Orientation.UP, keyboard.get(Keyboard.UP));
-        moveIfPressed(Orientation.RIGHT, keyboard.get(Keyboard.RIGHT));
-        moveIfPressed(Orientation.DOWN, keyboard.get(Keyboard.DOWN));
 
-        Animation currentStaffAnimation = animationsStaff[getOrientation().ordinal()];
-        Animation currentSwordAnimation = animationsSword[getOrientation().ordinal()];
+        Animation currentStaffAnimation = animationsStaff[currentOrientation.ordinal()];
+        Animation currentSwordAnimation = animationsSword[currentOrientation.ordinal()];
         if (staffAnimationOn) {
             currentStaffAnimation.update(deltaTime);
         }
         if (swordAnimationOn) {
-            currentAnimation[getOrientation().ordinal()].update(deltaTime);
+            currentSwordAnimation.update(deltaTime);
         }
         if (currentSwordAnimation.isCompleted()){
             swordAnimationOn = false;
             currentAnimation = animationsMove;
+            orientationAiming = null;
+            currentSwordAnimation.reset();
         }
         if (currentStaffAnimation.isCompleted()) {
             staffAnimationOn = false;
             currentAnimation = animationsMove;
+            orientationAiming = null;
+            currentStaffAnimation.reset();
         }
 
         shootTimeDiff += (shootTimeDiff < RELOAD_COOLDOWN) ? deltaTime : 0;
         if (keyboard.get(Keyboard.X).isPressed()){
             inventory.useCurrentItem();
         }
-        if (keyboard.get(Keyboard.W).isPressed() || keyboard.get(Keyboard.W).isReleased()){
-            wantsKeyInteraction = !wantsKeyInteraction;
+        if (keyboard.get(Keyboard.F).isPressed() || keyboard.get(Keyboard.F).isReleased()){
+            wantsInteractionInFront = !wantsInteractionInFront;
         }
         if ((keyboard.get(Keyboard.E).isPressed())) {
             inventory.changeItem(Inventory.HorizontalDirection.RIGHT);
@@ -164,6 +176,15 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
         if (keyboard.get(Keyboard.Q).isPressed()){
             inventory.changeItem(Inventory.HorizontalDirection.LEFT);
+        }
+
+        // Manage invincibility when the user is damaged
+        if (isInvicible){
+            immunityTimer += deltaTime;
+            if ( immunityTimer >= INVINCIBILITY_TIME){
+                immunityTimer = 0;
+                isInvicible = false;
+            }
         }
         super.update(deltaTime);
 
@@ -192,11 +213,70 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         }
     }
 
+    /**
+     * Manage all displacement of the player
+     */
+    private void displacementManagement() {
+        Keyboard keyboard = getOwnerArea().getKeyboard();
+        // Check which keys are pressed and move in consequences
+        moveIfPressed(Orientation.LEFT, keyboard.get(Keyboard.A));
+        moveIfPressed(Orientation.UP, keyboard.get(Keyboard.W));
+        moveIfPressed(Orientation.RIGHT, keyboard.get(Keyboard.D));
+        moveIfPressed(Orientation.DOWN, keyboard.get(Keyboard.S));
+    }
+
+    /**
+     * This function compute in which direction the player is aiming with the arrow keys
+     * @param keyboard (Keyboard): not null
+     */
+    private void orientateAiming(Keyboard keyboard){
+        if (keyboard.get(Keyboard.LEFT).isPressed()){
+            useItemWithDirection(Orientation.LEFT);
+        }else if (keyboard.get(Keyboard.RIGHT).isPressed()){
+            useItemWithDirection(Orientation.RIGHT);
+        }else if (keyboard.get(Keyboard.UP).isPressed()){
+            useItemWithDirection(Orientation.UP);
+        }else if (keyboard.get(Keyboard.DOWN).isPressed()){
+            useItemWithDirection(Orientation.DOWN);
+        }
+    }
+
+    /**
+     * Use the item with an arrow key instead of using the X key
+     * @param orientation (Orientation): Use direction, not null
+     */
+    private void useItemWithDirection(Orientation orientation){
+        setOrientationAiming(orientation);
+        if (!inventory.useCurrentItem()){
+            setOrientationAiming(null);
+        }
+    }
+
+    /**
+     * Set the current orientation to the direction in which to use the item
+     * @param orientation (Orientation): Use orientation, not null
+     */
+    public void setOrientationAiming(Orientation orientation){
+        orientationAiming = orientation;
+        if (orientation != null){
+            currentOrientation = orientation;
+        }else{
+            currentOrientation = getOrientation();
+        }
+    }
+
     @Override
     public void draw(Canvas canvas) {
-        currentAnimation[getOrientation().ordinal()].draw(canvas);
-        message.draw(canvas);
-
+        // Blink if player has immunity
+        if (!isInvicible || (((immunityTimer * 5)%2) >= 1)){
+            if (orientationAiming != null)
+                currentOrientation = orientationAiming;
+            currentAnimation[currentOrientation.ordinal()].draw(canvas);
+        }
+        // Display the right health bar
+        if ((int)hp > 0) {
+            healthBarSprites[(int)hp - 1].draw(canvas);
+        }
     }
 
     public boolean isWeak() {
@@ -210,8 +290,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     public void kill() {
         this.hp = 0;
     }
-
-    ///Ghost implements Interactable
 
     @Override
     public boolean takeCellSpace() {
@@ -248,8 +326,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         return true;
     }
 
-
-
     public boolean wantsViewInteraction() {
         return true;
     }
@@ -258,10 +334,17 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     public void interactWith(Interactable other, boolean isCellInteraction) {
         other.acceptInteraction(handler , isCellInteraction);
     }
+
+    /**
+     * Classical acceptInteraction method as given in the pdf
+     * @param v (AreaInteractionVisitor) : the visitor
+     * @param isCellInteraction (Specify whether it's a cell interaction)
+     */
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }
+
     public enum Priority{
         VERY_LOW(1),
         LOW(2),
@@ -276,9 +359,12 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             return priority;
         }
     }
+
+    /**
+     * Enum class used to clean up the constructor.
+     * This class is used to create the animations of movements, staff and sword of the player.
+     */
     public enum PlayerAnimations{
-        WAIT(Priority.VERY_LOW,"zelda/player",1,5,true,new Vector(.15f, -.15f),
-                new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT},new int[]{16,32}),
         MOVE(Priority.MEDIUM,"zelda/player",4,4,true,new Vector(.15f, -.15f),
                 new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT},new int[]{16,32}),
         SHOOT(Priority.HIGH,"zelda/player.staff_water",4,4,false,
@@ -306,6 +392,12 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             this.orientations = orientations;
             this.imageSize = imageSize;
         }
+
+        /**
+         * This method is used to create an animation for the given type of the enum which is then returned
+         * @param player (ICRoguePlayer): The ICRoguePlayer
+         * @return (Animation): An array of the 4 animations (for the 4 directions)
+         */
         public Animation[] createAnimations(ICRoguePlayer player){
             int maxSize = Math.max(imageSize[0],imageSize[1]);
             float[] newSize = new float[]{((float)imageSize[0]/maxSize)*1.5f,((float)imageSize[1]/maxSize)*1.5f};
@@ -317,33 +409,61 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     }
 
     private class InteractionHandler implements ICRogueInteractionHandler {
+        /**
+         * Collects the staff if the player wants the front interaction and is standing in front of the staff
+         * @param staff (Staff): not null
+         * @param isCellInteraction (boolean): If the cell is an interaction
+         */
         @Override
         public void interactWith(Staff staff, boolean isCellInteraction) {
-            if (wantsKeyInteraction){
+            if (wantsInteractionInFront && !isCellInteraction){
                 ICRogueRoom area = (ICRogueRoom) getOwnerArea();
                 staff.collect(itemHandler);
                 inventory.addItem(staff);
                 area.tryToFinishRoom();
             }
         }
+
+        /**
+         * Collects the cherry if the player stands on it
+         * @param cherry (Cherry): not null
+         * @param isCellInteraction (boolean): If the cell is an interaction
+         */
         @Override
         public void interactWith(Cherry cherry, boolean isCellInteraction) {
-            cherry.collect();
-            ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-            area.tryToFinishRoom();
+            if (isCellInteraction){
+                cherry.collect();
+                ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+                area.tryToFinishRoom();
+            }
         }
 
+        /**
+         *  If the player is on the key, it gets collected and adds the key to a list
+         * @param key (Key): not null
+         * @param isCellInteraction (boolean): If the cell is an interaction
+         */
         @Override
         public void interactWith(Key key, boolean isCellInteraction) {
-            keysCollected.add(key.getKEY_ID());
-            ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-            key.collect();
-            area.tryToFinishRoom();
+            if (isCellInteraction){
+                keysCollected.add(key.getKEY_ID());
+                ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+                key.collect();
+                area.tryToFinishRoom();
+            }
         }
+
+        /**
+         * If the player has the correct key and uses it in front of the connector, it opens it
+         * Otherwise, if the player is in the connector (which means that it was open), he get transferred in the
+         * corresponding room
+         * @param connector (Connector): not null
+         * @param isCellInteraction (boolean): If the cell is an interaction
+         */
         @Override
         public void interactWith(Connector connector, boolean isCellInteraction) {
 
-            if (!isCellInteraction && keysCollected.contains(connector.getKEY_ID()) && connector.getState().equals(Connector.ConnectorType.LOCKED) && wantsKeyInteraction){
+            if (!isCellInteraction && keysCollected.contains(connector.getKEY_ID()) && connector.getState().equals(Connector.ConnectorType.LOCKED) && wantsInteractionInFront){
                 ICRogueRoom area = (ICRogueRoom)getOwnerArea();
                 area.setConnectorOpen(connector);
             }else if (isCellInteraction && !isDisplacementOccurs()){
@@ -353,6 +473,11 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             }
         }
 
+        /**
+         * If the player is walking on the turret, the turret will die
+         * @param turret (Turret): not null
+         * @param isCellInteraction (boolean): If the cell is an interaction
+         */
         @Override
         public void interactWith(Turret turret, boolean isCellInteraction) {
             if (isCellInteraction){
@@ -362,9 +487,14 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             }
         }
 
+        /**
+         * If the bomb is not collected, add it to the inventory
+         * @param bomb (Bomb): not null
+         * @param isCellInteraction (boolean): If the cell is an interaction
+         */
         @Override
         public void interactWith(Bomb bomb, boolean isCellInteraction) {
-            if (!bomb.isPlaced()) {
+            if (!bomb.isCollected()) {
                 bomb.collect(itemHandler);
                 inventory.addItem(bomb);
                 ICRogueRoom area = (ICRogueRoom) getOwnerArea();
@@ -372,6 +502,11 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             }
         }
 
+        /**
+         * If the sword is not collected yet, collect it and add it to the inventory
+         * @param sword (Sword): not null
+         * @param isCellInteraction (boolean): If the cell is an interaction
+         */
         @Override
         public void interactWith(Sword sword, boolean isCellInteraction) {
             if (!sword.isCollected()){
@@ -381,6 +516,11 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             }
         }
 
+        /**
+         * Used to get what type of cell is in front of the player at any time
+         * @param cell (Cell): not null
+         * @param isCellInteraction (boolean): If the cell is an interaction
+         */
         @Override
         public void interactWith(ICRogueBehavior.ICRogueCell cell, boolean isCellInteraction) {
             if (!isCellInteraction ){
@@ -389,41 +529,55 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         }
 
     }
-
+    // This class is used the same way the ICRogueHandler works
     private class ItemHandler implements ItemUseListener {
+        /**
+         * Tries to pose the bomb either on the cell in front of the player or directly its cells
+         * @param bomb (Bomb): not null
+         */
         @Override
         public void canUseItem(Bomb bomb) {
             if (cellInFront.equals(ICRogueBehavior.ICRogueCellType.WALL) || cellInFront.equals(ICRogueBehavior.ICRogueCellType.HOLE)){
-                bomb.useItem(getOwnerArea(),getOrientation(),getCurrentMainCellCoordinates());
+                bomb.useItem(getOwnerArea(),currentOrientation,getCurrentMainCellCoordinates());
             }else{
-                bomb.useItem(getOwnerArea(),getOrientation(),getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
+                bomb.useItem(getOwnerArea(),currentOrientation,getCurrentMainCellCoordinates().jump(currentOrientation.toVector()));
             }
             inventory.removeItem(bomb);
+            setOrientationAiming(null);
         }
 
+        /**
+         * If the cooldown for the staff is over, uses the staff to shoot a new fireball
+         * @param staff (Staff): not null
+         */
         @Override
         public void canUseItem(Staff staff) {
             if (shootTimeDiff >= RELOAD_COOLDOWN) {
                 shootTimeDiff = 0;
                 currentAnimation = animationsStaff;
-                currentStaffAnimation = animationsStaff[getOrientation().ordinal()];
+                currentStaffAnimation = animationsStaff[currentOrientation.ordinal()];
                 currentStaffAnimation.reset();
                 staffAnimationOn = true;
                 DiscreteCoordinates fireBallSpawn = isDisplacementOccurs() ?
                         getCurrentMainCellCoordinates().jump(getOrientation().toVector()) :
                         getCurrentMainCellCoordinates();
-                staff.useItem(getOwnerArea(), getOrientation(), fireBallSpawn);
+                staff.useItem(getOwnerArea(), currentOrientation, fireBallSpawn);
             }
         }
 
+        /**
+         * If the player is not using the sword or the staff already, uses the useItem method of the sword and
+         * begins the animation
+         * @param sword (Sword): not null
+         */
         @Override
         public void canUseItem(Sword sword) {
             if (!staffAnimationOn && !swordAnimationOn){
                 currentAnimation = animationsSword;
-                currentSwordAnimation = currentAnimation[getOrientation().ordinal()];
+                currentSwordAnimation = currentAnimation[currentOrientation.ordinal()];
                 currentSwordAnimation.reset();
                 swordAnimationOn = true;
-                sword.useItem(getOwnerArea(), getOrientation(), getCurrentMainCellCoordinates());
+                sword.useItem(getOwnerArea(), currentOrientation, getCurrentMainCellCoordinates());
             }
 
         }

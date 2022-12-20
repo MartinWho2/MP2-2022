@@ -12,9 +12,8 @@ import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
-import ch.epfl.cs107.play.game.icrogue.visualEffects.MacronExplosion;
+import ch.epfl.cs107.play.game.icrogue.visualEffects.Explosion;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
-import ch.epfl.cs107.play.math.RegionOfInterest;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
@@ -64,7 +63,7 @@ public class FireBall extends Projectiles {
     }
 
     private void explode(DiscreteCoordinates coord){
-        new MacronExplosion(getOwnerArea(), getOrientation(), coord);
+        new Explosion(getOwnerArea(), getOrientation(), coord);
     }
 
     private class InteractionHandler implements ICRogueInteractionHandler {
@@ -86,10 +85,11 @@ public class FireBall extends Projectiles {
 
         @Override
         public void interactWith(Turret turret, boolean isCellInteraction) {
-            if (!isCellInteraction){
+            // explode and kill the turret
+            if (isCellInteraction){
                 turret.die();
                 consume();
-                explode(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
+                explode(getCurrentMainCellCoordinates());
                 ICRogueRoom area = (ICRogueRoom) getOwnerArea();
                 area.tryToFinishRoom();
             }
@@ -97,7 +97,12 @@ public class FireBall extends Projectiles {
 
         @Override
         public void interactWith(Skeleton skeleton, boolean isCellInteraction) {
-            skeleton.die();
+            // kill skeleton
+            if (isCellInteraction){
+                skeleton.die();
+                consume();
+                explode(getCurrentMainCellCoordinates());
+            }
         }
     }
 }

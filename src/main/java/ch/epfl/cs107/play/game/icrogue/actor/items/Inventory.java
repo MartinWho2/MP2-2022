@@ -66,11 +66,17 @@ public class Inventory extends Entity {
             }
         }
     }
-    public void useCurrentItem(){
+
+    /**
+     * Try to use the item that is chosen by the player
+     * @return (boolean): return whether it was able to try to use the item selected
+     */
+    public boolean useCurrentItem(){
         if (inventory[currentItem] == null){
-            return;
+            return false;
         }
         inventory[currentItem].tryToUseItem();
+        return true;
     }
     public void changeItem(HorizontalDirection a){
         currentItem =  (currentItem + a.getType()) % INVENTORY_SIZE;

@@ -12,19 +12,18 @@ import java.util.List;
 public class Level0 extends Level {
     private final int PART_1_KEY_ID = 1;
     private final int BOSS_KEY_ID = 2;
-    public Level0(){
-        super(new DiscreteCoordinates(2,2),new DiscreteCoordinates(4,2));
-        setFirstRoomName(new DiscreteCoordinates(1,0));
-        //generateFixedMap(2);
-        generateFinalMap();
-    }
     public Level0(boolean randomMap){
         super(randomMap,new DiscreteCoordinates(1,0),RoomType.NORMAL.getArrayOfRooms(), 4,2);
     }
-    public Level0(int TO_TEST_AND_TO_REMOVE){
+    public Level0(){
         this(true);
     }
 
+    /**
+     * Setups the connectors of a given room given the rooms around it
+     * @param map (MapState[][]): A 2-dim array of MapState
+     * @param room (ICRogueRoom): A given room
+     */
     protected void setUpLevelConnector(MapState[][] map, ICRogueRoom room){
         List<DiscreteCoordinates> nearbyRooms = findNearbyRooms(map,new DiscreteCoordinates(room.getRoomCoordinates().x,room.getRoomCoordinates().y),MapState.CREATED);
         for (DiscreteCoordinates roomSetting : nearbyRooms){
@@ -40,6 +39,12 @@ public class Level0 extends Level {
             setRoomConnector(new DiscreteCoordinates(room.getRoomCoordinates().x, room.getRoomCoordinates().y), destination, findRelativeConnectorPos(room.getRoomCoordinates(), roomSetting));
         }
     }
+
+    /**
+     * A basic switch to create a room with indexes corresponding to the ordinal of the enum class
+     * @param nbOfRoomType (int): The number corresponding to the index of the room
+     * @param roomCoord (DiscreteCoordinates): The coordinates of the given room
+     */
     protected void createRoomOfType(int nbOfRoomType, DiscreteCoordinates roomCoord){
         switch (nbOfRoomType){
             case 0 -> setRoom(roomCoord,new Level0TurretRoom(roomCoord));
@@ -57,22 +62,34 @@ public class Level0 extends Level {
         }
     }
 
+    /**
+     * Sets up the connector of the boss room by choosing randomly one of the rooms
+     * @param coords (List<DiscreteCoordinates>): The coordinates of every nearby room not NULL, not null
+     */
     @Override
     protected void setUpBossConnector(List<DiscreteCoordinates> coords) {
+        // Choose a random element in the list
         int i = RandomHelper.roomGenerator.nextInt(0, coords.size());
         DiscreteCoordinates coord = coords.get(i);
         String destination = wholeMap[bossCoordinates.x][bossCoordinates.y].getTitle();
         Level0Room.Level0Connectors connector = findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates);
+        // Calls a method to set up the boss room in function of the side of the entry
         setRoomConnector(new DiscreteCoordinates(coord.x, coord.y), destination, connector);
-        System.out.println("boos connector : " + findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates));
+        System.out.println("boss connector : " + findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates));
+        // Locks the connector of the nearby room
         lockRoomConnector(coord, connector, BOSS_KEY_ID);
         setRoomConnector(bossCoordinates, wholeMap[coord.x][coord.y].getTitle(), findRelativeConnectorPos(bossCoordinates, wholeMap[coord.x][coord.y].getRoomCoordinates()));
         ((Level0BossRoom)wholeMap[bossCoordinates.x][bossCoordinates.y]).setRoomOrientation(connector.getOrientation());
 
     }
 
+    /**
+     * Sets up the forgeron room by choosing randomly a room in a given list and creating the connections
+     * @param coords (List<DiscreteCoordinates>): All non-NULL nearby rooms, not null
+     */
     @Override
     protected void setUpForgeronConnector(List<DiscreteCoordinates> coords) {
+        // Choose a random element in the list
         DiscreteCoordinates coord = coords.get(RandomHelper.roomGenerator.nextInt(0, coords.size()));
         String destination = wholeMap[forgeronCoordinates.x][forgeronCoordinates.y].getTitle();
         Level0Room.Level0Connectors connector = findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), forgeronCoordinates);
@@ -85,11 +102,6 @@ public class Level0 extends Level {
 
     @Override
     protected void generateBossRoom() {
-        for (ICRogueRoom[] rooms: wholeMap) {
-            for (ICRogueRoom room : rooms){
-
-            }
-        }
         setRoom(bossCoordinates, new Level0BossRoom(bossCoordinates,new DiscreteCoordinates(3, 5)));
         System.out.println("the boss is at "+bossCoordinates);
     }

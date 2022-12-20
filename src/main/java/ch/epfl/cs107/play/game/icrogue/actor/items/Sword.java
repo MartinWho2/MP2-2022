@@ -20,7 +20,7 @@ import java.util.List;
 public class Sword extends Item implements Interactor {
     private boolean isBeingUsed;
     private InteractionHandler handler;
-    private final static float ANIMATION_TIME = 1f;
+    private final static float ANIMATION_TIME = .6f;
     private float timer;
 
     @Override
@@ -50,7 +50,8 @@ public class Sword extends Item implements Interactor {
             timer += deltaTime;
             if (timer > ANIMATION_TIME){
                 getOwnerArea().unregisterActor(this);
-            timer = 0;
+                isBeingUsed = false;
+                timer = 0;
             }
         }
     }
@@ -59,10 +60,9 @@ public class Sword extends Item implements Interactor {
     public void useItem(Area area, Orientation orientation, DiscreteCoordinates coords) {
         area.registerActor(this);
         setOwnerArea(area);
-        System.out.println(getOwnerArea());
         setCurrentPosition(coords.toVector());
         orientate(orientation);
-        System.out.println("bonjour je suis olivier de chez carglass  "+getFieldOfViewCells());
+        isBeingUsed = true;
     }
 
     @Override

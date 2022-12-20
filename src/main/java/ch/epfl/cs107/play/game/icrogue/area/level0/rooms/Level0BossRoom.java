@@ -5,7 +5,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.enemies.DarkLord;
 import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
-public class Level0BossRoom extends Level0ItemRoom{
+public class Level0BossRoom extends Level0Room{
     private DiscreteCoordinates bossSpawnCoordinates;
     private Orientation roomOrientation;
     public Level0BossRoom(DiscreteCoordinates roomCoords, DiscreteCoordinates bossSpawnCoordinates){
@@ -30,11 +30,18 @@ public class Level0BossRoom extends Level0ItemRoom{
      }
 
     @Override
+    public boolean challengeCompleted() {
+        return !boss.getIsAlive();
+    }
+
+    @Override
     protected void createArea() {
-        System.out.println("created boss room");
         super.createArea();
-        Cherry cherry = new Cherry(this, Orientation.DOWN,new DiscreteCoordinates(0,0));
-        items.add(cherry);
-        DarkLord boss = new DarkLord(this,roomOrientation, bossSpawnCoordinates);
+        // add lava blocks
+        for (DiscreteCoordinates coord : lavaBlocksCoords) {
+            new Lava(this, coord);
+        }
+        // add boss
+        boss = new DarkLord(this,roomOrientation, bossSpawnCoordinates);
     }
 }
