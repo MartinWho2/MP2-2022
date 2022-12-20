@@ -16,6 +16,13 @@ import ch.epfl.cs107.play.window.Canvas;
 public class Staff extends Item {
     private Sprite[] sprites;
     private Animation animation;
+
+    /**
+     * Init all useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientation): orientation of the skeleton
+     * @param position (DiscreteCoordinates): position of the entity on the map
+     */
     public Staff(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position, "zelda/staff_water.icon", .5f);
         sprites = Sprite.extractSprites("zelda/staff", 7, 1.f, 1.f, this, new Vector(0, 0), 32, 32);
@@ -29,13 +36,13 @@ public class Staff extends Item {
         animation.update(deltaTime);
     }
 
-
     @Override
     public void tryToUseItem() {
         getItemUseListener().canUseItem(this);
     }
 
     public void useItem(Area area, Orientation orientation, DiscreteCoordinates coords) {
+        // spawn a fireball
         new FireBall(area, orientation, coords);
     }
 
@@ -50,6 +57,7 @@ public class Staff extends Item {
     public boolean isViewInteractable() {
         return true;
     }
+
     public boolean isCellInteractable(){return false;}
 
     @Override

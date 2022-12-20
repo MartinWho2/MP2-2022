@@ -5,6 +5,7 @@ import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
+import ch.epfl.cs107.play.game.icrogue.actor.characters.Forgeron;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.DarkLord;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
@@ -28,4 +29,5 @@ public interface ICRogueInteractionHandler extends AreaInteractionVisitor {
     default void interactWith(Bomb bomb, boolean isCellInteraction){}
     default void interactWith(Sword sword, boolean isCellInteraction){}
     default void interactWith(Skeleton skeleton, boolean isCellInteraction){}
+    default void interactWith(Forgeron forgeron, boolean isCellInteraction){}
 }

@@ -7,6 +7,13 @@ import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 public class Cherry extends Item{
+
+    /**
+     * Init all useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientation): orientation of the skeleton
+     * @param position (DiscreteCoordinates): position of the entity on the map
+     */
     public Cherry(Area area, Orientation orientation, DiscreteCoordinates position){
         super(area, orientation, position, "icrogue/cherry", 0.6f);
     }

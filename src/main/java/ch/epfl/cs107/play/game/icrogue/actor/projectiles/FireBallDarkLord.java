@@ -29,6 +29,12 @@ public class FireBallDarkLord extends Projectiles {
     private boolean multipleExplosion;
     private boolean switchedDirection;
 
+    /**
+     * Init useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientate): orientation of the projectile
+     * @param position (DiscreteCoordinates): position of spawn
+     */
     public FireBallDarkLord(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position.jump(orientation.toVector()), 1, 10);
         Orientation[] orientations = new Orientation[]{Orientation.UP,Orientation.LEFT,Orientation.DOWN,Orientation.RIGHT};
@@ -81,8 +87,8 @@ public class FireBallDarkLord extends Projectiles {
     @Override
     public List<DiscreteCoordinates> getFieldOfViewCells() {
         List<DiscreteCoordinates> cells = new ArrayList<>();
-        getOrientation().hisLeft();
-
+        // change field of view if it exploded
+        // else, just return the front cell
         if (exploded) {
             if (multipleExplosion){
                 cells.add(getCurrentMainCellCoordinates().jump(getOrientation().hisRight().toVector()));
@@ -95,6 +101,9 @@ public class FireBallDarkLord extends Projectiles {
         return cells;
     }
 
+    /**
+     * Spawn explosion on cells in field of view and consume the projectile
+     */
     private void explode(){
         exploded = true;
         shouldExplose = false;
@@ -102,34 +111,41 @@ public class FireBallDarkLord extends Projectiles {
         for (DiscreteCoordinates coord : coords) {
             new Explosion(getOwnerArea(), getOrientation(), coord);
         }
-        System.out.println(getFieldOfViewCells());
         consume();
     }
 
-
-    public void repulse() {
+    /**
+     * reorientate the fireball when it is it by reseting motion, recentering fireball in the center
+     * of a cell and chaneg it's orientation
+     * @param newOrientation (Orientation): new orientation
+     */
+    public void repulse(Orientation newOrientation) {
         if (!switchedDirection) {
             resetMotion();
             setCurrentPosition(getCurrentMainCellCoordinates().toVector());
             System.out.println( newOrientation);
             multipleExplosion = true;
-            orientate(getOrientation().opposite());
+            orientate(newOrientation);
+            animation[getOrientation().ordinal()].setAnchor(new Vector(0.69f, 0));
             switchedDirection = true;
         }
     }
+
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(ICRogueBehavior.ICRogueCell cell, boolean isCellInteraction) {
+            // explose if it touches a wall or a connector and spawn a skeleton sometimes
             if ((cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL) ||
                     (cell.getType().equals(ICRogueBehavior.ICRogueCellType.HOLE) && isCellInteraction))  && !exploded) {
                 shouldExplose = true;
-                if (Math.random() < 0.33) {
+                if (Math.random() < 0.33 && !switchedDirection) {
                     new Skeleton(getOwnerArea(), getOrientation(), getCurrentMainCellCoordinates());
                 }
             }
 
         }
         public void interactWith(Connector connector, boolean isCellInteraction){
+            // explose when it touches a connector
             if (!connector.getState().equals(Connector.ConnectorType.OPEN)){
                 shouldExplose = true;
             }
@@ -137,14 +153,18 @@ public class FireBallDarkLord extends Projectiles {
 
         @Override
         public void interactWith(ICRoguePlayer player, boolean isCellInteraction) {
+            // damage the player
             if (exploded) {
                 player.damage(getDamages());
+            } else if (isCellInteraction) {
+                player.damage(getDamages());
+                explode();
             }
         }
 
         @Override
         public void interactWith(DarkLord darkLord, boolean isCellInteraction) {
-            System.out.println();
+            // damage the darklord
             if (exploded) {
                 darkLord.damage(getDamages());
             }

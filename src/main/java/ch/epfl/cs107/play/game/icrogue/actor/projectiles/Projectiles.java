@@ -24,7 +24,14 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
     public int MOVE_DURATION;
     private int damage;
 
-
+    /**
+     * Init useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientate): orientation of the projectile
+     * @param position (DiscreteCoordinates): position of spawn
+     * @param damage (int): damages
+     * @param duration (int): duration
+     */
     public Projectiles(Area area, Orientation orientation, DiscreteCoordinates position, int damage, int duration) {
         super(area, orientation, position);
         this.damage = damage;
@@ -32,6 +39,13 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
         isConsumed = false;
         damage = DEFAULT_DAMAGE;
     }
+
+    /**
+     * Init useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientate): orientation of the projectile
+     * @param position (DiscreteCoordinates): position of spawn
+     */
     public Projectiles(Area area, Orientation orientation, DiscreteCoordinates position) {
         this(area, orientation, position, DEFAULT_DAMAGE, DEFAULT_MOVE_DURATION);
     }
@@ -42,6 +56,7 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
         move(MOVE_DURATION);
         super.update(deltaTime);
     }
+
 
     private void setDamage(int damage) {
         this.damage = damage;
@@ -84,8 +99,6 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
     public boolean isConsumed() {
         return isConsumed;
     }
-
-
 
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);

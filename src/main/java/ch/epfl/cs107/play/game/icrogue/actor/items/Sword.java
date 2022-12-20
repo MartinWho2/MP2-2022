@@ -15,6 +15,7 @@ import ch.epfl.cs107.play.game.icrogue.handler.ItemUseListener;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Sword extends Item implements Interactor {
@@ -23,16 +24,24 @@ public class Sword extends Item implements Interactor {
     private final static float ANIMATION_TIME = .6f;
     private float timer;
 
-    @Override
-    public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
-        ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
-    }
+    /**
+     * Init all useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientation): orientation of the skeleton
+     * @param position (DiscreteCoordinates): position of the entity on the map
+     */
     public Sword(Area area, Orientation orientation, DiscreteCoordinates position){
         super(area, orientation, position,"zelda/sword.icon",0.6f);
         isBeingUsed = false;
         handler = new InteractionHandler();
         timer = 0;
     }
+
+    @Override
+    public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
+        ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
+    }
+
     @Override
     public void tryToUseItem() {
         getItemUseListener().canUseItem(this);
@@ -46,6 +55,7 @@ public class Sword extends Item implements Interactor {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+        // register the sword when it is use and unregister it after a short period of time
         if (isCollected()) {
             timer += deltaTime;
             if (timer > ANIMATION_TIME){
@@ -58,6 +68,7 @@ public class Sword extends Item implements Interactor {
 
     @Override
     public void useItem(Area area, Orientation orientation, DiscreteCoordinates coords) {
+        // register the item to the specified area
         area.registerActor(this);
         setOwnerArea(area);
         setCurrentPosition(coords.toVector());
@@ -67,10 +78,7 @@ public class Sword extends Item implements Interactor {
 
     @Override
     public List<DiscreteCoordinates> getFieldOfViewCells() {
-        List<DiscreteCoordinates> coords = new ArrayList<>();
-        coords.add(getCurrentMainCellCoordinates());
-        coords.add(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
-        return coords;
+        return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
     }
 
     @Override
@@ -91,20 +99,24 @@ public class Sword extends Item implements Interactor {
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(Skeleton skeleton, boolean isCellInteraction) {
-            if (skeleton.getIsAlive()) {
+            // kill skeletons
+            if (skeleton.getIsAlive() && !isCellInteraction) {
                 skeleton.die();
             }
         }
 
         @Override
         public void interactWith(Turret turret, boolean isCellInteraction) {
+            // kill turrets
             turret.die();
         }
 
         @Override
         public void interactWith(FireBallDarkLord fireBallDarkLord, boolean isCellInteraction) {
+            // reorientate de fireball
             if (!isCellInteraction) {
-                fireBallDarkLord.repulse();
+                System.out.println("orientation : "+ getOrientation());
+                fireBallDarkLord.repulse(getOrientation());
             }
         }
     }

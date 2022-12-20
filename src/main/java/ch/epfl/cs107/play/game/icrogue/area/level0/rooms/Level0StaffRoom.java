@@ -12,6 +12,10 @@ import java.util.ArrayList;
 
 public class Level0StaffRoom extends Level0ItemRoom{
 
+    /**
+     * Init super
+     * @param roomCoordinates (DiscreteCoordinates): room coordinates on the roomMap
+     */
     public Level0StaffRoom(DiscreteCoordinates roomCoordinates) {
         super(roomCoordinates);
     }

@@ -13,19 +13,36 @@ import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 public abstract class Enemy extends ICRogueActor {
     private boolean isAlive;
     private Sprite sprite;
+
+
+    /**
+     * Init all useful class attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientation): orientation of the character
+     * @param position (DiscreteCoordinates): spawn coordinates in the room
+     * @param spriteName (String): filename of the sprite
+     * @param size (float): size of the sprite on the map
+     */
     public Enemy(Area area, Orientation orientation, DiscreteCoordinates position, String spriteName, float size){
         super(area, orientation,position);
         enterArea(area, position);
         isAlive = true;
         sprite = new Sprite(spriteName,size,size,this);
     }
+
     public boolean getIsAlive(){
         return isAlive;
     }
+
+    /**
+     * Try to kill the entity and to unregister her
+     */
     public void die(){
-        resetMotion();
-        leaveArea();
-        isAlive = false;
+        if (isAlive) {
+            resetMotion();
+            leaveArea();
+            isAlive = false;
+        }
     }
     @Override
     public void draw(Canvas canvas) {

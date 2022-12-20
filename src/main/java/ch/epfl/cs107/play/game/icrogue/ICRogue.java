@@ -9,7 +9,10 @@ import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.area.Level;
 import ch.epfl.cs107.play.game.icrogue.area.level0.Level0;
 import ch.epfl.cs107.play.io.FileSystem;
+import ch.epfl.cs107.play.io.XMLTexts;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
+import ch.epfl.cs107.play.math.Vector;
+import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
 import ch.epfl.cs107.play.window.Window;
 
@@ -42,6 +45,7 @@ public class ICRogue extends AreaGame{
         if (super.begin(window, fileSystem)) {
             // inits the game
             initLevel();
+            XMLTexts.initialize(fileSystem, "strings/forgeronText.xml");
             return true;
         }
         return false;
@@ -59,6 +63,13 @@ public class ICRogue extends AreaGame{
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+        setPauseMenu(new PauseMenu() {
+            @Override
+            protected void drawMenu(Canvas c) {
+
+            }
+        });
+        System.out.println(!isPaused());
         Keyboard keyboard = currentArea.getKeyboard();
         // If R is pressed, restarts a new level
         if (keyboard.get(Keyboard.R).isPressed()){
@@ -67,11 +78,13 @@ public class ICRogue extends AreaGame{
         // Switches room if the player is changing of room
         if (player.getIsChangingRoom()){
             switchRoom();
+
         }
         // Restarts a new level if the player is dead
         if (player.isWeak()) {
-            System.out.println("Game over");
-            initLevel();
+            loseMessage.setAnchor(new Vector(getWindow().getScaledWidth()/4,getWindow().getScaledHeight()/2));
+            loseMessage.draw(getWindow());
+            requestPause();
         }
         // Wins the game
         if (level0.isOn()) {

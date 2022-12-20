@@ -14,11 +14,17 @@ public class Turret extends Enemy {
     private final static float COOLDOWN = 4.f;
     private float time = 0.f;
 
+    /**
+     * Init all useful attributes
+     * @param area (Area): owner Area
+     * @param orientations (Orientation): orientation of the skeleton
+     * @param position (DiscreteCoordinates): position of the entity on the map
+     */
     public Turret(Area area, List<Orientation> orientations, DiscreteCoordinates position){
         super(area, Orientation.DOWN,position,"icrogue/static_npc",1f);
         this.orientations = orientations;
-
     }
+
     @Override
     public boolean isViewInteractable() {
         return true;
@@ -37,6 +43,10 @@ public class Turret extends Enemy {
         return true;
     }
 
+    /**
+     * Counter that set a cooldown between each shot of the turret
+     * @param deltaTime (float): time step
+     */
     public void count(float deltaTime){
         time += deltaTime;
         if (time >= COOLDOWN){

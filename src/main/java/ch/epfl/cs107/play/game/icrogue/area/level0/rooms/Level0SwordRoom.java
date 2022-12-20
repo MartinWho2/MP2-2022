@@ -6,6 +6,10 @@ import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 public class Level0SwordRoom extends Level0ItemRoom{
 
+    /**
+     * Init super
+     * @param roomCoordinates (DiscreteCoordinates): room coordinates on the roomMap
+     */
     public Level0SwordRoom(DiscreteCoordinates roomCoordinates) {
         super(roomCoordinates);
     }

@@ -9,6 +9,11 @@ import ch.epfl.cs107.play.window.Window;
 
 public class Level0KeyRoom extends Level0ItemRoom{
     private final int KEY_ID;
+
+    /**
+     * Init super
+     * @param roomCoordinates (DiscreteCoordinates): room coordinates on the roomMap
+     */
     public Level0KeyRoom(DiscreteCoordinates roomCoordinates, int key_id) {
         super(roomCoordinates);
         KEY_ID = key_id;
@@ -18,6 +23,7 @@ public class Level0KeyRoom extends Level0ItemRoom{
     @Override
     protected void createArea() {
         super.createArea();
+        // add items
         items.add(new Key(this, Orientation.DOWN, new DiscreteCoordinates(2, 2), KEY_ID));
     }
 }

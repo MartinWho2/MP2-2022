@@ -19,6 +19,13 @@ public class Arrow extends Projectiles{
     private boolean isAlive;
     private InteractionHandler handler;
 
+
+    /**
+     * Init useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientate): orientation of the projectile
+     * @param coord (DiscreteCoordinates): position of spawn
+     */
     public Arrow(Area area, Orientation orientation, DiscreteCoordinates coord) {
         super(area, orientation, coord, 1, 8);
         sprite = new Sprite("zelda/arrow", 1f, 1f, this ,

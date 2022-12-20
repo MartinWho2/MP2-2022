@@ -377,25 +377,43 @@ public abstract class Level implements Logic {
         generateConnectors(mapRooms);
     }
 
+    /**
+     * generateBossRoom must be overridden in child classes
+     */
     abstract protected void generateBossRoom();
 
+    /**
+     * generateForgeronRoom must be overridden in child classes
+     */
     abstract protected void generateForgeronRoom();
 
+    /**
+     * CreateRoomOfType must be overridden in child classes
+     * @param nbOfRoomType (int): number that define a certain room type
+     * @param roomCoord (DiscreteCoordinates): coordinate of the room
+     */
     abstract protected void createRoomOfType(int nbOfRoomType, DiscreteCoordinates roomCoord);
 
+    /**
+     * Generate the connectors in each room
+     * @param map (MapState): the MapState
+     */
     private void generateConnectors(MapState[][] map){
         printMap(map);
+        // loop through all element of map
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
+                // if the room is of type "CREATED" generate de connecotrs
                 if (wholeMap[i][j] != null && map[i][j].equals(MapState.CREATED)) {
                     setUpLevelConnector(map, wholeMap[i][j]);
                 }
+                // if the map is a boss room, generate de connectors of the room
                 if (map[i][j].equals(MapState.BOSS_ROOM)) {
                    List<DiscreteCoordinates> adjacentBossRooms = findNearbyRooms(map,new DiscreteCoordinates(i,j),MapState.CREATED);
                    setUpBossConnector(adjacentBossRooms);
                 }
+                // if map is a forgeron room, set the forgeron room's connector
                 if (map[i][j].equals(MapState.FORGERON_ROOM)) {
-                    System.out.println("setting");
                     List<DiscreteCoordinates> adjacentForgeronRooms = findNearbyRooms(map,new DiscreteCoordinates(i,j),MapState.CREATED);
                     setUpForgeronConnector(adjacentForgeronRooms);
                 }
@@ -409,6 +427,12 @@ public abstract class Level implements Logic {
 
     abstract protected void setUpForgeronConnector(List<DiscreteCoordinates> coords);
 
+    /**
+     * Return the connector that connects a baseRoom to anotherRoom
+     * @param baseRoom (DiscreteCoordinates): coordinates of the room on the roomMap
+     * @param otherRoom (DiscreteCoordinates): coordinates of the room on the roomMap
+     * @return (Level0Room.Level0Connectors): the connector that needs to be placed in the baseRoom
+     */
     public static Level0Room.Level0Connectors findRelativeConnectorPos(DiscreteCoordinates baseRoom, DiscreteCoordinates otherRoom) {
         System.out.println(otherRoom.x + " " + otherRoom.y);
         if (baseRoom.x < otherRoom.x) {
@@ -425,11 +449,16 @@ public abstract class Level implements Logic {
     }
 
 
-
+    /**
+     * Get the coordinates of all room that are PLACED or EXPLORED
+     * @param mapRooms (MapState): map state
+     * @return (List<DiscreteCoordinates>): list of all rooms on the map
+     */
     private List<DiscreteCoordinates> getCoordinatesOfRooms(MapState[][] mapRooms) {
         List<DiscreteCoordinates> roomsCoordinate = new ArrayList<>();
         for (int i = 0; i < mapRooms.length; i++) {
             for (int j = 0; j < mapRooms[i].length; j++) {
+                // get all rooms on the map if they are placed or explored
                 if (mapRooms[i][j].equals(MapState.PLACED) || mapRooms[i][j].equals(MapState.EXPLORED)){
                     roomsCoordinate.add(new DiscreteCoordinates(i,j));
                 }
@@ -440,21 +469,25 @@ public abstract class Level implements Logic {
 
     @Override
     public boolean isOn() {
-        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return wholeMap[bossCoordinates.x][bossCoordinates.y].challengeSucceeded;
+        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return wholeMap[bossCoordinates.x][bossCoordinates.y].getChallengeSucceeded();
         return false;
     }
 
     @Override
     public boolean isOff() {
-        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return !wholeMap[bossCoordinates.x][bossCoordinates.y].challengeSucceeded;
+        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return !wholeMap[bossCoordinates.x][bossCoordinates.y].getChallengeSucceeded();
         return true;
     }
 
     @Override
     public float getIntensity() {
-        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return wholeMap[bossCoordinates.x][bossCoordinates.y].challengeSucceeded? 1.f : 0.f;
+        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return wholeMap[bossCoordinates.x][bossCoordinates.y].getChallengeSucceeded()? 1.f : 0.f;
         return 0.f;
     }
+
+    /**
+     * Enumerate all possible MapState
+     */
     protected enum MapState {
         NULL , // Empty space
         PLACED , // The room has been placed but not yet explored by the room placement algorithm

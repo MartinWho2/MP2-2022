@@ -22,6 +22,13 @@ public class FireBall extends Projectiles {
     private Sprite[] sprites;
     private Animation animation;
 
+
+    /**
+     * Init useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientate): orientation of the projectile
+     * @param position (DiscreteCoordinates): position of spawn
+     */
     public FireBall(Area area, Orientation orientation, DiscreteCoordinates position) {
         super(area, orientation, position, 1, 5);
         sprites = Sprite.extractSprites("zelda/fire", 7, 1.f, 1.f, this, new Vector(0, 0), 16, 16);
@@ -69,6 +76,7 @@ public class FireBall extends Projectiles {
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(ICRogueBehavior.ICRogueCell cell, boolean isCellInteraction) {
+            // explode the fireball when it touched the wall
             if (cell.getType().equals(ICRogueBehavior.ICRogueCellType.WALL) ||
                     (cell.getType().equals(ICRogueBehavior.ICRogueCellType.HOLE) && isCellInteraction)) {
                 consume();
@@ -77,6 +85,7 @@ public class FireBall extends Projectiles {
 
         }
         public void interactWith(Connector connector, boolean isCellInteraction){
+            // explode the fireball
             if (!connector.getState().equals(Connector.ConnectorType.OPEN)){
                 consume();
                 explode(getCurrentMainCellCoordinates());

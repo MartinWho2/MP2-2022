@@ -9,10 +9,19 @@ import ch.epfl.cs107.play.math.DiscreteCoordinates;
 
 public class Key extends Item{
     private final int KEY_ID;
+
+    /**
+     * Init all useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientation): orientation of the skeleton
+     * @param position (DiscreteCoordinates): position of the entity on the map
+     * @param ID (int): id of the locked connector it can open
+     */
     public Key(Area area, Orientation orientation, DiscreteCoordinates position, int ID){
         super(area, orientation, position, "icrogue/key", 0.6f);
         KEY_ID = ID;
     }
+
     public int getKEY_ID() {
         return KEY_ID;
     }

@@ -111,6 +111,7 @@ public class Level0 extends Level {
         setRoom(forgeronCoordinates, new Level0ForgeronRoom(forgeronCoordinates));
     }
 
+
     public void generateFixedMap(int methodToUse){
         if (methodToUse== 1){
             generateMap1();
@@ -124,7 +125,9 @@ public class Level0 extends Level {
         generateMap2();
     }
 
-
+    /**
+     * generate a map with 2 rooms
+     */
     public void generateMap1(){
         DiscreteCoordinates room00 = new DiscreteCoordinates(0, 0);
         setRoom(room00, new Level0KeyRoom(room00, PART_1_KEY_ID));
@@ -135,6 +138,10 @@ public class Level0 extends Level {
         setRoom(room10, new Level0Room(room10));
         setRoomConnector(room10, "icrogue/level010", Level0Room.Level0Connectors.W);
     }
+
+    /**
+     * generate a map with 4 rooms
+     */
     public void generateMap2(){
         DiscreteCoordinates room00 = new DiscreteCoordinates(0, 0);
         setRoom(room00, new Level0TurretRoom(room00));
@@ -162,6 +169,10 @@ public class Level0 extends Level {
         setRoomConnector(room11, "icrogue/level010", Level0Room.Level0Connectors.N);
 
     }
+
+    /**
+     * Enum with all different room types to place
+     */
     protected enum RoomType{
         TURRET (2),
         STAFF (1),

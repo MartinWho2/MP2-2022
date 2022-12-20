@@ -26,14 +26,16 @@ public class Bomb extends Item implements Interactor {
     private float time = 0.f;
     private boolean exploded;
 
+    /**
+     * Init all useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientation): orientation of the skeleton
+     * @param position (DiscreteCoordinates): position of the entity on the map
+     */
     public Bomb(Area area, Orientation orientation, DiscreteCoordinates position){
         super(area, orientation, position, "other/bomb", 0.6f);
         handler = new InteractionHandler();
         exploded = false;
-    }
-
-    public boolean isPlaced() {
-        return isPlaced;
     }
 
     @Override
@@ -45,6 +47,7 @@ public class Bomb extends Item implements Interactor {
     public List<DiscreteCoordinates> getFieldOfViewCells() {
         List<DiscreteCoordinates> cells = new ArrayList<>();
         if (isCollected()) {
+            // If the bomb explose it interacts with all surrounding cells as well
             if (isPlaced && exploded) {
                 for (int i = -1; i < 2; i++) {
                     for (int j = -1; j < 2; j++) {
@@ -52,16 +55,16 @@ public class Bomb extends Item implements Interactor {
                             cells.add(getCurrentMainCellCoordinates().jump(i, j));
                     }
                 }
-            } else {
-                return Collections.singletonList(getCurrentMainCellCoordinates());
             }
         }
+        // If the bomb is not collected it has an empty filed of view
         return cells;
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+        // Cooldown before the explosion of the bomb
         if (isPlaced) {
             if (time < COOLDOWN) {
                 time += deltaTime;
@@ -71,6 +74,9 @@ public class Bomb extends Item implements Interactor {
         }
     }
 
+    /**
+     * generate explosion graphics on all cells that are in the field of view
+     */
     public void explode() {
         exploded = true;
         List<DiscreteCoordinates> coords = getFieldOfViewCells();
@@ -87,7 +93,11 @@ public class Bomb extends Item implements Interactor {
         }
     }
 
-
+    /**
+     * place a bomb on the ground after having collected it
+     * @param coordinates (DiscreteCoordinates): coordinate of spawn of the bomb
+     * @param area (Area): owner area of the bomb
+     */
     public void placeBomb(DiscreteCoordinates coordinates, Area area) {
         area.registerActor(this);
         setOwnerArea(area);
@@ -122,6 +132,7 @@ public class Bomb extends Item implements Interactor {
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(Connector connector, boolean isCellInteraction) {
+            // Open connectors that are of type "CRACKED" if the bomb explose
             if (isPlaced) {
                 if (connector.getState().equals(Connector.ConnectorType.CRACKED)) {
                      connector.setState(Connector.ConnectorType.OPEN);
@@ -131,6 +142,7 @@ public class Bomb extends Item implements Interactor {
 
         @Override
         public void interactWith(ICRoguePlayer player, boolean isCellInteraction) {
+            // damage the player when it exploses
             if (isPlaced && exploded) {
                 player.kill();
             }
@@ -138,12 +150,14 @@ public class Bomb extends Item implements Interactor {
 
         @Override
         public void interactWith(Turret turret, boolean isCellInteraction) {
+            // damage the turret when bomb exploses
             if (isPlaced && exploded){
                 turret.die();
             }
         }
         @Override
         public void interactWith(Skeleton skeleton, boolean isCellInteraction) {
+            // damage skeletons when bomb exploses
             if (isPlaced && exploded) {
                 skeleton.die();
             }

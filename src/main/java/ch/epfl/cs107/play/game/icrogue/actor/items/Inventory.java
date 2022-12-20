@@ -28,6 +28,10 @@ public class Inventory extends Entity {
         selectorAnimations = new Animation(4,selectorSprites);
         selectorAnimations.setAnchor(new Vector(0,0));
     }
+
+    /**
+     * update the images of the item draw in the inventory
+     */
     private void updateSprite(){
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             if (inventory[i] != null) {
@@ -42,6 +46,11 @@ public class Inventory extends Entity {
 
         }
     }
+
+    /**
+     * find the first emtpy slot in the inventory
+     * @return (int): index of first empry slot
+     */
     private int findFirstEmptySlot(){
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             if (inventory[i] == null){
@@ -50,6 +59,11 @@ public class Inventory extends Entity {
         }
         return -1;
     }
+
+    /**
+     * add item to the inventory
+     * @param item (Item): Item to add
+     */
     public void addItem(Item item){
         int slot = findFirstEmptySlot();
         if (slot == -1){
@@ -58,6 +72,11 @@ public class Inventory extends Entity {
         inventory[slot] = item;
         updateSprite();
     }
+
+    /**
+     * remove a specific item from the inventory
+     * @param item (Item): Item to remove
+     */
     public void removeItem(Item item){
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             if (item == inventory[i]){
@@ -78,14 +97,18 @@ public class Inventory extends Entity {
         inventory[currentItem].tryToUseItem();
         return true;
     }
+
+    /**
+     * Change the item selector indicator to a new tile
+     * @param a (HorizontalDirection): left or right
+     */
     public void changeItem(HorizontalDirection a){
         currentItem =  (currentItem + a.getType()) % INVENTORY_SIZE;
         currentItem += currentItem < 0 ? 4 : 0;
         System.out.println(currentItem);
-        selectorAnimations.setAnchor(new Vector(inventorySizeTiles[0]/4.45f *currentItem,
-                0));
+        // shift selector to right ot left
+        selectorAnimations.setAnchor(new Vector(inventorySizeTiles[0]/4.45f *currentItem, 0));
     }
-
 
     @Override
     public void update(float deltaTime) {
@@ -102,6 +125,8 @@ public class Inventory extends Entity {
         }
         selectorAnimations.draw(canvas);
     }
+
+    // Enum that is used to handle how to shift the inventory item selector
     public enum HorizontalDirection {
         LEFT(-1),
         RIGHT(1);

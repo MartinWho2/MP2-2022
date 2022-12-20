@@ -4,6 +4,7 @@ import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.*;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
+import ch.epfl.cs107.play.game.icrogue.actor.characters.Forgeron;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.actor.items.*;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
@@ -22,11 +23,11 @@ import java.util.List;
 
 public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private float hp;
-    private static final float HP_MAX = 1_000_000;
+    private static final float HP_MAX = 5;
     /// Animation duration in frame number
     private final static int MOVE_DURATION = 8;
     private Sprite sprite;
-    private TextGraphics message;
+    private Sprite[] healthBarSprites;
     private InteractionHandler handler;
     private boolean wantsInteractionInFront;
     private HashMap<Orientation,Sprite> orientationToSprite = new HashMap<>();
@@ -59,8 +60,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     private boolean isAiming;
 
     /**
-     * Demo actor
-     *
+     * Constructor of the Player, initialize all animations, and useful attribut
+     * @param owner (Area): not null
+     * @param orientation (Orientation): not null
+     * @param coordinates (DiscreteCoordinates): not null
      */
     public ICRoguePlayer(Area owner, Orientation orientation, DiscreteCoordinates coordinates) {
         super(owner, orientation, coordinates);
@@ -69,17 +72,9 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
         resetMotion();
         handler = new InteractionHandler();
-        //Orientation[] spriteOrientation = new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT};
-        //spritesMove = Sprite.extractSprites("zelda/player", 4, .75f, 1.5f, this, 16, 32, new Vector(.15f, -.15f), spriteOrientation);
-        //animationsMove = Animation.createAnimations(4, spritesMove);
+        healthBarSprites = Sprite.extractSprites("other/health_bar", 5, 1.f, .1f, this, new Vector(0, -.1f), 16, 5);
         animationsMove = PlayerAnimations.MOVE.createAnimations(this);
-        //Orientation[] spriteOrientation2 = new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT};
-        //spritesStaff = Sprite.extractSprites("zelda/player.staff_water", 4, 1.5f, 1.5f, this, 32, 32, new Vector(-.25f, -.15f), spriteOrientation2);
-        //animationsStaff = Animation.createAnimations(4, spritesStaff, false);
         animationsStaff = PlayerAnimations.SHOOT.createAnimations(this);
-        //Orientation[] spriteOrientation3 = new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT};
-        //spritesSword = Sprite.extractSprites("zelda/player.sword", 4, 1.5f, 1.5f, this, 32, 32, new Vector(-.25f, -.15f), spriteOrientation3);
-        //animationsSword = Animation.createAnimations(4, spritesSword, false);
         animationsSword = PlayerAnimations.SWORD.createAnimations(this);
         staffAnimationOn = false;
         swordAnimationOn = false;
@@ -96,6 +91,11 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         area.registerActor(inventory);
     }
 
+    /**
+     * apply the given amount of damage to the actor, if the actor is damaged below 0HP,
+     * he is killed
+     * @param damages (float): amount of damages, not null
+     */
     public void damage(float damages) {
         if (!isInvicible){
             this.hp = this.hp >= damages ? this.hp - damages : 0;
@@ -115,6 +115,8 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     public void centerCamera() {
         getOwnerArea().setViewCandidate(this);
     }
+
+
     public boolean getIsChangingRoom(){
         return isChangingRoom;
     }
@@ -187,7 +189,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             }
         }
         super.update(deltaTime);
-
     }
     /**
      * Orientate and Move this player in the given orientation if the given button is down
@@ -279,12 +280,9 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         }
     }
 
+
     public boolean isWeak() {
         return (hp <= 0.f);
-    }
-
-    public void strengthen() {
-        hp = HP_MAX;
     }
 
     public void kill() {
@@ -305,28 +303,36 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
     public boolean isViewInteractable() {
         return true;
     }
+
     @Override
     public List<DiscreteCoordinates> getCurrentCells() {
         return Collections.singletonList(getCurrentMainCellCoordinates());
     }
+
     public DiscreteCoordinates getNewSpawnPosition(){
         return currentConnector.getDestinationCoord();
     }
+
+    /**
+     * @return (String): The name of the destination name
+     */
     public String getNewRoomName(){
         return currentConnector.getDestinationRoom();
     }
 
-
+    /**
+     * @return (List<DiscreteCoordinates>): A List containing the cell in front of the player
+     */
     public List<DiscreteCoordinates> getFieldOfViewCells() {
         return Collections.singletonList(getCurrentMainCellCoordinates().jump(getOrientation().toVector()));
     }
-
 
     public boolean wantsCellInteraction() {
         return true;
     }
 
     public boolean wantsViewInteraction() {
+        // The return is always true because we need to know every frame what kind of tile is in front of the player
         return true;
     }
 
@@ -379,10 +385,22 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         private boolean repeat;
         private Vector offset;
         private Orientation[] orientations;
-        private int[] imageSize;
+        private int[] imageSizes;
         Animation[] animations;
+
+        /**
+         * This constructor initialize the class and animations for all types
+         * @param priority (Priority): Represents the priority of the action, not null
+         * @param spriteName (String): path to the file containing the sprite, not null
+         * @param nbFrames (int): number of different animations, not null
+         * @param frameDuration (int): number of frame per animations, not null
+         * @param repeat (boolean): whether the animation should be running infinitely, not null
+         * @param offset (Vector): Specify manual offset, not null
+         * @param orientations (Orientation): Array that specify in which order are given the animations, not null
+         * @param imageSizes (int): width and height of the image in an array, not null
+         */
         PlayerAnimations(Priority priority, String spriteName, int nbFrames, int frameDuration, boolean repeat,
-                         Vector offset, Orientation[] orientations,int[] imageSize){
+                         Vector offset, Orientation[] orientations,int[] imageSizes){
             this.priority = priority;
             this.spriteName = spriteName;
             this.nbFrames = nbFrames;
@@ -390,7 +408,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             this.repeat = repeat;
             this.offset = offset;
             this.orientations = orientations;
-            this.imageSize = imageSize;
+            this.imageSizes = imageSizes;
         }
 
         /**
@@ -399,10 +417,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
          * @return (Animation): An array of the 4 animations (for the 4 directions)
          */
         public Animation[] createAnimations(ICRoguePlayer player){
-            int maxSize = Math.max(imageSize[0],imageSize[1]);
-            float[] newSize = new float[]{((float)imageSize[0]/maxSize)*1.5f,((float)imageSize[1]/maxSize)*1.5f};
-            Sprite[][] sprites = Sprite.extractSprites(spriteName,nbFrames,newSize[0],newSize[1],player,imageSize[0],
-                    imageSize[1], offset, orientations );
+            int maxSize = Math.max(imageSizes[0], imageSizes[1]);
+            float[] newSize = new float[]{((float) imageSizes[0]/maxSize)*1.5f,((float) imageSizes[1]/maxSize)*1.5f};
+            Sprite[][] sprites = Sprite.extractSprites(spriteName,nbFrames,newSize[0],newSize[1],player, imageSizes[0],
+                    imageSizes[1], offset, orientations );
             animations = Animation.createAnimations(frameDuration,sprites, repeat);
             return animations;
         }
@@ -528,6 +546,19 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             }
         }
 
+        /**
+         * If the player interacts with the forgeron, the forgeron displays the next text
+         * @param forgeron (Forgeron): not null
+         * @param isCellInteraction (boolean): If the cell is an interaction
+         */
+        @Override
+        public void interactWith(Forgeron forgeron, boolean isCellInteraction) {
+            if (wantsInteractionInFront) {
+                forgeron.updateText();
+                ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+                area.tryToFinishRoom();
+            }
+        }
     }
     // This class is used the same way the ICRogueHandler works
     private class ItemHandler implements ItemUseListener {
@@ -579,7 +610,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 swordAnimationOn = true;
                 sword.useItem(getOwnerArea(), currentOrientation, getCurrentMainCellCoordinates());
             }
-
         }
     }
 }
