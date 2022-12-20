@@ -26,6 +26,11 @@ public class ICRogueBehavior extends AreaBehavior{
             this.isWalkable = isWalkable;
         }
 
+        /**
+         * Maps the given value to a ICRogueCellType
+         * @param type (int): The color value of the pixel
+         * @return The corresponding ICRogueCellType enum
+         */
         public static ICRogueBehavior.ICRogueCellType toType(int type){
             for(ICRogueCellType ict : ICRogueCellType.values()){
                 if(ict.type == type)
@@ -38,7 +43,7 @@ public class ICRogueBehavior extends AreaBehavior{
     }
 
     /**
-     * Default Tuto2Behavior Constructor
+     * Default ICRogueBehavior Constructor
      * @param window (Window), not null
      * @param name (String): Name of the Behavior, not null
      */
@@ -55,54 +60,61 @@ public class ICRogueBehavior extends AreaBehavior{
     }
 
     /**
-     * Cell adapted to the Tuto2 game
+     * Cell adapted to the ICRogue game
      */
     public class ICRogueCell extends AreaBehavior.Cell {
         /// Type of the cell following the enum
         private final ICRogueBehavior.ICRogueCellType type;
-        private ArrayList<Interactable> entitiesOnTile;
 
         /**
-         * Default Tuto2Cell Constructor
+         * Default ICRogueCell Constructor
          * @param x (int): x coordinate of the cell
          * @param y (int): y coordinate of the cell
-         * @param type (EnigmeCellType), not null
+         * @param type (ICRogueCellType), not null
          */
         public  ICRogueCell(int x, int y, ICRogueBehavior.ICRogueCellType type){
             super(x, y);
             this.type = type;
-            entitiesOnTile = new ArrayList<>();
         }
 
+        /**
+         * Classical getter of type
+         * @return The type of the cell
+         */
         public ICRogueCellType getType() {
             return type;
         }
 
-
         @Override
         protected boolean canLeave(Interactable entity) {
-            entitiesOnTile.remove(entity);
+            //An entity can always leave a cell
             return true;
         }
 
         @Override
         protected boolean canEnter(Interactable entity) {
-
             for (Interactable entityOnTile : entities) {
+                // If an entity is on the cell and takes the space and the entering entity take the space too
                 if (entity.takeCellSpace() && entityOnTile != null && entityOnTile.takeCellSpace()) {
+                    // Then it can't enter
                     return false;
                 }
             }
+            // Otherwise returns true if the tile is walkable
             return type.isWalkable;
         }
 
+
+
         @Override
         public boolean isCellInteractable() {
+            // A Cell is always interactable in it
             return true;
         }
 
         @Override
         public boolean isViewInteractable() {
+            // A Cell is never interactable outside of it
             return false;
         }
 

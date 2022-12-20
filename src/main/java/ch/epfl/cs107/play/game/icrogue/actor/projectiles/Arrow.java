@@ -19,6 +19,13 @@ public class Arrow extends Projectiles{
     private boolean isAlive;
     private InteractionHandler handler;
 
+
+    /**
+     * Init useful attributes
+     * @param area (Area): owner Area
+     * @param orientation (Orientate): orientation of the projectile
+     * @param coord (DiscreteCoordinates): position of spawn
+     */
     public Arrow(Area area, Orientation orientation, DiscreteCoordinates coord) {
         super(area, orientation, coord, 1, 8);
         sprite = new Sprite("zelda/arrow", 1f, 1f, this ,
@@ -47,9 +54,7 @@ public class Arrow extends Projectiles{
 
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
-
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
-
     }
 
     @Override
@@ -57,13 +62,11 @@ public class Arrow extends Projectiles{
         other.acceptInteraction(handler , isCellInteraction);
     }
 
-
-
     private class InteractionHandler implements ICRogueInteractionHandler {
         @Override
         public void interactWith(ICRoguePlayer player, boolean isCellInteraction) {
             consume();
-            player.kill();
+            player.damage(1);
             // more
         }
 

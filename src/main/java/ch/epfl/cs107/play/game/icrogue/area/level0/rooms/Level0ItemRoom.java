@@ -11,6 +11,10 @@ import java.util.List;
 public abstract class Level0ItemRoom extends Level0Room {
     protected List<Item> items;
 
+    /**
+     * Init all useful class attributes
+     * @param roomCoordinates (DiscreteCoordinates): room coordinates on the roomMap
+     */
     public Level0ItemRoom(DiscreteCoordinates roomCoordinates) {
         super(roomCoordinates);
         items = new ArrayList<>();
@@ -18,14 +22,10 @@ public abstract class Level0ItemRoom extends Level0Room {
 
     @Override
     public boolean challengeCompleted() {
+        // challenge is completed when all items are collected
         for (Item item : items) {
             if (!item.isCollected()) return false;
         }
         return true;
-    }
-
-    @Override
-    public void playerEnters() {
-        this.hasPlayerEntered = true;
     }
 }

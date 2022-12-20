@@ -8,6 +8,10 @@ import java.util.List;
 
 public class Level0EnemyRoom extends Level0Room {
     protected List<Enemy> enemies;
+    /**
+     * Init useful attributes
+     * @param roomCoordinates (DiscreteCoordinates): room coordinates on the roomMap
+     */
     public Level0EnemyRoom(DiscreteCoordinates roomCoordinates) {
         super(roomCoordinates);
         enemies = new ArrayList<>();
@@ -15,14 +19,10 @@ public class Level0EnemyRoom extends Level0Room {
 
     @Override
     public boolean challengeCompleted() {
+        // the challenge is completed
         for (Enemy enemy : enemies) {
             if (enemy.getIsAlive()) return false;
         }
         return true;
-    }
-
-    @Override
-    public void playerEnters() {
-        this.hasPlayerEntered = true;
     }
 }

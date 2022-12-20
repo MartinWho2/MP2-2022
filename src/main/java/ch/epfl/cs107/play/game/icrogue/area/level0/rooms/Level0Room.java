@@ -17,6 +17,20 @@ import java.util.List;
 public class Level0Room extends ICRogueRoom {
     private final static String behaviorName = "icrogue/Level0Room";
 
+    /**
+     * Init super
+     * @param roomCoordinates (DiscreteCoordinates): room coordinates on the roomMap
+     */
+    public Level0Room(DiscreteCoordinates roomCoordinates){
+        super(Level0Connectors.getAllConnectorsPosition(),Level0Connectors.getAllConnectorsOrientation(),
+                behaviorName,roomCoordinates);
+    }
+
+    @Override
+    public boolean challengeCompleted() {
+        return super.challengeCompleted();
+    }
+
     @Override
     public String getTitle() {
         return "icrogue/level0"+getRoomCoordinates().x + ""+getRoomCoordinates().y;
@@ -27,29 +41,23 @@ public class Level0Room extends ICRogueRoom {
         return new DiscreteCoordinates(5,5);
     }
 
-    public Level0Room(DiscreteCoordinates roomCoordinates){
-        super(Level0Connectors.W.getAllConnectorsPosition(),Level0Connectors.W.getAllConnectorsOrientation(),
-                behaviorName,roomCoordinates);
-
-    }
     protected void createArea() {
-        // Base
         registerActor(new Background(this, behaviorName));
     }
 
     @Override
     public boolean isOn() {
-        return challengeSucceeded;
+        return getChallengeSucceeded();
     }
 
     @Override
     public boolean isOff() {
-        return !challengeSucceeded;
+        return !getChallengeSucceeded();
     }
 
     @Override
     public float getIntensity() {
-        return challengeSucceeded? 1.f : 0.f;
+        return getChallengeSucceeded() ? 1.f : 0.f;
     }
 
     public enum Level0Connectors implements ConnectorInRoom {
@@ -75,6 +83,7 @@ public class Level0Room extends ICRogueRoom {
         public int getIndex() {
             return this.ordinal();
         }
+
         public Orientation getOrientation() {
             return orientation;
         }
@@ -83,14 +92,16 @@ public class Level0Room extends ICRogueRoom {
         public DiscreteCoordinates getDestination() {
             return this.destination;
         }
-        public List<Orientation> getAllConnectorsOrientation(){
+
+        public static List<Orientation> getAllConnectorsOrientation(){
             List<Orientation> connectorOrientations = new ArrayList<>();
             for (Level0Connectors connector: Level0Connectors.values()) {
                 connectorOrientations.add(connector.orientation);
             }
             return connectorOrientations;
         }
-        public List <DiscreteCoordinates > getAllConnectorsPosition(){
+
+        public static List <DiscreteCoordinates > getAllConnectorsPosition(){
             List<DiscreteCoordinates> coordinates = new ArrayList<>();
             for (Level0Connectors connector: Level0Connectors.values()) {
                 coordinates.add(connector.position);
