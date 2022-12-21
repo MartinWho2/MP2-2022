@@ -86,7 +86,10 @@ public class Bomb extends Item implements Interactor {
 
     @Override
     public void draw(Canvas canvas) {
-        if (!isCollected() || isPlaced) {
+        if (!isCollected()){
+            super.draw(canvas);
+        }
+        if (isPlaced) {
             animation.draw(canvas);
         }
     }
