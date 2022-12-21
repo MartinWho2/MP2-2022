@@ -12,7 +12,7 @@
     <string name="text-player-miss-key">On dirait qu'il me manque une clé</string>
     <string name="text-enemy-1">Viens là !!!</string>
     <string name="text-king-1">Bravo valeureux guerrier, voilà ta récompense</string>
-    <string name="text-king-2"> ........</string>
+    <string name="text-king-2"> . . . . . . . . . . . . . .</string>
     <string name="text-king-3">T'attends quoi ?</string>
-    <string name="text-player-BA1">Le BA1 est à moi !!!</string>
+
 </strings>
