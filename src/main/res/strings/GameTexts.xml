@@ -1,0 +1,15 @@
+<strings id="forgeronTexts">
+    <string name="text-forgeron-1">Bonjour jeune voyageur</string>
+    <string name="text-forgeron-2">Il est dangereux de voyager seul.</string>
+    <string name="text-forgeron-3">Trouve le boss et tue-le </string>
+    <string name="text-forgeron-4">Pour le battre tu devras lui renvoyer ses flammes</string>
+    <string name="text-forgeron-5">Utilises l'épée !</string>
+    <string name="text-forgeron-6">Prends cette clé que j'ai forgée !</string>
+    <string name="text-player-1">J'ai une pêche d'enfer</string>
+    <string name="text-player-connector-cracked">Ce mur est sur le point de tomber</string>
+    <string name="text-player-cherry">Miam Miam</string>
+    <string name="text-player-shoot">PIOU PIOU</string>
+    <string name="text-player-miss-key">On dirait qu'il me manque une clé</string>
+    <string name="text-enemy-1">Viens là !!!</string>
+    <string name="text-boss-spawn">Je suis de retour pour vous jouer un mauvais tour</string>
+</strings>
