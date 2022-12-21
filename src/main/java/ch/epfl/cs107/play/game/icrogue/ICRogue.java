@@ -38,14 +38,15 @@ public class ICRogue extends AreaGame{
         DiscreteCoordinates coords = currentArea.getPlayerSpawnPosition();
         player = new ICRoguePlayer(currentArea, Orientation.DOWN, coords);
         player.enterArea(currentArea,new DiscreteCoordinates(5,5));
+        player.speak(XMLTexts.getText("text-player-start"), false);
     }
 
     @Override
     public boolean begin(Window window, FileSystem fileSystem) {
         if (super.begin(window, fileSystem)) {
             // inits the game
-            initLevel();
             XMLTexts.initialize(fileSystem, "strings/GameTexts.xml");
+            initLevel();
             return true;
         }
         return false;
