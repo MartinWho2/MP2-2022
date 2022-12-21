@@ -88,9 +88,9 @@ public class ICRogue extends AreaGame{
         // Wins the game
         if (level0.isOn()) {
             System.out.println("Win");
-            winMessage.setAnchor(new Vector(getWindow().getScaledWidth()/3,getWindow().getScaledHeight()/2));
-            winMessage.draw(getWindow());
-            requestPause();
+            // winMessage.setAnchor(new Vector(getWindow().getScaledWidth()/3,getWindow().getScaledHeight()/2));
+            // winMessage.draw(getWindow());
+            // requestPause();
         }
 
     }

@@ -361,7 +361,6 @@ public abstract class Level implements Logic {
         // Iterate through every type of room
         for (int indexOfRoom=0; indexOfRoom<roomsDistribution.length;indexOfRoom++){
             int nbOfRoomOfType = roomsDistribution[indexOfRoom];
-            System.out.println("there are "+nbOfRoomOfType+ " rooms of type "+indexOfRoom);
             // Choose random available rooms and assigns them to the current room type
             chosenRooms = RandomHelper.chooseKInList(nbOfRoomOfType,indexesOfRoomsCoordinates);
             for (Integer chosenRoom : chosenRooms) {
@@ -434,7 +433,6 @@ public abstract class Level implements Logic {
      * @return (Level0Room.Level0Connectors): the connector that needs to be placed in the baseRoom
      */
     public static Level0Room.Level0Connectors findRelativeConnectorPos(DiscreteCoordinates baseRoom, DiscreteCoordinates otherRoom) {
-        System.out.println(otherRoom.x + " " + otherRoom.y);
         if (baseRoom.x < otherRoom.x) {
             return Level0Room.Level0Connectors.E;
         } else if (baseRoom.x == otherRoom.x){

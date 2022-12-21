@@ -79,7 +79,6 @@ public class FireBallDarkLord extends Projectiles {
             if (isTargetReached()) {
                 resetMotion();
                 setCurrentPosition(getCurrentMainCellCoordinates().toVector());
-                System.out.println(nextOrientation);
                 multipleExplosion = true;
                 orientate(nextOrientation);
                 //animation[getOrientation().ordinal()].setAnchor(new Vector(0.69f, 0));

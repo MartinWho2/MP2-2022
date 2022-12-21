@@ -29,7 +29,6 @@ public class Tuto2Behavior extends AreaBehavior {
 					return ict;
 			}
 			// When you add a new color, you can print the int value here before assign it to a type
-			System.out.println(type);
 			return NULL;
 		}
 	}

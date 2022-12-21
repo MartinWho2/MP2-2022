@@ -51,7 +51,7 @@ public abstract class SpeakerActor extends ICRogueActor{
         if (isCurrentDialogFinished()){
             isSpeaking = true;
             currentDialog = new Dialog(this,getCurrentMainCellCoordinates(),dialog,instantDisplay);
-            System.out.println(currentDialog);
+            return true;
         }
         return false;
     }

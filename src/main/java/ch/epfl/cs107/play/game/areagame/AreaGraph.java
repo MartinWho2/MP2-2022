@@ -146,7 +146,6 @@ public class AreaGraph {
                 return Orientation.RIGHT;
             if(previous.coordinates.y < coordinates.y)
                 return Orientation.DOWN;
-
             System.out.println("Should never print");
             return null;
         }

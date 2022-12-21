@@ -24,7 +24,7 @@ public class DarkLord extends Enemy{
     private final int MOVEMENT_FRAMES = 24;
     private float lastShotTime;
     private float hp;
-    static final float MAX_HP = 7;
+    static final float MAX_HP = 1;
     private boolean tookRecentlyDamage = false;
     private float blinkTimer;
     private final static float BLINK_TIME = 0.8f;
@@ -58,7 +58,6 @@ public class DarkLord extends Enemy{
      * @param damages (float): amount of damages
      */
     public void damage(float damages) {
-        System.out.println("les hp sont " + hp);
         if (hp - damages <= 0) {
             // If the boss is dead, the challenge is succeeded
             ((ICRogueRoom)(getOwnerArea())).tryToFinishRoom();
@@ -71,11 +70,6 @@ public class DarkLord extends Enemy{
         }
     }
 
-    @Override
-    public void enterArea(Area area, DiscreteCoordinates position) {
-        super.enterArea(area, position);
-        speak(XMLTexts.getText("text-boss-spawn"), false);
-    }
 
     @Override
     public boolean isViewInteractable() {

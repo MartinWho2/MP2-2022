@@ -53,7 +53,6 @@ public final class XMLTexts {
 
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
-                    // System.out.println("name : " + eElement.getAttribute("name") + " , value: "+eElement.getTextContent());
                     strings.put(eElement.getAttribute("name"), eElement.getTextContent());
                 }
             }

@@ -28,14 +28,7 @@ public class Level0 extends Level {
         List<DiscreteCoordinates> nearbyRooms = findNearbyRooms(map,new DiscreteCoordinates(room.getRoomCoordinates().x,room.getRoomCoordinates().y),MapState.CREATED);
         for (DiscreteCoordinates roomSetting : nearbyRooms){
             String destination = room.getTitle();
-
             destination = destination.substring(0, destination.length()-2) + roomSetting.x + roomSetting.y;
-
-            if (room.getRoomCoordinates().x == 4 && room.getRoomCoordinates().y == 4 ) {
-                System.out.println(destination);
-                System.out.println(findRelativeConnectorPos(room.getRoomCoordinates(), roomSetting));
-            }
-            // System.out.println(destination);
             setRoomConnector(new DiscreteCoordinates(room.getRoomCoordinates().x, room.getRoomCoordinates().y), destination, findRelativeConnectorPos(room.getRoomCoordinates(), roomSetting));
         }
     }
@@ -54,7 +47,6 @@ public class Level0 extends Level {
                 setRoom(roomCoord, new Level0Room(roomCoord));
                 setFirstRoomName(roomCoord);
                 spawnCoordinates = roomCoord;
-                System.out.println("this is the Spawn "+spawnCoordinates);
             }
             case 4-> setRoom(roomCoord, new Level0Room(roomCoord));
             case 5 -> setRoom(roomCoord, new Level0BombRoom(roomCoord));
@@ -76,7 +68,6 @@ public class Level0 extends Level {
         Level0Room.Level0Connectors connector = findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates);
         // Calls a method to set up the boss room in function of the side of the entry
         setRoomConnector(new DiscreteCoordinates(coord.x, coord.y), destination, connector);
-        System.out.println("boss connector : " + findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), bossCoordinates));
         // Locks the connector of the nearby room
         lockRoomConnector(coord, connector, BOSS_KEY_ID);
         setRoomConnector(bossCoordinates, wholeMap[coord.x][coord.y].getTitle(), findRelativeConnectorPos(bossCoordinates, wholeMap[coord.x][coord.y].getRoomCoordinates()));
@@ -94,9 +85,7 @@ public class Level0 extends Level {
         DiscreteCoordinates coord = coords.get(RandomHelper.roomGenerator.nextInt(0, coords.size()));
         String destination = wholeMap[forgeronCoordinates.x][forgeronCoordinates.y].getTitle();
         Level0Room.Level0Connectors connector = findRelativeConnectorPos(wholeMap[coord.x][coord.y].getRoomCoordinates(), forgeronCoordinates);
-        setRoomConnector(new DiscreteCoordinates(coord.x, coord.y), destination, connector);
-        System.out.println("connector forgeron " + coord);
-        wholeMap[coord.x][coord.y].setConnectorsCracked(connector.getIndex());
+        setRoomConnector(new DiscreteCoordinates(coord.x, coord.y), destination, connector);wholeMap[coord.x][coord.y].setConnectorsCracked(connector.getIndex());
         setRoomConnector(forgeronCoordinates, wholeMap[coord.x][coord.y].getTitle(), findRelativeConnectorPos(forgeronCoordinates, wholeMap[coord.x][coord.y].getRoomCoordinates()));
 
     }
@@ -104,7 +93,6 @@ public class Level0 extends Level {
     @Override
     protected void generateBossRoom() {
         setRoom(bossCoordinates, new Level0BossRoom(bossCoordinates,new DiscreteCoordinates(3, 5)));
-        System.out.println("the boss is at "+bossCoordinates);
     }
 
     @Override
