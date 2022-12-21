@@ -8,6 +8,7 @@ import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
+import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
@@ -15,10 +16,11 @@ import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
 public class Arrow extends Projectiles{
+    private Sprite[] sprites;
     private Sprite sprite;
     private boolean isAlive;
     private InteractionHandler handler;
-
+    private boolean hasChangedDirection = false;
 
     /**
      * Init useful attributes
@@ -28,9 +30,11 @@ public class Arrow extends Projectiles{
      */
     public Arrow(Area area, Orientation orientation, DiscreteCoordinates coord) {
         super(area, orientation, coord, 1, 8);
-        sprite = new Sprite("zelda/arrow", 1f, 1f, this ,
-                new RegionOfInterest(32* orientation.ordinal() , 0, 32 , 32) ,
-                new Vector(0 , 0));
+        sprites = Sprite.extractSprites("zelda/arrow",4,1f,1f,this,32,32);
+        sprite = sprites[getOrientation().ordinal()];
+        //sprite = new Sprite("zelda/arrow", 1f, 1f, this ,
+        //        new RegionOfInterest(32* orientation.ordinal() , 0, 32 , 32) ,
+        //        new Vector(0 , 0));
         area.registerActor(this);
         isAlive = true;
         handler = new InteractionHandler();
@@ -51,6 +55,15 @@ public class Arrow extends Projectiles{
         super.consume();
         getOwnerArea().unregisterActor(this);
     }
+    public void repulse(Orientation newOrientation){
+        if (!hasChangedDirection){
+            resetMotion();
+            setCurrentPosition(getCurrentMainCellCoordinates().toVector());
+            orientate(newOrientation);
+            sprite = sprites[getOrientation().ordinal()];
+            hasChangedDirection = true;
+        }
+    }
 
     @Override
     public void acceptInteraction(AreaInteractionVisitor v, boolean isCellInteraction) {
@@ -67,7 +80,14 @@ public class Arrow extends Projectiles{
         public void interactWith(ICRoguePlayer player, boolean isCellInteraction) {
             consume();
             player.damage(1);
-            // more
+        }
+
+        @Override
+        public void interactWith(Turret turret, boolean isCellInteraction) {
+            if (hasChangedDirection){
+                turret.die();
+                consume();
+            }
         }
 
         @Override

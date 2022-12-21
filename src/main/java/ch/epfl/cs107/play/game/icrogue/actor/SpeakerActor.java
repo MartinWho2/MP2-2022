@@ -1,6 +1,5 @@
 package ch.epfl.cs107.play.game.icrogue.actor;
 
-import ch.epfl.cs107.play.game.actor.TextGraphics;
 import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
@@ -48,12 +47,12 @@ public abstract class SpeakerActor extends ICRogueActor{
         return currentDialog.isFinished();
     }
 
-    public void speak(String dialog, boolean instantDisplay) {
+    public boolean speak(String dialog, boolean instantDisplay) {
         if (isCurrentDialogFinished()){
             isSpeaking = true;
             currentDialog = new Dialog(this,getCurrentMainCellCoordinates(),dialog,instantDisplay);
             System.out.println(currentDialog);
         }
-
+        return false;
     }
 }

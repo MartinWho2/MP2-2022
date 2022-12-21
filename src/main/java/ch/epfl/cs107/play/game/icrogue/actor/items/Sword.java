@@ -9,6 +9,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
+import ch.epfl.cs107.play.game.icrogue.actor.projectiles.Arrow;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBallDarkLord;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.game.icrogue.handler.ItemUseListener;
@@ -126,6 +127,13 @@ public class Sword extends Item implements Interactor {
             // reorientate de fireball
             if (!isCellInteraction || getOrientation().opposite().equals(fireBallDarkLord.getOrientation())) {
                 fireBallDarkLord.repulse(getOrientation());
+            }
+        }
+
+        @Override
+        public void interactWith(Arrow arrow, boolean isCellInteraction) {
+            if (!isCellInteraction || getOrientation().opposite().equals(arrow.getOrientation())) {
+                arrow.repulse(getOrientation());
             }
         }
     }

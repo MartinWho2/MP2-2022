@@ -142,7 +142,7 @@ public abstract class Level implements Logic {
         List<DiscreteCoordinates> possibleRooms = findPlaceForSpecialRooms(map);
         findPlaceForBoss(map, possibleRooms);
         findPLaceForForgeron(map, possibleRooms);
-        printMap(map);
+        //printMap(map);
         return map;
     }
 

@@ -5,6 +5,7 @@ import ch.epfl.cs107.play.game.areagame.actor.*;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.characters.Forgeron;
+import ch.epfl.cs107.play.game.icrogue.actor.characters.King;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.actor.items.*;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
@@ -356,34 +357,18 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }
 
-    public enum Priority{
-        VERY_LOW(1),
-        LOW(2),
-        MEDIUM(3),
-        HIGH(4),
-        VERY_HIGH(5);
-        private final int priority;
-        Priority(int priority){
-            this.priority = priority;
-        }
-        public int getPriority() {
-            return priority;
-        }
-    }
-
     /**
      * Enum class used to clean up the constructor.
      * This class is used to create the animations of movements, staff and sword of the player.
      */
     public enum PlayerAnimations{
-        MOVE(Priority.MEDIUM,"zelda/player",4,4,true,new Vector(.15f, -.15f),
+        MOVE("zelda/player",4,4,true,new Vector(.15f, -.15f),
                 new Orientation[]{Orientation.DOWN, Orientation.RIGHT, Orientation.UP, Orientation.LEFT},new int[]{16,32}),
-        SHOOT(Priority.HIGH,"zelda/player.staff_water",4,4,false,
+        SHOOT("zelda/player.staff_water",4,4,false,
                 new Vector(-.25f, -.15f),
                 new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT},new int[]{32,32}),
-        SWORD(Priority.HIGH,"zelda/player.sword",4,4,false,new Vector(-.25f, -.15f),
+        SWORD("zelda/player.sword",4,4,false,new Vector(-.25f, -.15f),
                 new Orientation[]{Orientation.DOWN, Orientation.UP, Orientation.RIGHT, Orientation.LEFT},new int[]{32,32});
-        private Priority priority;
         private String spriteName;
         private int nbFrames;
         private int frameDuration;
@@ -395,7 +380,6 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
 
         /**
          * This constructor initialize the class and animations for all types
-         * @param priority (Priority): Represents the priority of the action, not null
          * @param spriteName (String): path to the file containing the sprite, not null
          * @param nbFrames (int): number of different animations, not null
          * @param frameDuration (int): number of frame per animations, not null
@@ -404,9 +388,8 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
          * @param orientations (Orientation): Array that specify in which order are given the animations, not null
          * @param imageSizes (int): width and height of the image in an array, not null
          */
-        PlayerAnimations(Priority priority, String spriteName, int nbFrames, int frameDuration, boolean repeat,
+        PlayerAnimations(String spriteName, int nbFrames, int frameDuration, boolean repeat,
                          Vector offset, Orientation[] orientations,int[] imageSizes){
-            this.priority = priority;
             this.spriteName = spriteName;
             this.nbFrames = nbFrames;
             this.frameDuration = frameDuration;
@@ -572,6 +555,21 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
                 area.tryToFinishRoom();
             }
         }
+
+        @Override
+        public void interactWith(King king, boolean isCellInteraction) {
+            if (!isCellInteraction && wantsInteractionInFront)
+                king.nextDialog();
+        }
+
+        @Override
+        public void interactWith(Diplome diplome, boolean isCellInteraction) {
+            if (isCellInteraction){
+                inventory.addItem(diplome);
+                diplome.collect(itemHandler);
+                setOrientationAiming(null);
+            }
+        }
     }
     // This class is used the same way the ICRogueHandler works
     private class ItemHandler implements ItemUseListener {
@@ -634,6 +632,11 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
             inventory.removeItem(cherry);
             speak(XMLTexts.getText("text-player-cherry"), true);
             orientateAiming();
+        }
+
+        @Override
+        public void canUseItem(Diplome diplome) {
+            speak(XMLTexts.getText("text-player-BA1"), false);
         }
     }
 }

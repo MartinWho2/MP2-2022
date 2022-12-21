@@ -5,6 +5,7 @@ import ch.epfl.cs107.play.game.areagame.actor.Animation;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
+import ch.epfl.cs107.play.game.icrogue.actor.characters.King;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBallDarkLord;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
@@ -62,6 +63,7 @@ public class DarkLord extends Enemy{
             // If the boss is dead, the challenge is succeeded
             ((ICRogueRoom)(getOwnerArea())).tryToFinishRoom();
             die();
+            new King(getOwnerArea(),new DiscreteCoordinates(5,5));
 
         } else {
             tookRecentlyDamage = true;

@@ -147,22 +147,19 @@ public class FireBallDarkLord extends Projectiles {
 
     /**
      * reorientate the fireball when it is it by reseting motion, recentering fireball in the center
-     * of a cell and chaneg it's orientation
+     * of a cell and change its orientation
      * @param newOrientation (Orientation): new orientation
      */
     public void repulse(Orientation newOrientation) {
 
         if (!switchedDirection) {
             if (isTargetReached()) {
-                System.out.println("is target reached: " + isTargetReached());
-                System.out.println(isTargetReached());
                 resetMotion();
                 setCurrentPosition(getCurrentMainCellCoordinates().toVector());
-                System.out.println(newOrientation);
                 multipleExplosion = true;
                 orientate(newOrientation);
 
-                //animation[getOrientation().ordinal()].setAnchor(new Vector(0.69f, 0));
+                animation[getOrientation().ordinal()].setAnchor(new Vector(0.69f, 0));
                 switchedDirection = true;
             }
             nextOrientation = newOrientation;

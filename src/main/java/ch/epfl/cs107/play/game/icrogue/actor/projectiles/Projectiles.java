@@ -23,6 +23,7 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
     private static int DEFAULT_DAMAGE = 1;
     public int MOVE_DURATION;
     private int damage;
+    private boolean hasChangedDirection = false;
 
     /**
      * Init useful attributes
@@ -49,8 +50,6 @@ public abstract class Projectiles extends ICRogueActor implements Consumable, In
     public Projectiles(Area area, Orientation orientation, DiscreteCoordinates position) {
         this(area, orientation, position, DEFAULT_DAMAGE, DEFAULT_MOVE_DURATION);
     }
-
-
     @Override
     public void update(float deltaTime) {
         move(MOVE_DURATION);
