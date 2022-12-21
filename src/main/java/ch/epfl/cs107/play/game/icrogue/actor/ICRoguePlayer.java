@@ -585,6 +585,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
         @Override
         public void canUseItem(Staff staff) {
             if (shootTimeDiff >= RELOAD_COOLDOWN) {
+                speak(XMLTexts.getText("text-player-shoot"),true);
                 shootTimeDiff = 0;
                 currentAnimation = animationsStaff;
                 currentStaffAnimation = animationsStaff[currentOrientation.ordinal()];

@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Bomb extends Item implements Interactor {
-    private InteractionHandler handler;
-    private Animation animation;
+    private final InteractionHandler handler;
+    private final Animation animation;
     private boolean isPlaced = false;
     private boolean exploded;
 
@@ -142,7 +142,7 @@ public class Bomb extends Item implements Interactor {
         public void interactWith(ICRoguePlayer player, boolean isCellInteraction) {
             // damage the player when it exploses
             if (isPlaced && exploded) {
-                player.kill();
+                player.damage(1);
             }
         }
 
@@ -163,7 +163,7 @@ public class Bomb extends Item implements Interactor {
 
         @Override
         public void interactWith(DarkLord darkLord, boolean isCellInteraction) {
-            darkLord.damage(1);
+            darkLord.damage(2);
         }
     }
 }

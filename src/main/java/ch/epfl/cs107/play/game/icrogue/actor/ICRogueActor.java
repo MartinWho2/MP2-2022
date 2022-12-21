@@ -1,5 +1,6 @@
 package ch.epfl.cs107.play.game.icrogue.actor;
 
+import ch.epfl.cs107.play.game.actor.TextGraphics;
 import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.Interactable;
 import ch.epfl.cs107.play.game.areagame.actor.Interactor;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class ICRogueActor extends MovableAreaEntity {
+    private TextGraphics dialogs;
     public ICRogueActor(Area area, Orientation orientation, DiscreteCoordinates spawn) {
         super(area, orientation, spawn);
     }

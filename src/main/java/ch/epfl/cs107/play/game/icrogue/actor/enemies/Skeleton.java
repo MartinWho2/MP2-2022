@@ -14,7 +14,7 @@ import java.util.List;
 public class Skeleton extends Enemy implements Interactor {
     static final String spriteName = "other/skeleton";
     Animation[] animations;
-    static float spirteSize = 0.6f;
+    static float spriteSize = 0.6f;
     static float maxHealth = 5.f;
     static int damage = 1;
     static int MOVEDURATION = 10;
@@ -30,7 +30,7 @@ public class Skeleton extends Enemy implements Interactor {
      * @param position (DiscreteCoordinates): position of the entity on the map
      */
     public Skeleton(Area area, Orientation orientation, DiscreteCoordinates position) {
-        super(area, orientation, position, spriteName, spirteSize);
+        super(area, orientation, position, spriteSize);
         handler = new InteractionHandler();
         // Add all cells of the map to the view of the skeleton, so he can find the player
         for (int i = 0; i < 10; i++) {

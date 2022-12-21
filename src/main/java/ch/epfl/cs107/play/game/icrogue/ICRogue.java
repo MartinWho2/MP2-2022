@@ -45,7 +45,7 @@ public class ICRogue extends AreaGame{
         if (super.begin(window, fileSystem)) {
             // inits the game
             initLevel();
-            XMLTexts.initialize(fileSystem, "strings/forgeronText.xml");
+            XMLTexts.initialize(fileSystem, "strings/GameTexts.xml");
             return true;
         }
         return false;

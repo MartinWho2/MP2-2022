@@ -2,7 +2,6 @@ package ch.epfl.cs107.play.game.icrogue.area.level0.rooms;
 
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.icrogue.actor.characters.Forgeron;
-import ch.epfl.cs107.play.game.icrogue.actor.items.Cherry;
 import ch.epfl.cs107.play.io.FileSystem;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Window;
@@ -27,8 +26,7 @@ public class Level0ForgeronRoom extends Level0ItemRoom{
     @Override
     public boolean challengeCompleted() {
         // challenge is completed when dialog finished
-        System.out.println("speaked with the forgeron");
-        return forgeron.getFinishedDialog();
+        return forgeron.getFinishedTalking();
     }
 
     @Override

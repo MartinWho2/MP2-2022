@@ -31,7 +31,7 @@ public class FireBallDarkLord extends Projectiles {
     private boolean switchedDirection;
     private boolean wantToSwitch;
     private Orientation nextOrientation;
-    private boolean wantToExplod;
+    private boolean wantToExplode;
     public static final float MAX_TIMER = 0.4f;
     private float timer = 0;
 
@@ -55,7 +55,7 @@ public class FireBallDarkLord extends Projectiles {
         shouldExplose = false;
         switchedDirection = false;
         wantToSwitch = false;
-        wantToExplod = false;
+        wantToExplode = false;
     }
 
     @Override
@@ -66,11 +66,11 @@ public class FireBallDarkLord extends Projectiles {
             explode();
         }
 
-        if (wantToExplod) {
+        if (wantToExplode) {
             timer += deltaTime;
             if (timer >= MAX_TIMER && !switchedDirection) {
                 explode();
-                wantToExplod = false;
+                wantToExplode = false;
                 timer = 0;
             }
         }
@@ -197,7 +197,7 @@ public class FireBallDarkLord extends Projectiles {
             if (exploded) {
                 player.damage(getDamages());
             } else if (isCellInteraction && !switchedDirection) {
-                wantToExplod = true;
+                explode();
     /*            player.damage(getDamages());
                 explode();*/
             }

@@ -13,8 +13,8 @@ import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
 public class DarkLord extends Enemy{
-    private Animation[] animationsMove;
-    private Sprite[][] spritesMove;
+    private final Animation[] animationsMove;
+    private final Sprite[][] spritesMove;
     private final Orientation roomOrientation;
     private final static int COOLDOWN_SHOOT = 2;
     private final int MOVEMENT_FRAMES = 24;
@@ -32,7 +32,7 @@ public class DarkLord extends Enemy{
      * @param position (DiscreteCoordinates): spawn coordinates in the room
      */
     public DarkLord(Area area, Orientation orientation, DiscreteCoordinates position) {
-        super(area, orientation, position, "zelda/darkLord", 1f);
+        super(area, orientation, position, 1f);
         roomOrientation = orientation;
 
         Orientation[] orientations = new Orientation[]{Orientation.UP, Orientation.LEFT, Orientation.DOWN, Orientation.RIGHT};
