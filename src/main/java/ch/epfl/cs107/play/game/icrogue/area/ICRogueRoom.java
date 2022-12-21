@@ -46,9 +46,6 @@ public abstract class ICRogueRoom extends Area implements Logic {
      */
     protected abstract void createArea();
 
-    /// EnigmeArea extends Area
-
-
     public boolean getHasPlayerEntered() {
         return hasPlayerEntered;
     }
@@ -60,7 +57,6 @@ public abstract class ICRogueRoom extends Area implements Logic {
         tryToFinishRoom();
         //openConnectorsClosed();
     }
-
 
     public DiscreteCoordinates getRoomCoordinates(){
         return roomCoordinates;

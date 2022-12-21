@@ -81,14 +81,14 @@ public class ICRogue extends AreaGame{
         }
         // Restarts a new level if the player is dead
         if (player.isWeak()) {
-            loseMessage.setAnchor(new Vector(getWindow().getScaledWidth()/4,getWindow().getScaledHeight()/2));
+            loseMessage.setAnchor(new Vector(getWindow().getScaledWidth()/3.25f,getWindow().getScaledHeight()/2));
             loseMessage.draw(getWindow());
             requestPause();
         }
         // Wins the game
         if (level0.isOn()) {
             System.out.println("Win");
-            winMessage.setAnchor(new Vector(getWindow().getScaledWidth()/4,getWindow().getScaledHeight()/2));
+            winMessage.setAnchor(new Vector(getWindow().getScaledWidth()/3,getWindow().getScaledHeight()/2));
             winMessage.draw(getWindow());
             requestPause();
         }

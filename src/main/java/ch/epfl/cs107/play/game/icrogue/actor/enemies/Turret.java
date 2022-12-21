@@ -80,6 +80,7 @@ public class Turret extends Enemy {
     }
 
     private void shootArrow(Orientation orientation){
+        speak(XMLTexts.getText("text-enemy-1"), true);
         new Arrow(getOwnerArea(),orientation,getCurrentMainCellCoordinates());
     }
 

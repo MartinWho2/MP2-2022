@@ -3,14 +3,13 @@ package ch.epfl.cs107.play.game.icrogue.actor.enemies;
 import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.Orientation;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
-import ch.epfl.cs107.play.game.icrogue.actor.ICRogueActor;
-import ch.epfl.cs107.play.game.icrogue.actor.items.Bomb;
+import ch.epfl.cs107.play.game.icrogue.actor.SpeakerActor;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.game.areagame.actor.Sprite;
 
 
-public abstract class Enemy extends ICRogueActor {
+public abstract class Enemy extends SpeakerActor {
     private boolean isAlive;
 
     /**
@@ -40,10 +39,6 @@ public abstract class Enemy extends ICRogueActor {
             leaveArea();
             isAlive = false;
         }
-    }
-    @Override
-    public void draw(Canvas canvas) {
-        sprite.draw(canvas);
     }
 
     @Override

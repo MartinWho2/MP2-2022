@@ -8,9 +8,12 @@ import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBallDarkLord;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
+import ch.epfl.cs107.play.io.XMLTexts;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
+
+import java.beans.XMLDecoder;
 
 public class DarkLord extends Enemy{
     private final Animation[] animationsMove;
@@ -67,6 +70,12 @@ public class DarkLord extends Enemy{
     }
 
     @Override
+    public void enterArea(Area area, DiscreteCoordinates position) {
+        super.enterArea(area, position);
+        speak(XMLTexts.getText("text-boss-spawn"), false);
+    }
+
+    @Override
     public boolean isViewInteractable() {
         return true;
     }
@@ -78,6 +87,7 @@ public class DarkLord extends Enemy{
 
     @Override
     public void draw(Canvas canvas) {
+        super.draw(canvas);
         // Draws the dark lord
         // If he was recently touched he will blink
         if (!tookRecentlyDamage || ((blinkTimer*5)%2) >= 1)

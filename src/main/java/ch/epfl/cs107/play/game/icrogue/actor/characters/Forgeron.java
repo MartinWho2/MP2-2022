@@ -34,12 +34,7 @@ public class Forgeron extends SpeakerActor {
     public Forgeron(Area area, Orientation orientation, DiscreteCoordinates spawn) {
         super(area, orientation, spawn);
         dialogIndex = 0;
-        message = new TextGraphics(XMLTexts.getText(dialogKey[dialogIndex++]), 0.4f, Color.WHITE,Color.BLACK,0f,
-                false,false, new Vector(0,1), TextAlign.Horizontal.CENTER, TextAlign.Vertical.BOTTOM,1,1);
-        message.setParent(this);
-
-        message.setAnchor(new Vector(0, 1f));
-        sprite = new Sprite("zelda/player", 1.f, 1.f, this, new RegionOfInterest(0, 0, 16, 32));
+        sprite = new Sprite("other/forgeron", 1.f, 1.f, this, new RegionOfInterest(0, 0, 16, 16));
         enterArea(area, new DiscreteCoordinates(spawn.x, spawn.y));
         finishedDialog = false;
     }

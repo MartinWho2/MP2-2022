@@ -10,6 +10,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.items.*;
 import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.game.icrogue.handler.ItemUseListener;
+import ch.epfl.cs107.play.io.XMLTexts;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class ICRoguePlayer extends ICRogueActor implements Interactor {
+public class ICRoguePlayer extends SpeakerActor implements Interactor {
     private float hp;
     private static final float HP_MAX = 5;
     /// Animation duration in frame number
@@ -165,6 +166,10 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             currentStaffAnimation.reset();
         }
 
+        if (keyboard.get(Keyboard.K).isPressed() && !isSpeaking()) {
+            speak(XMLTexts.getText("text-player-1"), true);
+        }
+
         shootTimeDiff += (shootTimeDiff < RELOAD_COOLDOWN) ? deltaTime : 0;
         if (keyboard.get(Keyboard.X).isPressed()){
             inventory.useCurrentItem();
@@ -268,6 +273,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
 
     @Override
     public void draw(Canvas canvas) {
+        super.draw(canvas);
         // Blink if player has immunity
         if (!isInvicible || (((immunityTimer * 5)%2) >= 1)){
             if (orientationAiming != null)
@@ -279,7 +285,6 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
             healthBarSprites[((int)hp - 1)%5].draw(canvas);
         }
     }
-
 
     public boolean isWeak() {
         return (hp <= 0.f);
@@ -481,7 +486,14 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
          */
         @Override
         public void interactWith(Connector connector, boolean isCellInteraction) {
-
+            if (!isCellInteraction && connector.getState().equals(Connector.ConnectorType.CRACKED) && wantsInteractionInFront) {
+                speak(XMLTexts.getText("text-player-connector-cracked"), false);
+            }
+            if (!isCellInteraction && connector.getState().equals(Connector.ConnectorType.LOCKED) && wantsInteractionInFront) {
+                if (!keysCollected.contains(connector.getKEY_ID())) {
+                    speak(XMLTexts.getText("text-player-miss-key"), true);
+                }
+            }
             if (!isCellInteraction && keysCollected.contains(connector.getKEY_ID()) && connector.getState().equals(Connector.ConnectorType.LOCKED) && wantsInteractionInFront){
                 ICRogueRoom area = (ICRogueRoom)getOwnerArea();
                 area.setConnectorOpen(connector);
@@ -620,6 +632,7 @@ public class ICRoguePlayer extends ICRogueActor implements Interactor {
                 hp++;
             }
             inventory.removeItem(cherry);
+            speak(XMLTexts.getText("text-player-cherry"), true);
             orientateAiming();
         }
     }
