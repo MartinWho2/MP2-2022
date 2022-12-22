@@ -335,7 +335,6 @@ public abstract class Level implements Logic {
             wholeMap = new ICRogueRoom[WIDTH][HEIGHT];
             spawnCoordinates = startPosition;
             setFirstRoomName(spawnCoordinates);
-            bossCoordinates = new DiscreteCoordinates(0,0);
             NB_ROOMS = 5;
             generateFinalMap();
         }
@@ -398,7 +397,7 @@ public abstract class Level implements Logic {
      * @param map (MapState): the MapState
      */
     private void generateConnectors(MapState[][] map){
-        printMap(map);
+        //printMap(map);
         // loop through all element of map
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
@@ -467,13 +466,13 @@ public abstract class Level implements Logic {
 
     @Override
     public boolean isOn() {
-        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return wholeMap[bossCoordinates.x][bossCoordinates.y].getChallengeSucceeded();
+        if (bossCoordinates != null) return wholeMap[bossCoordinates.x][bossCoordinates.y].getChallengeSucceeded();
         return false;
     }
 
     @Override
     public boolean isOff() {
-        if (wholeMap[bossCoordinates.x][bossCoordinates.y] != null) return !wholeMap[bossCoordinates.x][bossCoordinates.y].getChallengeSucceeded();
+        if (bossCoordinates != null) return !wholeMap[bossCoordinates.x][bossCoordinates.y].getChallengeSucceeded();
         return true;
     }
 
