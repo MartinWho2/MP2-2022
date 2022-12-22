@@ -62,14 +62,16 @@ public class Inventory extends Entity {
     /**
      * Add item to the inventory
      * @param item (Item): Item to add
+     * @return true if the item could be added
      */
-    public void addItem(Item item){
+    public boolean addItem(Item item){
         int slot = findFirstEmptySlot();
         if (slot == -1){
-            return;
+            return false;
         }
         inventory[slot] = item;
         updateSprite();
+        return true;
     }
 
     /**

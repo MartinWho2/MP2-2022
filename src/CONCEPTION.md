@@ -50,6 +50,7 @@
   - [Barre de vie](#barre-de-vie)
   - [King](#king)
   - [Forgeron](#forgeron)
+- [Images du jeu](#images-du-jeu)
 # Explications
 Vous trouverez dans cette section tous les éléments nécessaires à la compréhension des classes.
 ## Items
@@ -261,3 +262,11 @@ De la lave a été ajouté afin que le joueur ne puisse pas marcher jusqu'au bos
 ### Lava
 La `Lava` est un ICRogueActor qui retourne `true` à `takesCellSpace` afin que le joueur ne puisse jamais passer dessus.
 
+## Images du jeu
+| Screenshots                       |                                                                                                       |
+|-----------------------------------|-------------------------------------------------------------------------------------------------------|
+| Spawn                             | ![Spawn](main/res/images/sprites/other/markdown/screenshots/spawn.png)                                |
+| Tourelle et ConnectorType.CRACKED | ![Turret and Cracked Wall](main/res/images/sprites/other/markdown/screenshots/turret-and-cracked.png) |
+| Salle du forgeron                 | ![ForgeronRoom](main/res/images/sprites/other/markdown/screenshots/forgeron-room.png)                 |
+| Boss Room                         | ![Boss Room](main/res/images/sprites/other/markdown/screenshots/boss.png)                             |
+| Image de victoire                 | ![Win image](main/res/images/sprites/other/markdown/screenshots/win-image.png)                        |

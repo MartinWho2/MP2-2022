@@ -422,32 +422,36 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
 
     private class InteractionHandler implements ICRogueInteractionHandler {
         /**
-         * Collects the staff if the player wants the front interaction and is standing in front of the staff
+         * Collects the staff if the player wants the front interaction, is standing in front of the staff and has an
+         * empty slot in the inventory
          * @param staff (Staff): not null
          * @param isCellInteraction (boolean): If the cell is an interaction
          */
         @Override
         public void interactWith(Staff staff, boolean isCellInteraction) {
             if (wantsInteractionInFront && !isCellInteraction){
-                ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-                staff.collect(itemHandler);
-                inventory.addItem(staff);
-                area.tryToFinishRoom();
+                if (inventory.addItem(staff)){
+                    ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+                    staff.collect(itemHandler);
+                    area.tryToFinishRoom();
+                }
+
             }
         }
 
         /**
-         * Collects the cherry if the player stands on it
+         * Collects the cherry if the player stands on it and has an empty slot in the inventory
          * @param cherry (Cherry): not null
          * @param isCellInteraction (boolean): If the cell is an interaction
          */
         @Override
         public void interactWith(Cherry cherry, boolean isCellInteraction) {
             if (isCellInteraction){
-                inventory.addItem(cherry);
-                cherry.collect(itemHandler);
-                ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-                area.tryToFinishRoom();
+                if (inventory.addItem(cherry)){
+                    cherry.collect(itemHandler);
+                    ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+                    area.tryToFinishRoom();
+                }
             }
         }
 
@@ -508,31 +512,33 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
         }
 
         /**
-         * If the bomb is not collected, add it to the inventory
+         * If the bomb is not collected and the player has an empty slot in the inventory, add it to the inventory
          * @param bomb (Bomb): not null
          * @param isCellInteraction (boolean): If the cell is an interaction
          */
         @Override
         public void interactWith(Bomb bomb, boolean isCellInteraction) {
             if (!bomb.isCollected()) {
-                bomb.collect(itemHandler);
-                inventory.addItem(bomb);
-                ICRogueRoom area = (ICRogueRoom) getOwnerArea();
-                area.tryToFinishRoom();
+                if (inventory.addItem(bomb)){
+                    bomb.collect(itemHandler);
+                    ICRogueRoom area = (ICRogueRoom) getOwnerArea();
+                    area.tryToFinishRoom();
+                }
             }
         }
 
         /**
-         * If the sword is not collected yet, collect it and add it to the inventory
+         * If the sword is not collected yet and can be added to the inventory, collect it and add it to the inventory
          * @param sword (Sword): not null
          * @param isCellInteraction (boolean): If the cell is an interaction
          */
         @Override
         public void interactWith(Sword sword, boolean isCellInteraction) {
             if (!sword.isCollected() && wantsInteractionInFront && !isCellInteraction){
-                sword.collect(itemHandler);
-                inventory.addItem(sword);
-                ((ICRogueRoom)getOwnerArea()).tryToFinishRoom();
+                if (inventory.addItem(sword)){
+                    sword.collect(itemHandler);
+                    ((ICRogueRoom)getOwnerArea()).tryToFinishRoom();
+                }
             }
         }
 
@@ -562,18 +568,29 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
             }
         }
 
+        /**
+         * Talks to the king
+         * @param king (King): not null
+         * @param isCellInteraction (boolean): If it is a cell interaction
+         */
         @Override
         public void interactWith(King king, boolean isCellInteraction) {
             if (!isCellInteraction && wantsInteractionInFront)
                 king.nextDialog();
         }
 
+        /**
+         * Collects the diplom if the player walks on it and has an empty slot in the inventory
+         * @param diplome (Diplome): not null
+         * @param isCellInteraction (boolean): If it is a cell interaction
+         */
         @Override
         public void interactWith(Diplome diplome, boolean isCellInteraction) {
             if (isCellInteraction){
-                inventory.addItem(diplome);
-                diplome.collect(itemHandler);
-                setOrientationAiming(null);
+                if (inventory.addItem(diplome)){
+                    diplome.collect(itemHandler);
+                    setOrientationAiming(null);
+                }
             }
         }
     }

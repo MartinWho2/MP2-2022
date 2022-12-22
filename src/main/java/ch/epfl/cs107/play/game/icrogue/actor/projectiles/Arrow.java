@@ -9,6 +9,7 @@ import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
 import ch.epfl.cs107.play.game.icrogue.actor.Connector;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
+import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.math.RegionOfInterest;
@@ -86,6 +87,7 @@ public class Arrow extends Projectiles{
         public void interactWith(Turret turret, boolean isCellInteraction) {
             if (hasChangedDirection){
                 turret.die();
+                ((ICRogueRoom)(getOwnerArea())).tryToFinishRoom();
                 consume();
             }
         }

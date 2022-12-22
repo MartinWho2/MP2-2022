@@ -11,6 +11,7 @@ import ch.epfl.cs107.play.game.icrogue.actor.enemies.Skeleton;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.Arrow;
 import ch.epfl.cs107.play.game.icrogue.actor.projectiles.FireBallDarkLord;
+import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.game.icrogue.handler.ItemUseListener;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
@@ -113,6 +114,7 @@ public class Sword extends Item implements Interactor {
             // kill skeletons
             if (skeleton.getIsAlive() && !isCellInteraction) {
                 skeleton.die();
+                ((ICRogueRoom)(getOwnerArea())).tryToFinishRoom();
             }
         }
 
@@ -120,6 +122,7 @@ public class Sword extends Item implements Interactor {
         public void interactWith(Turret turret, boolean isCellInteraction) {
             // kill turrets
             turret.die();
+            ((ICRogueRoom)(getOwnerArea())).tryToFinishRoom();
         }
 
         @Override
