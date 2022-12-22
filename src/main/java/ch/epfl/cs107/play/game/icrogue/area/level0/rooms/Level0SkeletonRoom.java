@@ -18,6 +18,6 @@ public class Level0SkeletonRoom extends Level0EnemyRoom{
     protected void createArea() {
         super.createArea();
         // Add a skeleton
-        new Skeleton(this, Orientation.DOWN, new DiscreteCoordinates(4, 5));
+        enemies.add(new Skeleton(this, Orientation.DOWN, new DiscreteCoordinates(4, 5)));
     }
 }
