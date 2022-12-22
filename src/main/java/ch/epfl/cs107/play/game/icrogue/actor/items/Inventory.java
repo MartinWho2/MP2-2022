@@ -10,12 +10,11 @@ import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 
 public class Inventory extends Entity {
-    private Item[] inventory;
-    private ImageGraphics[] itemImages;
+    private final Item[] inventory;
+    private final ImageGraphics[] itemImages;
     private int currentItem;
-    private Sprite sprite;
-    private Animation selectorAnimations;
-    private Sprite[] selectorSprites;
+    private final Sprite sprite;
+    private final Animation selectorAnimations;
     private final static float[] inventorySizeTiles = new float[]{2.6f,0.8f};
     private final static int INVENTORY_SIZE = 4;
     public Inventory(){
@@ -24,13 +23,13 @@ public class Inventory extends Entity {
         currentItem = 0;
         sprite = new Sprite("other/inventory",inventorySizeTiles[0],inventorySizeTiles[1],this);
         itemImages = new ImageGraphics[INVENTORY_SIZE];
-        selectorSprites = Sprite.extractSprites("zelda/selector",4,0.8f,0.8f,this,32,32);
-        selectorAnimations = new Animation(4,selectorSprites);
+        Sprite[] selectorSprites = Sprite.extractSprites("zelda/selector", 4, 0.8f, 0.8f, this, 32, 32);
+        selectorAnimations = new Animation(4, selectorSprites);
         selectorAnimations.setAnchor(new Vector(0,0));
     }
 
     /**
-     * update the images of the item draw in the inventory
+     * Update the images of the item drawn in the inventory
      */
     private void updateSprite(){
         for (int i = 0; i < INVENTORY_SIZE; i++) {
@@ -48,7 +47,7 @@ public class Inventory extends Entity {
     }
 
     /**
-     * find the first emtpy slot in the inventory
+     * Find the first emtpy slot in the inventory
      * @return (int): index of first empry slot
      */
     private int findFirstEmptySlot(){
@@ -61,7 +60,7 @@ public class Inventory extends Entity {
     }
 
     /**
-     * add item to the inventory
+     * Add item to the inventory
      * @param item (Item): Item to add
      */
     public void addItem(Item item){
@@ -74,14 +73,17 @@ public class Inventory extends Entity {
     }
 
     /**
-     * remove a specific item from the inventory
+     * Remove a specific item from the inventory
      * @param item (Item): Item to remove
      */
     public void removeItem(Item item){
+        // Loops through the whole inventory
+        // When the item is found, remove it and update the sprite of the inventory
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             if (item == inventory[i]){
                 inventory[i] = null;
                 updateSprite();
+                return;
             }
         }
     }

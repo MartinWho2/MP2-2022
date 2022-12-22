@@ -40,10 +40,11 @@ public class Dialog extends Entity {
         // Otherwise it depends on the length of the text
         if (instantDisplay) {
             dialog.setText(text);
-            cooldownBeforeDisappearing = 1 + text.length() / 15.0f;
+            cooldownBeforeDisappearing = 1 + text.length() / 25f;
         }
         this.instantDisplay = instantDisplay;
         this.finishedDisplaying = instantDisplay;
+        this.needsToBeRemoved = false;
         cooldown= 0;
     }
 
@@ -51,12 +52,15 @@ public class Dialog extends Entity {
     public void update(float deltaTime) {
         // display letter by letter
         if (!instantDisplay && !finishedDisplaying){
+            // If the substring is not complete, then add a character
             if (characterCounter < text.length()){
                 dialog.setText(text.substring(0,++characterCounter));
-            }else{
+            }// Otherwise dialog is finished
+            else{
                 finishedDisplaying = true;
             }
         }
+        // After the dialog is finished, a countdown is set to remove the text from being displayed
         if (finishedDisplaying){
             cooldown += deltaTime;
             if (cooldown >= cooldownBeforeDisappearing){
@@ -76,7 +80,7 @@ public class Dialog extends Entity {
     public void draw(Canvas canvas) {
         dialog.draw(canvas);
     }
-
+    // Debug purposes
     @Override
     public String toString() {
         return "Dialog : Text="+text+" , Instant display : "+instantDisplay+ " , cooldown : "+cooldownBeforeDisappearing ;

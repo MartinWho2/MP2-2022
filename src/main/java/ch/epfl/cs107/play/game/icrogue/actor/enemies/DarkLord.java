@@ -62,14 +62,19 @@ public class DarkLord extends Enemy{
             // If the boss is dead, the challenge is succeeded
             ((ICRogueRoom)(getOwnerArea())).tryToFinishRoom();
             die();
-            new King(getOwnerArea(),new DiscreteCoordinates(5,5));
-
         } else {
             tookRecentlyDamage = true;
             hp -= damages;
         }
     }
 
+    @Override
+    public void die() {
+        if (getIsAlive()){
+            new King(getOwnerArea(),new DiscreteCoordinates(5,5));
+        }
+        super.die();
+    }
 
     @Override
     public boolean isViewInteractable() {

@@ -1,7 +1,7 @@
 # Description du jeu ICRogue
 ## Introduction
-Alors que vous commencez à réviser pour la période d'examens, vous entendez une voix vous appeler du fond de votre cave.
-Vous vous dirigez alors dans votre cave, mais vous glissez et tombez dans un trou et perdez connaissance ...
+Alors que vous êtes tranquillement en train de jouer à *The Binding of Isaac*, vous entendez une voix vous appeler du fond de votre cave.
+Vous vous dirigez alors dans votre cave, mais vous glissez et tombez dans un trou et perdez connaissance ...\
 Quand vous vous réveillez, vous vous trouvez dans une pièce vide et décidez alors d'explorer ces sous-sols dont vous
 ignoriez l'existence avant ce moment... 
 
@@ -24,7 +24,8 @@ ignoriez l'existence avant ce moment...
 - Tourelle : Ne bouge pas, tire des flèches à intervalles réguliers et a 1 point de vie. A une chance de faire apparaître une bombe à sa mort.
     - Flèche : Met un dégât, peut être renvoyée grâce à l'épée
 - Squelette : Fonce sur le joueur, a 1 point de vie et met 1 dégât. Meurt lors d'un choc
-- Dark Lord : Boss du niveau 0. Se déplace de manière aléatoire au bord de la salle et a 5 points de vie. Tire deux boules de feu squelette de ses deux côtés chaque certain temps.
+- Dark Lord : Boss du niveau 0. Se déplace de manière aléatoire au bord de la salle et a 7 points de vie. 
+Tire deux boules de feu squelette de ses deux côtés chaque certain temps.
 Il ne prend de dégâts que par les boules de feu qu'il tire lui-même et les bombes.
     - Boule de feu squelette : Met 1 dégât, peut être renvoyée grâce à l'épée. A une certaine chance de faire apparaître un squelette à l'impact avec un mur.
 ### Objets

@@ -111,7 +111,7 @@ public class Level0 extends Level {
     }
 
     public void generateFinalMap(){
-        generateMap1();
+        generateMap2();
     }
 
     /**

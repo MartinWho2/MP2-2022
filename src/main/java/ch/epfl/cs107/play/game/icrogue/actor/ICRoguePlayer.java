@@ -4,6 +4,7 @@ import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.*;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.ICRogueBehavior;
+import ch.epfl.cs107.play.game.icrogue.RandomHelper;
 import ch.epfl.cs107.play.game.icrogue.actor.characters.Forgeron;
 import ch.epfl.cs107.play.game.icrogue.actor.characters.King;
 import ch.epfl.cs107.play.game.icrogue.actor.enemies.Turret;
@@ -17,10 +18,7 @@ import ch.epfl.cs107.play.math.Vector;
 import ch.epfl.cs107.play.window.Canvas;
 import ch.epfl.cs107.play.window.Keyboard;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 public class ICRoguePlayer extends SpeakerActor implements Interactor {
@@ -60,6 +58,8 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
     private Orientation orientationAiming;
     private Orientation currentOrientation;
     private boolean isAiming;
+    private final static int numberDifferentDialogs = 15;
+    private int dialogCounter = 1;
 
     /**
      * Constructor of the Player, initialize all animations, and useful attribut
@@ -168,7 +168,13 @@ public class ICRoguePlayer extends SpeakerActor implements Interactor {
         }
 
         if (keyboard.get(Keyboard.K).isPressed() && !isSpeaking()) {
-            speak(XMLTexts.getText("text-player-1"), true);
+            String stringKey = "text-player-" + dialogCounter;
+            if (dialogCounter < numberDifferentDialogs){
+                dialogCounter++;
+            }else{
+                dialogCounter = numberDifferentDialogs+1;
+            }
+            speak(XMLTexts.getText(stringKey), true);
         }
 
         shootTimeDiff += (shootTimeDiff < RELOAD_COOLDOWN) ? deltaTime : 0;

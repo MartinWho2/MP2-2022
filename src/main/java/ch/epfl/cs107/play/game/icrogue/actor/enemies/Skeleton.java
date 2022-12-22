@@ -4,6 +4,7 @@ import ch.epfl.cs107.play.game.areagame.Area;
 import ch.epfl.cs107.play.game.areagame.actor.*;
 import ch.epfl.cs107.play.game.areagame.handler.AreaInteractionVisitor;
 import ch.epfl.cs107.play.game.icrogue.actor.ICRoguePlayer;
+import ch.epfl.cs107.play.game.icrogue.area.ICRogueRoom;
 import ch.epfl.cs107.play.game.icrogue.handler.ICRogueInteractionHandler;
 import ch.epfl.cs107.play.math.DiscreteCoordinates;
 import ch.epfl.cs107.play.window.Canvas;
@@ -15,7 +16,6 @@ public class Skeleton extends Enemy implements Interactor {
     static final String spriteName = "other/skeleton";
     Animation[] animations;
     static float spriteSize = 0.6f;
-    static float maxHealth = 5.f;
     static int damage = 1;
     static int MOVEDURATION = 10;
     private DiscreteCoordinates destination;
@@ -121,6 +121,12 @@ public class Skeleton extends Enemy implements Interactor {
     @Override
     public void interactWith(Interactable other, boolean isCellInteraction) {
         other.acceptInteraction(handler, isCellInteraction);
+    }
+
+    @Override
+    public void die() {
+        super.die();
+        ((ICRogueRoom)(getOwnerArea())).tryToFinishRoom();
     }
 
     @Override

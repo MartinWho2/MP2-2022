@@ -24,9 +24,6 @@ public class Cherry extends Item{
         ((ICRogueInteractionHandler)v).interactWith(this , isCellInteraction);
     }
 
-    /**
-     * Cherry can't be used
-     */
     @Override
     public void tryToUseItem() {
         getItemUseListener().canUseItem(this);

@@ -29,15 +29,19 @@ public class King extends SpeakerActor {
 
     @Override
     public boolean takeCellSpace() {
-        return true;
+        return false;
     }
+
+    /**
+     * Goes to the next dialog
+     */
     public void nextDialog(){
         if (speak(XMLTexts.getText(dialogKeys[dialogIndex]),false)){
           dialogIndex++;
-            if (dialogIndex == 1){
-                new Diplome(getOwnerArea(),getOrientation(),getCurrentMainCellCoordinates().jump(0,-2));
-
-            }
+          if (dialogIndex == 1){
+                  new Diplome(getOwnerArea(),getOrientation(),getCurrentMainCellCoordinates().jump(0,-2));
+              System.out.println("diplom given by "+this);
+          }
         }
         if (dialogIndex >2)
             dialogIndex = 2;

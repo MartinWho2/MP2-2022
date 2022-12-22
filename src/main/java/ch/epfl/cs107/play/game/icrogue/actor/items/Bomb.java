@@ -56,7 +56,7 @@ public class Bomb extends Item implements Interactor {
                 }
             }
         }
-        // If the bomb is not collected it has an empty filed of view
+        // If the bomb is not collected it has an empty field of view
         return cells;
     }
 
@@ -78,6 +78,7 @@ public class Bomb extends Item implements Interactor {
     public void explode() {
         exploded = true;
         List<DiscreteCoordinates> coords = getFieldOfViewCells();
+        coords.add(getCurrentMainCellCoordinates());
         for (DiscreteCoordinates coord : coords) {
             new Explosion(getOwnerArea(), getOrientation(), coord);
         }
@@ -95,7 +96,7 @@ public class Bomb extends Item implements Interactor {
     }
 
     /**
-     * place a bomb on the ground after having collected it
+     * Place a bomb on the ground after having collected it
      * @param coordinates (DiscreteCoordinates): coordinate of spawn of the bomb
      * @param area (Area): owner area of the bomb
      */
@@ -166,6 +167,7 @@ public class Bomb extends Item implements Interactor {
 
         @Override
         public void interactWith(DarkLord darkLord, boolean isCellInteraction) {
+            // damages the dark lord when the bomb explodes
             darkLord.damage(2);
         }
     }
