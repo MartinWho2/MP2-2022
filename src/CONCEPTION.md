@@ -19,7 +19,7 @@
     - [Utilisation d'un Item en passant l'orientation](#utilisation-dun-item-en-passant-lorientation)
   - [Bomb](#bomb)
   - [Sword](#sword)
-  - [Diplome](#diplome)
+  - [Diplôme](#diplôme)
   - [Inventory](#inventory)
   - [ItemUseListener (interface)](#itemuselistener)
 - [Lié aux VFX](#vfx) :
@@ -146,7 +146,9 @@ classes situées dans le package `game.icrogue.area.Level0`
 ### Level0BombRoom 
 La "Bomb room" est gérée par la class `Level0BombRoom` qui étend la classe `Level0ItemRoom`, 
 en ajoutant simplement une bombe à la salle. Le "challenge" de la salle est terminée lorsque ladite bombe est récupérée par le joueur. Cette salle permet d'assurer que le joueur ai eu au moins une fois l'occasion de récupérer
-une bombe pour ouvrir le [`ConnectorType.CRACKED`](#connectors)
+une bombe pour ouvrir le [`ConnectorType.CRACKED`](#connectors). Une bombe est rajoutée à chaque fois que le joueur entre dans la salle
+afin que le joueur ne soit pas bloqué car il en a besoin pour ouvrir le [`ConnectorType.CRACKED`](#connectors) ce qui est essentiel 
+pour finir le niveau. (S'il avait utilisé la bombe sans ouvrir le connector cela l'empêcherait d'accéder ainsi à la salle du forgeron)
 ### Level0SkeletonRoom
 La "Skeleton room" est gérée par la classe `Level0SkeletonRoom` qui étend `Level0EnemyRoom`. Cette salle génère un [`Skeleton`](#skeleton), lorsqu'il est mort, le défi de la salle est complété.
 ### Level0SwordRoom

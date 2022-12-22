@@ -16,6 +16,12 @@ public class Level0BombRoom extends Level0ItemRoom {
     }
 
     @Override
+    public boolean getHasPlayerEntered() {
+        // Permet de reload la salle si jamais la bombe a été utilisée bêtement
+        return false;
+    }
+
+    @Override
     protected void createArea() {
         super.createArea();
         // add a bomb to a random tile with 2<=x<=7 and 2<=y<=7
