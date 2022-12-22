@@ -24,7 +24,7 @@ public class DarkLord extends Enemy{
     private final int MOVEMENT_FRAMES = 24;
     private float lastShotTime;
     private float hp;
-    static final float MAX_HP = 1;
+    static final float MAX_HP = 7;
     private boolean tookRecentlyDamage = false;
     private float blinkTimer;
     private final static float BLINK_TIME = 0.8f;
